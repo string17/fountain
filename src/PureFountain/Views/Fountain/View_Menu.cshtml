@@ -1,0 +1,83 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IEnumerable<DolphinContext.Data.Models.DolMenu> Model_Menu = ViewBag.Menus;
+    int sn = 0;
+}
+
+<!-- The following CSS are included as plugins and can be removed if unused-->
+
+<link type="text/css" href="~/assets/plugins/datatables/dataTables.css" rel="stylesheet">
+<link type="text/css" href="~/assets/plugins/datatables/ColReorder/css/dataTables.colReorder.css" rel="stylesheet"> 	<!-- ColReorder -->
+<link type="text/css" href="~/assets/plugins/datatables/KeyTable/css/dataTables.keyTable.css" rel="stylesheet"> 		<!-- KeyTable -->
+<link type="text/css" href="~/assets/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet"> 					<!-- Bootstrap Support for Datatables -->
+<link type="text/css" href="~/assets/plugins/datatables/dataTables.fontAwesome.css" rel="stylesheet"> 					<!-- FontAwesome Support for Datatables -->
+
+<div class="row" data-widget-group="group1">
+    <div class="col-md-12">
+
+        <div class="panel panel-default" id="panel-tabletools" data-widget='{"draggable":"false"}'>
+            <div class="panel-heading">
+                <h2><a href="@Url.Action("create_menu")">Create Menu</a> </h2>
+                <div class="panel-ctrls"
+                     data-actions-container=""
+                     data-action-collapse='{"target": ".panel-body"}'
+                     data-action-expand=''
+                     data-action-colorpicker=''>
+                </div>
+            </div>
+            <div class="panel-editbox" data-widget-controls=""></div>
+            <div class="panel-body panel-no-padding">
+                <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatables" id="tabletools">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Name</th>
+                            <th>URL</th>
+                            <th>Description</th>
+                            <th>Parent</th>
+                            <th>ExternalURL</th>
+                            <th>Status</th>
+                            <th>Icon</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        @foreach (var n in Model_Menu)
+                        {
+
+                            sn += 1;
+                            <tr class="odd gradeX">
+                                <td>@sn</td>
+                                <td>@n.MenuName</td>
+                                <td>@n.MenuURL</td>
+                                <td>@n.MenuDesc</td>
+                                <td>@n.ParentId</td>
+                                <td>@n.ExternalURL</td>
+                                <td>@n.MenuStatus</td>
+                                <td>@n.LinkIcon</td>
+                                <td><a href="Edit_Menu" id="@n.MenuId">Edit</a></td>
+
+
+                            </tr>
+
+                        }
+
+
+                    </tbody>
+                </table>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+

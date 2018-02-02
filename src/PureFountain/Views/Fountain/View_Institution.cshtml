@@ -1,0 +1,309 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IEnumerable<DolphinContext.Data.Models.DolCompany> Model_Customers = ViewBag.customer;
+    DolphinContext.Data.Models.DolCompany Model_Client = ViewBag.Inst;
+    int sn = 0;
+
+}
+
+<!-- The following CSS are included as plugins and can be removed if unused-->
+
+<link type="text/css" href="~/assets/plugins/datatables/dataTables.css" rel="stylesheet">
+	<!-- ColReorder -->
+<link type="text/css" href="~/assets/plugins/datatables/KeyTable/css/dataTables.keyTable.css" rel="stylesheet"> 		<!-- KeyTable -->
+<link type="text/css" href="~/assets/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet"> 					<!-- Bootstrap Support for Datatables -->
+<link type="text/css" href="~/assets/plugins/datatables/dataTables.fontAwesome.css" rel="stylesheet"> 					<!-- FontAwesome Support for Datatables -->
+
+@*@{
+
+    if (!String.IsNullOrEmpty(ViewBag.SuccessMsg))
+    {
+        <div id="ErrorBox" style="margin:auto">
+            <div class="alert alert-dismissable alert-success" style="margin-top:10px;">
+                <i class="fa fa-fw fa-check"></i>&nbsp; <strong></strong> @ViewBag.SuccessMsg
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            </div>
+        </div>
+    }
+
+}*@
+
+<div class="row" data-widget-group="group1">
+    <div class="col-md-12">
+
+        <div class="panel panel-default" id="panel-tabletools" data-widget='{"draggable":"false"}'>
+            <div class="panel-heading">
+               
+                <div class="panel-ctrls"
+                     data-actions-container="";
+                     data-action-collapse='{"target": ".panel-body"}'
+                     data-action-expand=''
+                     data-action-colorpicker=''>
+                </div>
+            </div>
+            <div class="panel-editbox" data-widget-controls=""></div>
+            <div class="panel-body panel-no-padding">
+                <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatables" id="keytable">
+                    <thead>
+                        <tr>
+                            <th>SN</th>
+                            <th>Name</th>
+                            <th>Alias</th>
+                            <th>Banner</th>
+                            <th>Response Time(Hours)</th>
+                            <th>Resolution Lagos (Hours)</th>
+                            <th>Resolution UpCountry(Hours)</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                        @foreach (var n in Model_Customers)
+                        {
+
+                            sn += 1;
+                            <tr class="odd gradeX">
+                                <td>@sn</td>
+                                <td>@n.CustomerName</td>
+                                <td>@n.CustomerAlias</td>
+                                <td><img src="~/Banner/@n.CustomerBanner" style="height:25px;width:65px;"></td>
+                                <td>@n.CustomerRespTime</td>
+                                <td>@n.CustomerRestTime</td>
+                                <td>@n.CustomerRest1Time</td>
+                                <td>@(Convert.ToBoolean(n.CustomerStatus) ?  "Active": "Inactive")</td>
+                                <td><a href="@Url.Action("Edit_Institution", new { Id = @n.CustomerId })">Edit</a></td>
+                                @*<td><a href="#Edit_Institution" value="@n.CustomerId" data-toggle="modal">Edit</a></td>*@
+
+
+                            </tr>
+
+                        }
+
+
+                    </tbody>
+                </table>
+
+
+
+
+               
+                <!--end table-->
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+@*<div class="modal fade" id="create_institution" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">@ViewBag.Message</h4>
+
+
+            </div>
+            <form class="form-horizontal row-border" id="validate-form" data-parsley-validate method="post" action="/dolphin/View_Institution" enctype="multipart/form-data">
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Title</label>
+                            <div class="col-sm-6">
+                                <input type="text" placeholder="Title" required class="form-control" name="CustomerName">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Description</label>
+                            <div class="col-sm-6">
+                                <input type="text" placeholder="Description" required class="form-control" name="CustomerAlias">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Banner</label>
+                            <div class="col-sm-6">
+                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <span class="btn btn-default btn-file">
+                                        <span class="fileinput-new">Select file</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" name="CustomerBanner">
+                                    </span>
+                                    <span class="fileinput-filename"></span>
+                                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group pb10">
+                            <label class="col-sm-3 control-label">Status</label>
+                            <div class="col-sm-6">
+                                <ul class="demo-btns mb-10">
+                                    <li><input class="bootstrap-switch" name="CustomerStatus" Value="true" type="checkbox" data-on-text="<i class='fa fa-check'></i>" data-on-color="success" data-off-text="<i class='fa fa-times'></i>" data-off-color="danger" /></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Response Time</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" id="source" name="CustomerRespTime" required>
+                                    <option value="">Select Company</option>
+                                    @for (int i=1; i<=48; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                                    <label class="col-sm-3 control-label">Resolution Time</label>
+                                   <div class="col-sm-6">
+                                        <select class="form-control" id="source" name="CustomerRestTime" required>
+                                                <option value="">Select Resolution</option>
+                                            @for (int i = 1; i <= 48; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                                
+                                          
+                                            </select>
+                                     </div>
+                                    </div>
+
+                    </div>
+
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+
+
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->*@
+
+
+@*<div class="modal fade" id="Edit_Institution" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">@ViewBag.Message</h4>
+
+
+            </div>
+            <form class="form-horizontal row-border" id="validate-form" data-parsley-validate method="post" action="/dolphin/View_Institution" enctype="multipart/form-data">
+                <div class="modal-body">
+
+                    <div class="col-md-12">
+
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Title</label>
+                            <div class="col-sm-6">
+                                <input type="text" required class="form-control" name="CustomerName" value="@((Model_Client != null)?Model_Client.CustomerName : string.Empty)">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Description</label>
+                            <div class="col-sm-6">
+                                <input type="text" placeholder="Description" required class="form-control" name="CustomerAlias">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Banner</label>
+                            <div class="col-sm-6">
+                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <span class="btn btn-default btn-file">
+                                        <span class="fileinput-new">Select file</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" name="CustomerBanner">
+                                    </span>
+                                    <span class="fileinput-filename"></span>
+                                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group pb10">
+                            <label class="col-sm-3 control-label">Status</label>
+                            <div class="col-sm-6">
+                                <ul class="demo-btns mb-10">
+                                    <li><input class="bootstrap-switch" name="CustomerStatus" Value="true" type="checkbox" data-on-text="<i class='fa fa-check'></i>" data-on-color="success" data-off-text="<i class='fa fa-times'></i>" data-off-color="danger" /></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Response Time</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" id="source" name="CustomerRespTime" required>
+                                    <option value="">Select Company</option>
+                                    @for (int i = 1; i <= 48; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Resolution Time</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" id="source" name="CustomerRestTime" required>
+                                    <option value="">Select Resolution</option>
+                                    @for (int i = 1; i <= 48; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+
+
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+
+
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->*@
+
+
+
+
+
+
+

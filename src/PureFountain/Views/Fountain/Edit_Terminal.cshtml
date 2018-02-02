@@ -1,0 +1,166 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IEnumerable<DolphinContext.Data.Models.DolRegion> Model_Reg = ViewBag.region;
+    dolphin.Models.TerminalView Model_TRM = ViewBag.TRM;
+
+    IEnumerable<DolphinContext.Data.Models.DolUser> Model_engineer = ViewBag.engineer;
+    IEnumerable<DolphinContext.Data.Models.DolBrand> Model_Brand = ViewBag.Brand;
+    IEnumerable<DolphinContext.Data.Models.DolCompany> Model_custom = ViewBag.custom;
+}
+
+@{if (!String.IsNullOrEmpty(ViewBag.ErrorMsg))
+            {
+        <div id="ErrorBox" style="margin:auto">
+            <div class="alert alert-dismissable alert-danger" style="margin-top:10px;">
+                <i class="fa fa-fw fa-times"></i>&nbsp; <strong></strong> @ViewBag.ErrorMsg
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            </div>
+        </div>
+    }
+
+    else if (!String.IsNullOrEmpty(ViewBag.SuccessMsg))
+    {
+        <div id="ErrorBox" style="margin:auto">
+            <div class="alert alert-dismissable alert-success" style="margin-top:10px;">
+                <i class="fa fa-fw fa-check"></i>&nbsp; <strong></strong> @ViewBag.SuccessMsg
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            </div>
+        </div>
+    }
+
+}
+
+<form class="form-horizontal row-border" id="validate-form" data-parsley-validate method="post" action="">
+    <div class="col-md-12">
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Customer</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="source" name="CustomerId">
+                        <option value="@Model_TRM.CustomerId">@((Model_TRM != null) ? Model_TRM.CustomerAlias : string.Empty)</option>
+                        @foreach (var n in Model_custom)
+                        {
+                            <option value="@n.CustomerId">@n.CustomerName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            
+            
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Serial Number</label>
+                <div class="col-sm-6">
+                    <input type="text" name="TSNum" class="form-control" value="@((Model_TRM != null) ? Model_TRM.TSNum : string.Empty)" >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Brand</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="source" name="BrandId" required>
+                        <option value="@(Model_TRM.BrandId)">@((Model_TRM != null) ? Model_TRM.BrandName : string.Empty)</option>
+                        @foreach (var n in Model_Brand)
+                        {
+                            <option value="@n.BrandId">@n.BrandName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Reference</label>
+                <div class="col-sm-6">
+                    <input type="text" name="TerminalRef" class="form-control" value="@((Model_TRM != null) ? Model_TRM.TerminalRef : string.Empty)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Region</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="source" name="RegId">
+                        <option value="@(Model_TRM.RegId)">@((Model_TRM != null) ? Model_TRM.RegionName : string.Empty)</option>
+                        @foreach (var n in Model_Reg)
+                        {
+                            <option value="@n.RegId">@n.RegionName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                <label class="col-sm-2 control-label">Autogrow Textarea</label>
+                <div class="col-sm-8">
+                    <textarea class="form-control autosize"></textarea>
+                </div>
+                <div class="col-sm-2"><p class="help-block">Textbox auto grows as you type!</p></div>
+            </div>*@
+
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Terminal ID</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="TerminalId" value="@((Model_TRM != null) ? Model_TRM.TerminalId : string.Empty)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Alias</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="TAlias" value="@((Model_TRM != null)?Model_TRM.TAlias : string.Empty)">
+                </div>
+            </div>
+            
+           
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Engineer</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="source" name="TEng">
+                        <option value=""></option>
+                        @foreach (var n in Model_engineer)
+                        {
+                            <option value="@((Model_TRM != null) ? Model_TRM.TEng : string.Empty)">@n.FirstName &nbsp; @n.LastName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Location</label>
+                <div class="col-sm-6">
+                    <input type="text" name="TLocation" class="form-control" value="@((Model_TRM != null)?Model_TRM.TLocation : string.Empty)">
+                </div>
+            </div>
+            <div class="col-lg-9" style="margin-top:25px">
+                <div class="btn-toolbar">
+                    <button class="btn btn-primary pull-right" type="submit">Update</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</form>
+  
+
+
+
+<script>
+// See Docs
+	window.ParsleyConfig = {
+    	  successClass: 'has-success'
+		, errorClass: 'has-error'
+		, errorElem: '<span></span>'
+		, errorsWrapper: '<span class="help-block"></span>'
+		, errorTemplate: "<div></div>"
+		, classHandler: function(el) {
+    		return el.$element.closest(".form-group");
+		}
+	};
+</script>

@@ -1,0 +1,114 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<form class="form-horizontal row-border" id="validate-form" data-parsley-validate>
+    <div class="col-md-12">
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Title</label>
+                <div class="col-sm-6">
+                    <input type="text" placeholder="Title" required class="form-control" name="MenuName">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Description</label>
+                <div class="col-sm-6">
+                    <input type="text" placeholder="Description" required class="form-control" name="MenuDesc">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Parent</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="source" name="ParentId" required>
+                        <option value="">Select Company</option>
+                        <option value="AK">Alaska</option>
+                        <option value="HI">Hawaii</option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Sequence</label>
+                <div class="col-sm-6">
+                    <input type="text" placeholder="Description" required class="form-control" name="Sequence">
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">URL</label>
+                <div class="col-sm-6">
+                    <input type="text" placeholder="URL" required class="form-control" name="MenuURL">
+                </div>
+            </div>
+            <div class="form-group pb10">
+                <label class="col-sm-3 control-label">Status</label>
+                <div class="col-sm-6">
+                    <ul class="demo-btns mb-10">
+                        <li><input class="bootstrap-switch" type="checkbox" name="MenuStatus" data-on-text="<i class='fa fa-check'></i>" data-on-color="success" data-off-text="<i class='fa fa-times'></i>" data-off-color="danger" /></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">External URL</label>
+                <div class="col-sm-6">
+                    <input type="text" placeholder="URL" required class="form-control" name="ExternalURL">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Icon</label>
+                <div class="col-sm-6">
+                    <input type="text" placeholder="Icon" class="form-control" name="LinkIcon">
+                </div>
+            </div>
+
+            <div class="col-lg-9" style="margin-top:25px">
+                <div class="btn-toolbar">
+                    <span class="btn btn-primary pull-right">Submit</span>
+                    <button type="button" class="btn btn-default">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+</form>
+
+
+
+
+<script>
+// See Docs
+	window.ParsleyConfig = {
+    	  successClass: 'has-success'
+		, errorClass: 'has-error'
+		, errorElem: '<span></span>'
+		, errorsWrapper: '<span class="help-block"></span>'
+		, errorTemplate: "<div></div>"
+		, classHandler: function(el) {
+    		return el.$element.closest(".form-group");
+		}
+	};
+</script>

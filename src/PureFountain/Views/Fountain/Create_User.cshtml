@@ -1,0 +1,163 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IEnumerable<FountainContext.Data.Models.PureRole> Model_Role = ViewBag.Roles;
+    //IEnumerable<FountainContext.Data.Models.DolCompany> Model_Institution = ViewBag.Customer;
+}
+
+
+
+   <div data-widget-group="group1">
+
+       <div class="row">
+
+           <div class="panel panel-default" data-widget='{"draggable": "false"}'>
+               <div class="panel-heading">
+                   <h2>@ViewBag.Message</h2>
+                   <div class="panel-ctrls"
+                        data-actions-container=""
+                        data-action-collapse='{"target": ".panel-body"}'
+                        data-action-expand=''
+                        data-action-colorpicker=''>
+                   </div>
+               </div>
+               <div class="panel-editbox" data-widget-controls=""></div>
+               <div class="panel-body">
+                   <form class="form-horizontal row-border" action="/Fountain/create_user" method="post" id="validate-form" data-parsley-validate enctype="multipart/form-data">
+
+                       <div class="col-md-12">
+                           <div class="col-md-6">
+                               <div class="form-group">
+                                   <label class="col-sm-2 control-label">Image Upload</label>
+                                   <div class="col-sm-4">
+                                       <div class="fileinput fileinput-new" style="width: 100%;" data-provides="fileinput">
+                                           <div class="fileinput-preview thumbnail mb20" data-trigger="fileinput" style="width: 100%; height: 150px;"></div>
+                                           <div>
+                                               <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                               <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="UserImg"></span>
+
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-sm-4">
+                                       <div class="alert alert-info">Image preview only works in IE10+, FF3.6+, Safari6.0+, Chrome6.0+ and Opera11.1+.</div>
+                                   </div>
+                               </div>
+
+                               <div class="form-group">
+                                   <label class="col-sm-3 control-label">Email</label>
+                                   <div class="col-sm-6">
+                                       <input type="text" data-parsley-type="email" placeholder="Email address" required class="form-control" name="UserEmail">
+                                   </div>
+                               </div>
+                               <div class="form-group">
+                                   <label class="col-sm-3 control-label">Password</label>
+                                   <div class="col-sm-6">
+                                       <input type="password" data-parsley-minlength="6" placeholder="Password" required class="form-control" name="UserPWD">
+                                   </div>
+                               </div>
+
+                               <div class="form-group">
+                                   <label class="col-sm-3 control-label">Role</label>
+                                   <div class="col-sm-6">
+                                       <select class="form-control" id="source" name="RoleId" required>
+                                           <option value="">Select Role</option>
+                                           @foreach (var n in Model_Role)
+                                       {
+                                       <option value="@n.Roleid">@n.Rolename</option>
+                                       }
+
+
+                                       </select>
+                                   </div>
+                               </div>
+                           </div>
+
+
+
+
+
+                           <div class="col-md-6">
+                               <div class="form-group">
+                                   <label class="col-sm-3 control-label">First Name</label>
+                                   <div class="col-sm-6">
+                                       <input type="text" placeholder="First Name" required class="form-control" name="FirstName">
+                                   </div>
+                               </div>
+
+                               <div class="form-group">
+                                   <label class="col-sm-3 control-label">Middle Name</label>
+                                   <div class="col-sm-6">
+                                       <input type="text" placeholder="Middle Name" required class="form-control" name="MiddleName">
+                                   </div>
+                               </div>
+
+                               <div class="form-group">
+                                   <label class="col-sm-3 control-label">Last Name</label>
+                                   <div class="col-sm-6">
+                                       <input type="text" placeholder="Last Name" required class="form-control" name="LastName">
+                                   </div>
+                               </div>
+
+                               <div class="form-group">
+                                   <label class="col-sm-3 control-label">Username</label>
+                                   <div class="col-sm-6">
+                                       <input type="text" placeholder="Username" required class="form-control" name="UserName">
+                                   </div>
+                               </div>
+                             
+
+                               <div class="form-group">
+                                   <label class="col-sm-3 control-label">Phone Number</label>
+                                   <div class="col-sm-6">
+                                       <input type="text" data-parsley-type="digits" placeholder="Phone Number" name="PhoneNos" required class="form-control">
+                                   </div>
+                               </div>
+
+                               <div class="form-group pb10">
+                                   <label class="col-sm-3 control-label">Status</label>
+                                   <div class="col-sm-6">
+                                       <ul class="demo-btns mb-10">
+                                           <li><input class="bootstrap-switch" name="UserStatus" Value="true" type="checkbox" data-on-text="<i class='fa fa-check'></i>" data-on-color="success" data-off-text="<i class='fa fa-times'></i>" data-off-color="danger" /></li>
+                                       </ul>
+                                   </div>
+                               </div>
+                               <div class="col-md-12" style="margin-top:25px">
+                                   <div class="btn-toolbar">
+                                       <button class="btn btn-warning pull-left" type="reset">Cancel</button>
+                                       <button class="btn btn-primary pull-right" type="submit">Create</button>
+
+                                   </div>
+                               </div>
+
+                           </div>
+
+                       </div>
+
+                   </form>
+               </div>
+           </div>
+
+
+       </div>
+
+
+
+
+   
+
+    </div>
+
+<script src="~/assets/demo/demo-formcomponents.js"></script>
+<script>
+// See Docs
+	window.ParsleyConfig = {
+    	  successClass: 'has-success'
+		, errorClass: 'has-error'
+		, errorElem: '<span></span>'
+		, errorsWrapper: '<span class="help-block"></span>'
+		, errorTemplate: "<div></div>"
+		, classHandler: function(el) {
+    		return el.$element.closest(".form-group");
+		}
+	};
+</script>

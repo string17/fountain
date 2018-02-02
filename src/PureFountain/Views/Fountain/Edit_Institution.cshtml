@@ -1,0 +1,134 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DolphinContext.Data.Models.DolCompany Model_Client = ViewBag.Inst;
+}
+
+<form class="form-horizontal row-border" action="" method="post" id="validate-form" data-parsley-validate enctype="multipart/form-data">
+    <div class="col-md-12">
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Name</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="CustomerName" value="@((Model_Client != null)?Model_Client.CustomerName : string.Empty)">
+                </div>
+            </div>   
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Response Time</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="source" name="CustomerRespTime" required>
+                        <option value="">Response Time</option>
+                        @for (int i = 1; i <= 48; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+
+
+                    </select>
+                </div>
+            </div>
+
+           
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Resolution Time UpCountry</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="source" name="CustomerRest1Time" required>
+                        <option value="">Resolution Time</option>
+                        @for (int i = 1; i <= 48; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                        
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Banner</label>
+                <div class="col-sm-8">
+                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                        <span class="btn btn-default btn-file">
+                            <span class="fileinput-new">Select file</span>
+                            <span class="fileinput-exists">Change</span>
+                            <input type="file" name="CustomerBanner">
+                            <input type="text" class="form-control hidden" name="CustomerBanner1" value="@((Model_Client != null) ? Model_Client.CustomerBanner : string.Empty)">
+                        </span>
+                        <span class="fileinput-filename"></span>
+                        <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Alias</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="CustomerAlias" value="@((Model_Client != null)?Model_Client.CustomerAlias : string.Empty)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Resolution Time</label>
+                <div class="col-sm-6">
+                    <select class="form-control" id="source" name="CustomerRestTime" required>
+                        <option value="">Select Resolution</option>
+                        @for (int i = 1; i <= 48; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+
+
+                    </select>
+                </div>
+            </div>
+           
+            <div class="form-group pb10">
+                <label class="col-sm-3 control-label">Status</label>
+                <div class="col-sm-6">
+                    <ul class="demo-btns mb-10">
+                        <li><input class="bootstrap-switch" name="CustomerStatus" Value="true" type="checkbox" data-on-text="<i class='fa fa-check'></i>" data-on-color="success" data-off-text="<i class='fa fa-times'></i>" data-off-color="danger" /></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="col-lg-9" style="margin-top:40px">
+                <div class="btn-toolbar">
+                    <button class="btn btn-primary pull-right" type="submit">Update</button>
+                 
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+</form>
+
+
+
+
+<script>
+// See Docs
+	window.ParsleyConfig = {
+    	  successClass: 'has-success'
+		, errorClass: 'has-error'
+		, errorElem: '<span></span>'
+		, errorsWrapper: '<span class="help-block"></span>'
+		, errorTemplate: "<div></div>"
+		, classHandler: function(el) {
+    		return el.$element.closest(".form-group");
+		}
+	};
+</script>
