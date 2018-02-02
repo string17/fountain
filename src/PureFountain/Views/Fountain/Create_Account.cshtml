@@ -89,16 +89,16 @@
                             </div>
                             <div data-field-span="1">
                                 <label>Mobile No.</label>
-                                <input type="number" name="PhoneNos1" required style="border:0px; width:100%;">
+                                <input type="number" data-parsley-type="digits" name="PhoneNos1" required style="border:0px; width:100%;">
                             </div>
                             <div data-field-span="1">
                                 <label>Mobile No. 2</label>
-                                <input type="number" name="PhoneNos2" required style="border:0px; width:100%;">
+                                <input type="number" data-parsley-type="digits" name="PhoneNos2" required style="border:0px; width:100%;">
                             </div>
                            
                             <div data-field-span="1">
                                 <label>Nationality</label>
-                                <select name="Nationality" required style="font-size:13px;border:0px;">
+                                <select name="Nationality" id="country" required style="font-size:13px;border:0px;">
                                     <option value="">Select</option>
                                     @foreach (var n in Model_Country)
                                     {
@@ -110,19 +110,19 @@
                         <div data-row-span="4">
                             <div data-field-span="1">
                                 <label>State Of Origin</label>
-                                <select name="Nationality" required style="font-size:13px;border:0px;">
+                                <select name="States" id="state1" required style="font-size:13px;border:0px;">
                                     <option value="">Select</option>
-                                    @foreach (var n in Model_Country)
+                                    @*@foreach (var n in Model_Country)
                                     {
                                         <option value="@n.Countrycode">@n.Countryname</option>
-                                    }
+                                    }*@
                                 </select>
                             </div>
                             <div data-field-span="1">
                                 <label>Local Government Area</label>
                                 <input type="text" name="LGA">
                             </div>
-                            <div data-field-span="2" data-field-error="Please enter a valid email address">
+                            <div data-field-span="2" data-parsley-type="email" data-field-error="Please enter a valid email address">
                                 <label>E-mail</label>
                                 <input type="email" name="UserEmail">
                             </div>
@@ -159,7 +159,7 @@
                                 </div>
                                 <div data-field-span="2">
                                     <label>Country</label>
-                                    <select name="Nationality" required style="font-size:13px;border:0px;">
+                                    <select name="Nationality" id="source" required style="font-size:13px;border:0px;">
                                         <option value="">Select</option>
                                         @foreach (var n in Model_Country)
                                         {
@@ -271,7 +271,7 @@
                                 </div>
                                 <div data-field-span="1">
                                     <label>Account Number</label>
-                                    <input type="text">
+                                    <input type="text" data-parsley-type="digits" >
                                 </div>
                             </div>
                         </fieldset>
@@ -297,7 +297,7 @@
                             </div>
                             <div data-field-span="1">
                                 <label>Phone Nunmber</label>
-                                <input type="number" required style="border:0px; width:100%;">
+                                <input type="number" data-parsley-type="digits" required style="border:0px; width:100%;">
                             </div>
                         </div>
                         <div data-row-span="4">
@@ -321,7 +321,7 @@
                             </div>
                             <div data-field-span="2">
                                 <label>Country</label>
-                                <select name="Nationality" required style="font-size:9px;border:0px;">
+                                <select name="Nationality" id="source" required style="font-size:9px;border:0px;">
                                     <option value="">Select Country</option>
                                     @foreach (var n in Model_Country)
                                     {
@@ -347,7 +347,7 @@
                             </div>*@
                             <div data-field-span="1">
                                 <label>Bank Verification Number</label>
-                                <input type="number" style="border:0px; width:100%;">
+                                <input type="number" data-parsley-type="digits" style="border:0px; width:100%;">
                             </div>
                         </div>
                         <div data-row-span="1">
@@ -377,6 +377,8 @@
                             </div>
                         </div>
                     </fieldset>
+
+
                     <div class="clearfix pt20">
                         <div class="pull-right">
                             <button class="btn-primary btn">Submit Form</button>
@@ -391,7 +393,7 @@
 
 
 
-            <script>
+            <script type="text/javascript">
                 // See Docs
                 window.ParsleyConfig = {
                     successClass: 'has-success'
@@ -403,4 +405,19 @@
                         return el.$element.closest(".form-group");
                     }
                 };
+
+                $("#country").change(function () {
+                    var sel = $(this).val();
+                    alert("Good");
+                    //var url = "/Fountain/GetStates?code=" + sel;
+                    //$.get(url, { country: sel }, function (data) {
+                    //    var out;
+                    //    $.each(data, function (i, e) {
+                    //        out += "<option value=\"" + e + "\">" + e + "</option>";
+                    //    })
+                    //    $("#state1").html(out);
+                    //})
+                });
+
+
             </script>

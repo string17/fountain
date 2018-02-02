@@ -390,9 +390,19 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "Account";
             AccountManagement account = new AccountManagement();
-            ViewBag.Country = account.getAllCountries();
+            ViewBag.Country = account.GetAllCountries();
             return View();
         }
+
+        public ActionResult GetStates(string code)
+        {
+            var codes = new AccountManagement().GetStatesById(code);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
 
         public ActionResult Logout()
         {

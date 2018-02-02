@@ -493,6 +493,12 @@ namespace FountainContext.Data.Models
 				set { _Idnos = value; Track("IDNos"); }
 			}
 			int? _Idnos;
+			[Column("IDIssueDate")] public DateTime? Idissuedate 
+			{ 
+				get { return _Idissuedate; }
+				set { _Idissuedate = value; Track("IDIssueDate"); }
+			}
+			DateTime? _Idissuedate;
 			[Column("IDExpiryDate")] public DateTime? Idexpirydate 
 			{ 
 				get { return _Idexpirydate; }
@@ -681,6 +687,46 @@ namespace FountainContext.Data.Models
 					sql.Where("CustomerId IN (@0)", Customerid);
 
                 return db.Query<PureCustomerInfo>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_States")]
+		[PrimaryKey("StateId")]
+		[ExplicitColumns]
+		public partial class PureState : FountainDb.Record<PureState>  
+		{
+			[Column("StateId")] public int Stateid 
+			{ 
+				get { return _Stateid; }
+				set { _Stateid = value; Track("StateId"); }
+			}
+			int _Stateid;
+			[Column("StateName")] public string Statename 
+			{ 
+				get { return _Statename; }
+				set { _Statename = value; Track("StateName"); }
+			}
+			string _Statename;
+			[Column("CountryCode")] public string Countrycode 
+			{ 
+				get { return _Countrycode; }
+				set { _Countrycode = value; Track("CountryCode"); }
+			}
+			string _Countrycode;
+		
+			public static IEnumerable<PureState> Query(Database db, string[] columns = null, int[] Stateid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_States (NOLOCK)");
+
+				if (Stateid != null)
+					sql.Where("StateId IN (@0)", Stateid);
+
+                return db.Query<PureState>(sql);
             }
 		}
 		
