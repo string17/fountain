@@ -20,7 +20,7 @@ namespace BLL.ApplicationLogic
 
         public List<PureState> GetStatesById(string CountryCode)
         {
-            string sql = "select * from Pure_State where CountryCode=@0";
+            string sql = "select * from Pure_States where CountryCode=@0";
             var actual = context.Fetch<PureState>(sql,CountryCode);
             return actual;
         }

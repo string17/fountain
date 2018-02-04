@@ -374,322 +374,6 @@ namespace FountainContext.Data.Models
             }
 		}
 		
-		[TableName("dbo.Pure_Customer_Info")]
-		[PrimaryKey("CustomerId")]
-		[ExplicitColumns]
-		public partial class PureCustomerInfo : FountainDb.Record<PureCustomerInfo>  
-		{
-			[Column("CustomerId")] public int Customerid 
-			{ 
-				get { return _Customerid; }
-				set { _Customerid = value; Track("CustomerId"); }
-			}
-			int _Customerid;
-			[Column("NameTitle")] public string Nametitle 
-			{ 
-				get { return _Nametitle; }
-				set { _Nametitle = value; Track("NameTitle"); }
-			}
-			string _Nametitle;
-			[Column("FirstName")] public string Firstname 
-			{ 
-				get { return _Firstname; }
-				set { _Firstname = value; Track("FirstName"); }
-			}
-			string _Firstname;
-			[Column("MiddleName")] public string Middlename 
-			{ 
-				get { return _Middlename; }
-				set { _Middlename = value; Track("MiddleName"); }
-			}
-			string _Middlename;
-			[Column("LastName")] public string Lastname 
-			{ 
-				get { return _Lastname; }
-				set { _Lastname = value; Track("LastName"); }
-			}
-			string _Lastname;
-			[Column("UserEmail")] public string Useremail 
-			{ 
-				get { return _Useremail; }
-				set { _Useremail = value; Track("UserEmail"); }
-			}
-			string _Useremail;
-			[Column("PhoneNos1")] public string Phonenos1 
-			{ 
-				get { return _Phonenos1; }
-				set { _Phonenos1 = value; Track("PhoneNos1"); }
-			}
-			string _Phonenos1;
-			[Column("PhoneNos2")] public string Phonenos2 
-			{ 
-				get { return _Phonenos2; }
-				set { _Phonenos2 = value; Track("PhoneNos2"); }
-			}
-			string _Phonenos2;
-			[Column("AccountImg")] public string Accountimg 
-			{ 
-				get { return _Accountimg; }
-				set { _Accountimg = value; Track("AccountImg"); }
-			}
-			string _Accountimg;
-			[Column("HomeAddress")] public string Homeaddress 
-			{ 
-				get { return _Homeaddress; }
-				set { _Homeaddress = value; Track("HomeAddress"); }
-			}
-			string _Homeaddress;
-			[Column("LGA")] public string Lga 
-			{ 
-				get { return _Lga; }
-				set { _Lga = value; Track("LGA"); }
-			}
-			string _Lga;
-			[Column("SOO")] public string Soo 
-			{ 
-				get { return _Soo; }
-				set { _Soo = value; Track("SOO"); }
-			}
-			string _Soo;
-			[Column("DOB")] public DateTime? Dob 
-			{ 
-				get { return _Dob; }
-				set { _Dob = value; Track("DOB"); }
-			}
-			DateTime? _Dob;
-	        [Column] public string Occupation 
-			{ 
-				get { return _Occupation; }
-				set { _Occupation = value; Track("Occupation"); }
-			}
-			string _Occupation;
-			[Column("EmployerName")] public string Employername 
-			{ 
-				get { return _Employername; }
-				set { _Employername = value; Track("EmployerName"); }
-			}
-			string _Employername;
-			[Column("EmployerPhoneNos")] public string Employerphonenos 
-			{ 
-				get { return _Employerphonenos; }
-				set { _Employerphonenos = value; Track("EmployerPhoneNos"); }
-			}
-			string _Employerphonenos;
-			[Column("EmployerContact")] public string Employercontact 
-			{ 
-				get { return _Employercontact; }
-				set { _Employercontact = value; Track("EmployerContact"); }
-			}
-			string _Employercontact;
-	        [Column] public string Nationality 
-			{ 
-				get { return _Nationality; }
-				set { _Nationality = value; Track("Nationality"); }
-			}
-			string _Nationality;
-			[Column("IDNos")] public int? Idnos 
-			{ 
-				get { return _Idnos; }
-				set { _Idnos = value; Track("IDNos"); }
-			}
-			int? _Idnos;
-			[Column("IDIssueDate")] public DateTime? Idissuedate 
-			{ 
-				get { return _Idissuedate; }
-				set { _Idissuedate = value; Track("IDIssueDate"); }
-			}
-			DateTime? _Idissuedate;
-			[Column("IDExpiryDate")] public DateTime? Idexpirydate 
-			{ 
-				get { return _Idexpirydate; }
-				set { _Idexpirydate = value; Track("IDExpiryDate"); }
-			}
-			DateTime? _Idexpirydate;
-			[Column("UserBVN")] public string Userbvn 
-			{ 
-				get { return _Userbvn; }
-				set { _Userbvn = value; Track("UserBVN"); }
-			}
-			string _Userbvn;
-			[Column("AccountId")] public int? Accountid 
-			{ 
-				get { return _Accountid; }
-				set { _Accountid = value; Track("AccountId"); }
-			}
-			int? _Accountid;
-			[Column("AccountNos")] public string Accountnos 
-			{ 
-				get { return _Accountnos; }
-				set { _Accountnos = value; Track("AccountNos"); }
-			}
-			string _Accountnos;
-			[Column("OtherBankId1")] public string Otherbankid1 
-			{ 
-				get { return _Otherbankid1; }
-				set { _Otherbankid1 = value; Track("OtherBankId1"); }
-			}
-			string _Otherbankid1;
-			[Column("OtherAccountNos1")] public string Otheraccountnos1 
-			{ 
-				get { return _Otheraccountnos1; }
-				set { _Otheraccountnos1 = value; Track("OtherAccountNos1"); }
-			}
-			string _Otheraccountnos1;
-			[Column("OtherBankId2")] public string Otherbankid2 
-			{ 
-				get { return _Otherbankid2; }
-				set { _Otherbankid2 = value; Track("OtherBankId2"); }
-			}
-			string _Otherbankid2;
-			[Column("OtherAccountNos2")] public string Otheraccountnos2 
-			{ 
-				get { return _Otheraccountnos2; }
-				set { _Otheraccountnos2 = value; Track("OtherAccountNos2"); }
-			}
-			string _Otheraccountnos2;
-			[Column("StreetName")] public string Streetname 
-			{ 
-				get { return _Streetname; }
-				set { _Streetname = value; Track("StreetName"); }
-			}
-			string _Streetname;
-			[Column("StreetCity")] public string Streetcity 
-			{ 
-				get { return _Streetcity; }
-				set { _Streetcity = value; Track("StreetCity"); }
-			}
-			string _Streetcity;
-			[Column("StreetState")] public string Streetstate 
-			{ 
-				get { return _Streetstate; }
-				set { _Streetstate = value; Track("StreetState"); }
-			}
-			string _Streetstate;
-			[Column("StreetCountry")] public string Streetcountry 
-			{ 
-				get { return _Streetcountry; }
-				set { _Streetcountry = value; Track("StreetCountry"); }
-			}
-			string _Streetcountry;
-	        [Column] public string Signature 
-			{ 
-				get { return _Signature; }
-				set { _Signature = value; Track("Signature"); }
-			}
-			string _Signature;
-			[Column("UserName")] public string Username 
-			{ 
-				get { return _Username; }
-				set { _Username = value; Track("UserName"); }
-			}
-			string _Username;
-			[Column("RefFName")] public string Reffname 
-			{ 
-				get { return _Reffname; }
-				set { _Reffname = value; Track("RefFName"); }
-			}
-			string _Reffname;
-			[Column("RefMName")] public string Refmname 
-			{ 
-				get { return _Refmname; }
-				set { _Refmname = value; Track("RefMName"); }
-			}
-			string _Refmname;
-			[Column("RefLName")] public string Reflname 
-			{ 
-				get { return _Reflname; }
-				set { _Reflname = value; Track("RefLName"); }
-			}
-			string _Reflname;
-			[Column("RefOccupation")] public string Refoccupation 
-			{ 
-				get { return _Refoccupation; }
-				set { _Refoccupation = value; Track("RefOccupation"); }
-			}
-			string _Refoccupation;
-			[Column("RefPhoneNos")] public string Refphonenos 
-			{ 
-				get { return _Refphonenos; }
-				set { _Refphonenos = value; Track("RefPhoneNos"); }
-			}
-			string _Refphonenos;
-			[Column("RefStreetName")] public string Refstreetname 
-			{ 
-				get { return _Refstreetname; }
-				set { _Refstreetname = value; Track("RefStreetName"); }
-			}
-			string _Refstreetname;
-			[Column("RefStreetCity")] public string Refstreetcity 
-			{ 
-				get { return _Refstreetcity; }
-				set { _Refstreetcity = value; Track("RefStreetCity"); }
-			}
-			string _Refstreetcity;
-			[Column("RefStreetState")] public string Refstreetstate 
-			{ 
-				get { return _Refstreetstate; }
-				set { _Refstreetstate = value; Track("RefStreetState"); }
-			}
-			string _Refstreetstate;
-			[Column("RefStreetCountry")] public string Refstreetcountry 
-			{ 
-				get { return _Refstreetcountry; }
-				set { _Refstreetcountry = value; Track("RefStreetCountry"); }
-			}
-			string _Refstreetcountry;
-			[Column("ReasonForAccount")] public string Reasonforaccount 
-			{ 
-				get { return _Reasonforaccount; }
-				set { _Reasonforaccount = value; Track("ReasonForAccount"); }
-			}
-			string _Reasonforaccount;
-			[Column("AccountStatus")] public bool? Accountstatus 
-			{ 
-				get { return _Accountstatus; }
-				set { _Accountstatus = value; Track("AccountStatus"); }
-			}
-			bool? _Accountstatus;
-			[Column("CreatedBy")] public string Createdby 
-			{ 
-				get { return _Createdby; }
-				set { _Createdby = value; Track("CreatedBy"); }
-			}
-			string _Createdby;
-			[Column("CreatedOn")] public DateTime? Createdon 
-			{ 
-				get { return _Createdon; }
-				set { _Createdon = value; Track("CreatedOn"); }
-			}
-			DateTime? _Createdon;
-			[Column("ModifiedBy")] public string Modifiedby 
-			{ 
-				get { return _Modifiedby; }
-				set { _Modifiedby = value; Track("ModifiedBy"); }
-			}
-			string _Modifiedby;
-			[Column("ModifiedOn")] public DateTime? Modifiedon 
-			{ 
-				get { return _Modifiedon; }
-				set { _Modifiedon = value; Track("ModifiedOn"); }
-			}
-			DateTime? _Modifiedon;
-		
-			public static IEnumerable<PureCustomerInfo> Query(Database db, string[] columns = null, int[] Customerid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Customer_Info (NOLOCK)");
-
-				if (Customerid != null)
-					sql.Where("CustomerId IN (@0)", Customerid);
-
-                return db.Query<PureCustomerInfo>(sql);
-            }
-		}
-		
 		[TableName("dbo.Pure_States")]
 		[PrimaryKey("StateId")]
 		[ExplicitColumns]
@@ -819,6 +503,108 @@ namespace FountainContext.Data.Models
 					sql.Where("TillId IN (@0)", Tillid);
 
                 return db.Query<PureTillAccount>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_UserTitle")]
+		[PrimaryKey("TitleId")]
+		[ExplicitColumns]
+		public partial class PureUserTitle : FountainDb.Record<PureUserTitle>  
+		{
+			[Column("TitleId")] public int Titleid 
+			{ 
+				get { return _Titleid; }
+				set { _Titleid = value; Track("TitleId"); }
+			}
+			int _Titleid;
+			[Column("TitleName")] public string Titlename 
+			{ 
+				get { return _Titlename; }
+				set { _Titlename = value; Track("TitleName"); }
+			}
+			string _Titlename;
+		
+			public static IEnumerable<PureUserTitle> Query(Database db, string[] columns = null, int[] Titleid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_UserTitle (NOLOCK)");
+
+				if (Titleid != null)
+					sql.Where("TitleId IN (@0)", Titleid);
+
+                return db.Query<PureUserTitle>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_UserIdentification")]
+		[PrimaryKey("IdNo")]
+		[ExplicitColumns]
+		public partial class PureUserIdentification : FountainDb.Record<PureUserIdentification>  
+		{
+			[Column("IdNo")] public int Idno 
+			{ 
+				get { return _Idno; }
+				set { _Idno = value; Track("IdNo"); }
+			}
+			int _Idno;
+			[Column("IdName")] public string Idname 
+			{ 
+				get { return _Idname; }
+				set { _Idname = value; Track("IdName"); }
+			}
+			string _Idname;
+		
+			public static IEnumerable<PureUserIdentification> Query(Database db, string[] columns = null, int[] Idno = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_UserIdentification (NOLOCK)");
+
+				if (Idno != null)
+					sql.Where("IdNo IN (@0)", Idno);
+
+                return db.Query<PureUserIdentification>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Occupation")]
+		[PrimaryKey("OccupationId")]
+		[ExplicitColumns]
+		public partial class PureOccupation : FountainDb.Record<PureOccupation>  
+		{
+			[Column("OccupationId")] public int Occupationid 
+			{ 
+				get { return _Occupationid; }
+				set { _Occupationid = value; Track("OccupationId"); }
+			}
+			int _Occupationid;
+			[Column("OccupationName")] public string Occupationname 
+			{ 
+				get { return _Occupationname; }
+				set { _Occupationname = value; Track("OccupationName"); }
+			}
+			string _Occupationname;
+		
+			public static IEnumerable<PureOccupation> Query(Database db, string[] columns = null, int[] Occupationid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Occupation (NOLOCK)");
+
+				if (Occupationid != null)
+					sql.Where("OccupationId IN (@0)", Occupationid);
+
+                return db.Query<PureOccupation>(sql);
             }
 		}
 		
@@ -961,6 +747,440 @@ namespace FountainContext.Data.Models
 					sql.Where("LoanId IN (@0)", Loanid);
 
                 return db.Query<PureLoan>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Customer_Info")]
+		[PrimaryKey("CustomerId")]
+		[ExplicitColumns]
+		public partial class PureCustomerInfo : FountainDb.Record<PureCustomerInfo>  
+		{
+			[Column("CustomerId")] public int Customerid 
+			{ 
+				get { return _Customerid; }
+				set { _Customerid = value; Track("CustomerId"); }
+			}
+			int _Customerid;
+			[Column("NameTitle")] public int? Nametitle 
+			{ 
+				get { return _Nametitle; }
+				set { _Nametitle = value; Track("NameTitle"); }
+			}
+			int? _Nametitle;
+			[Column("FirstName")] public string Firstname 
+			{ 
+				get { return _Firstname; }
+				set { _Firstname = value; Track("FirstName"); }
+			}
+			string _Firstname;
+			[Column("MiddleName")] public string Middlename 
+			{ 
+				get { return _Middlename; }
+				set { _Middlename = value; Track("MiddleName"); }
+			}
+			string _Middlename;
+			[Column("LastName")] public string Lastname 
+			{ 
+				get { return _Lastname; }
+				set { _Lastname = value; Track("LastName"); }
+			}
+			string _Lastname;
+			[Column("UserEmail")] public string Useremail 
+			{ 
+				get { return _Useremail; }
+				set { _Useremail = value; Track("UserEmail"); }
+			}
+			string _Useremail;
+			[Column("PhoneNos1")] public string Phonenos1 
+			{ 
+				get { return _Phonenos1; }
+				set { _Phonenos1 = value; Track("PhoneNos1"); }
+			}
+			string _Phonenos1;
+			[Column("PhoneNos2")] public string Phonenos2 
+			{ 
+				get { return _Phonenos2; }
+				set { _Phonenos2 = value; Track("PhoneNos2"); }
+			}
+			string _Phonenos2;
+			[Column("AccountImg")] public string Accountimg 
+			{ 
+				get { return _Accountimg; }
+				set { _Accountimg = value; Track("AccountImg"); }
+			}
+			string _Accountimg;
+			[Column("HomeAddress")] public string Homeaddress 
+			{ 
+				get { return _Homeaddress; }
+				set { _Homeaddress = value; Track("HomeAddress"); }
+			}
+			string _Homeaddress;
+			[Column("LGA")] public string Lga 
+			{ 
+				get { return _Lga; }
+				set { _Lga = value; Track("LGA"); }
+			}
+			string _Lga;
+			[Column("StateOrigin")] public string Stateorigin 
+			{ 
+				get { return _Stateorigin; }
+				set { _Stateorigin = value; Track("StateOrigin"); }
+			}
+			string _Stateorigin;
+			[Column("DOB")] public DateTime? Dob 
+			{ 
+				get { return _Dob; }
+				set { _Dob = value; Track("DOB"); }
+			}
+			DateTime? _Dob;
+			[Column("MaritalStatus")] public string Maritalstatus 
+			{ 
+				get { return _Maritalstatus; }
+				set { _Maritalstatus = value; Track("MaritalStatus"); }
+			}
+			string _Maritalstatus;
+			[Column("HomeCity")] public string Homecity 
+			{ 
+				get { return _Homecity; }
+				set { _Homecity = value; Track("HomeCity"); }
+			}
+			string _Homecity;
+			[Column("HomeLGA")] public string Homelga 
+			{ 
+				get { return _Homelga; }
+				set { _Homelga = value; Track("HomeLGA"); }
+			}
+			string _Homelga;
+			[Column("HomeCountry")] public int? Homecountry 
+			{ 
+				get { return _Homecountry; }
+				set { _Homecountry = value; Track("HomeCountry"); }
+			}
+			int? _Homecountry;
+			[Column("OccupationId")] public int? Occupationid 
+			{ 
+				get { return _Occupationid; }
+				set { _Occupationid = value; Track("OccupationId"); }
+			}
+			int? _Occupationid;
+			[Column("JobTitle")] public string Jobtitle 
+			{ 
+				get { return _Jobtitle; }
+				set { _Jobtitle = value; Track("JobTitle"); }
+			}
+			string _Jobtitle;
+	        [Column] public string Department 
+			{ 
+				get { return _Department; }
+				set { _Department = value; Track("Department"); }
+			}
+			string _Department;
+			[Column("BusinessType")] public string Businesstype 
+			{ 
+				get { return _Businesstype; }
+				set { _Businesstype = value; Track("BusinessType"); }
+			}
+			string _Businesstype;
+			[Column("IncomeRange")] public string Incomerange 
+			{ 
+				get { return _Incomerange; }
+				set { _Incomerange = value; Track("IncomeRange"); }
+			}
+			string _Incomerange;
+	        [Column] public int? Nationality 
+			{ 
+				get { return _Nationality; }
+				set { _Nationality = value; Track("Nationality"); }
+			}
+			int? _Nationality;
+			[Column("IDNos")] public int? Idnos 
+			{ 
+				get { return _Idnos; }
+				set { _Idnos = value; Track("IDNos"); }
+			}
+			int? _Idnos;
+			[Column("IDIssueDate")] public DateTime? Idissuedate 
+			{ 
+				get { return _Idissuedate; }
+				set { _Idissuedate = value; Track("IDIssueDate"); }
+			}
+			DateTime? _Idissuedate;
+			[Column("IDExpiryDate")] public DateTime? Idexpirydate 
+			{ 
+				get { return _Idexpirydate; }
+				set { _Idexpirydate = value; Track("IDExpiryDate"); }
+			}
+			DateTime? _Idexpirydate;
+			[Column("UserBVN")] public string Userbvn 
+			{ 
+				get { return _Userbvn; }
+				set { _Userbvn = value; Track("UserBVN"); }
+			}
+			string _Userbvn;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("OtherBankId")] public int? Otherbankid 
+			{ 
+				get { return _Otherbankid; }
+				set { _Otherbankid = value; Track("OtherBankId"); }
+			}
+			int? _Otherbankid;
+			[Column("OtherAccountNos")] public string Otheraccountnos 
+			{ 
+				get { return _Otheraccountnos; }
+				set { _Otheraccountnos = value; Track("OtherAccountNos"); }
+			}
+			string _Otheraccountnos;
+			[Column("NextOfKin")] public string Nextofkin 
+			{ 
+				get { return _Nextofkin; }
+				set { _Nextofkin = value; Track("NextOfKin"); }
+			}
+			string _Nextofkin;
+			[Column("KNumber")] public string Knumber 
+			{ 
+				get { return _Knumber; }
+				set { _Knumber = value; Track("KNumber"); }
+			}
+			string _Knumber;
+			[Column("KRelationship")] public string Krelationship 
+			{ 
+				get { return _Krelationship; }
+				set { _Krelationship = value; Track("KRelationship"); }
+			}
+			string _Krelationship;
+			[Column("KLGA")] public string Klga 
+			{ 
+				get { return _Klga; }
+				set { _Klga = value; Track("KLGA"); }
+			}
+			string _Klga;
+			[Column("KCity")] public string Kcity 
+			{ 
+				get { return _Kcity; }
+				set { _Kcity = value; Track("KCity"); }
+			}
+			string _Kcity;
+			[Column("KCountry")] public string Kcountry 
+			{ 
+				get { return _Kcountry; }
+				set { _Kcountry = value; Track("KCountry"); }
+			}
+			string _Kcountry;
+	        [Column] public string Signature 
+			{ 
+				get { return _Signature; }
+				set { _Signature = value; Track("Signature"); }
+			}
+			string _Signature;
+			[Column("UserName")] public string Username 
+			{ 
+				get { return _Username; }
+				set { _Username = value; Track("UserName"); }
+			}
+			string _Username;
+			[Column("RefName")] public string Refname 
+			{ 
+				get { return _Refname; }
+				set { _Refname = value; Track("RefName"); }
+			}
+			string _Refname;
+			[Column("ReasonForAccount")] public string Reasonforaccount 
+			{ 
+				get { return _Reasonforaccount; }
+				set { _Reasonforaccount = value; Track("ReasonForAccount"); }
+			}
+			string _Reasonforaccount;
+			[Column("AccountStatus")] public bool? Accountstatus 
+			{ 
+				get { return _Accountstatus; }
+				set { _Accountstatus = value; Track("AccountStatus"); }
+			}
+			bool? _Accountstatus;
+			[Column("CreatedBy")] public string Createdby 
+			{ 
+				get { return _Createdby; }
+				set { _Createdby = value; Track("CreatedBy"); }
+			}
+			string _Createdby;
+			[Column("CreatedOn")] public DateTime? Createdon 
+			{ 
+				get { return _Createdon; }
+				set { _Createdon = value; Track("CreatedOn"); }
+			}
+			DateTime? _Createdon;
+			[Column("ModifiedBy")] public string Modifiedby 
+			{ 
+				get { return _Modifiedby; }
+				set { _Modifiedby = value; Track("ModifiedBy"); }
+			}
+			string _Modifiedby;
+			[Column("ModifiedOn")] public DateTime? Modifiedon 
+			{ 
+				get { return _Modifiedon; }
+				set { _Modifiedon = value; Track("ModifiedOn"); }
+			}
+			DateTime? _Modifiedon;
+		
+			public static IEnumerable<PureCustomerInfo> Query(Database db, string[] columns = null, int[] Customerid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Customer_Info (NOLOCK)");
+
+				if (Customerid != null)
+					sql.Where("CustomerId IN (@0)", Customerid);
+
+                return db.Query<PureCustomerInfo>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_FlexRole")]
+		[ExplicitColumns]
+		public partial class PureFlexRole : FountainDb.Record<PureFlexRole>  
+		{
+			[Column("FlexId")] public int? Flexid 
+			{ 
+				get { return _Flexid; }
+				set { _Flexid = value; Track("FlexId"); }
+			}
+			int? _Flexid;
+			[Column("FlexName")] public string Flexname 
+			{ 
+				get { return _Flexname; }
+				set { _Flexname = value; Track("FlexName"); }
+			}
+			string _Flexname;
+			[Column("FlexDesc")] public string Flexdesc 
+			{ 
+				get { return _Flexdesc; }
+				set { _Flexdesc = value; Track("FlexDesc"); }
+			}
+			string _Flexdesc;
+		}
+		
+		[TableName("dbo.Pure_User")]
+		[PrimaryKey("UserId")]
+		[ExplicitColumns]
+		public partial class PureUser : FountainDb.Record<PureUser>  
+		{
+			[Column("UserId")] public int Userid 
+			{ 
+				get { return _Userid; }
+				set { _Userid = value; Track("UserId"); }
+			}
+			int _Userid;
+			[Column("FirstName")] public string Firstname 
+			{ 
+				get { return _Firstname; }
+				set { _Firstname = value; Track("FirstName"); }
+			}
+			string _Firstname;
+			[Column("MiddleName")] public string Middlename 
+			{ 
+				get { return _Middlename; }
+				set { _Middlename = value; Track("MiddleName"); }
+			}
+			string _Middlename;
+			[Column("LastName")] public string Lastname 
+			{ 
+				get { return _Lastname; }
+				set { _Lastname = value; Track("LastName"); }
+			}
+			string _Lastname;
+			[Column("UserName")] public string Username 
+			{ 
+				get { return _Username; }
+				set { _Username = value; Track("UserName"); }
+			}
+			string _Username;
+			[Column("UserEmail")] public string Useremail 
+			{ 
+				get { return _Useremail; }
+				set { _Useremail = value; Track("UserEmail"); }
+			}
+			string _Useremail;
+			[Column("UserPWD")] public string Userpwd 
+			{ 
+				get { return _Userpwd; }
+				set { _Userpwd = value; Track("UserPWD"); }
+			}
+			string _Userpwd;
+			[Column("PhoneNos")] public string Phonenos 
+			{ 
+				get { return _Phonenos; }
+				set { _Phonenos = value; Track("PhoneNos"); }
+			}
+			string _Phonenos;
+			[Column("RoleId")] public int? Roleid 
+			{ 
+				get { return _Roleid; }
+				set { _Roleid = value; Track("RoleId"); }
+			}
+			int? _Roleid;
+			[Column("FlexId")] public int? Flexid 
+			{ 
+				get { return _Flexid; }
+				set { _Flexid = value; Track("FlexId"); }
+			}
+			int? _Flexid;
+			[Column("UserImg")] public string Userimg 
+			{ 
+				get { return _Userimg; }
+				set { _Userimg = value; Track("UserImg"); }
+			}
+			string _Userimg;
+			[Column("UserStatus")] public bool? Userstatus 
+			{ 
+				get { return _Userstatus; }
+				set { _Userstatus = value; Track("UserStatus"); }
+			}
+			bool? _Userstatus;
+			[Column("CreatedBy")] public string Createdby 
+			{ 
+				get { return _Createdby; }
+				set { _Createdby = value; Track("CreatedBy"); }
+			}
+			string _Createdby;
+			[Column("CreatedOn")] public DateTime? Createdon 
+			{ 
+				get { return _Createdon; }
+				set { _Createdon = value; Track("CreatedOn"); }
+			}
+			DateTime? _Createdon;
+			[Column("ModifiedBy")] public string Modifiedby 
+			{ 
+				get { return _Modifiedby; }
+				set { _Modifiedby = value; Track("ModifiedBy"); }
+			}
+			string _Modifiedby;
+			[Column("ModifiedOn")] public DateTime? Modifiedon 
+			{ 
+				get { return _Modifiedon; }
+				set { _Modifiedon = value; Track("ModifiedOn"); }
+			}
+			DateTime? _Modifiedon;
+		
+			public static IEnumerable<PureUser> Query(Database db, string[] columns = null, int[] Userid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_User (NOLOCK)");
+
+				if (Userid != null)
+					sql.Where("UserId IN (@0)", Userid);
+
+                return db.Query<PureUser>(sql);
             }
 		}
 		
@@ -1551,118 +1771,6 @@ namespace FountainContext.Data.Models
 					sql.Where("RepayId IN (@0)", Repayid);
 
                 return db.Query<PureRepayment>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_User")]
-		[PrimaryKey("UserId")]
-		[ExplicitColumns]
-		public partial class PureUser : FountainDb.Record<PureUser>  
-		{
-			[Column("UserId")] public int Userid 
-			{ 
-				get { return _Userid; }
-				set { _Userid = value; Track("UserId"); }
-			}
-			int _Userid;
-			[Column("FirstName")] public string Firstname 
-			{ 
-				get { return _Firstname; }
-				set { _Firstname = value; Track("FirstName"); }
-			}
-			string _Firstname;
-			[Column("MiddleName")] public string Middlename 
-			{ 
-				get { return _Middlename; }
-				set { _Middlename = value; Track("MiddleName"); }
-			}
-			string _Middlename;
-			[Column("LastName")] public string Lastname 
-			{ 
-				get { return _Lastname; }
-				set { _Lastname = value; Track("LastName"); }
-			}
-			string _Lastname;
-			[Column("UserName")] public string Username 
-			{ 
-				get { return _Username; }
-				set { _Username = value; Track("UserName"); }
-			}
-			string _Username;
-			[Column("UserEmail")] public string Useremail 
-			{ 
-				get { return _Useremail; }
-				set { _Useremail = value; Track("UserEmail"); }
-			}
-			string _Useremail;
-			[Column("UserPWD")] public string Userpwd 
-			{ 
-				get { return _Userpwd; }
-				set { _Userpwd = value; Track("UserPWD"); }
-			}
-			string _Userpwd;
-			[Column("PhoneNos")] public string Phonenos 
-			{ 
-				get { return _Phonenos; }
-				set { _Phonenos = value; Track("PhoneNos"); }
-			}
-			string _Phonenos;
-			[Column("RoleId")] public int? Roleid 
-			{ 
-				get { return _Roleid; }
-				set { _Roleid = value; Track("RoleId"); }
-			}
-			int? _Roleid;
-			[Column("UserImg")] public string Userimg 
-			{ 
-				get { return _Userimg; }
-				set { _Userimg = value; Track("UserImg"); }
-			}
-			string _Userimg;
-			[Column("UserStatus")] public bool? Userstatus 
-			{ 
-				get { return _Userstatus; }
-				set { _Userstatus = value; Track("UserStatus"); }
-			}
-			bool? _Userstatus;
-			[Column("CreatedBy")] public string Createdby 
-			{ 
-				get { return _Createdby; }
-				set { _Createdby = value; Track("CreatedBy"); }
-			}
-			string _Createdby;
-			[Column("CreatedOn")] public DateTime? Createdon 
-			{ 
-				get { return _Createdon; }
-				set { _Createdon = value; Track("CreatedOn"); }
-			}
-			DateTime? _Createdon;
-			[Column("ModifiedBy")] public string Modifiedby 
-			{ 
-				get { return _Modifiedby; }
-				set { _Modifiedby = value; Track("ModifiedBy"); }
-			}
-			string _Modifiedby;
-			[Column("ModifiedOn")] public DateTime? Modifiedon 
-			{ 
-				get { return _Modifiedon; }
-				set { _Modifiedon = value; Track("ModifiedOn"); }
-			}
-			DateTime? _Modifiedon;
-		
-			public static IEnumerable<PureUser> Query(Database db, string[] columns = null, int[] Userid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_User (NOLOCK)");
-
-				if (Userid != null)
-					sql.Where("UserId IN (@0)", Userid);
-
-                return db.Query<PureUser>(sql);
             }
 		}
 }

@@ -19,6 +19,8 @@ namespace DataAccessLayer.CustomObjects
         public string UserImg { get; set; }
         public int? RoleId { get; set; }
         public string RoleName { get; set; }
+        public int FlexId { get; set; }
+        public string FlexName { get; set; }
         public bool? UserStatus { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }

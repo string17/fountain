@@ -18,6 +18,7 @@ namespace DAL.CustomObjects
         public HttpPostedFileBase UserImg { get; set; }
         public int CustomerId { get; set; }
         public int? RoleId { get; set; }
+        public int FlexId { get; set; }
         public bool UserStatus { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }

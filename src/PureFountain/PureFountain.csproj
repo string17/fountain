@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -25,6 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -268,6 +270,7 @@
     <Content Include="assets\img\sidebar-dots.png" />
     <Content Include="assets\js\application.js" />
     <Content Include="assets\js\bootstrap.min.js" />
+    <Content Include="assets\js\custom.js" />
     <Content Include="assets\js\dist\jquery.table2excel.js" />
     <Content Include="assets\js\dist\jquery.table2excel.min.js" />
     <Content Include="assets\js\enquire.min.js" />
@@ -580,17 +583,17 @@
     <Content Include="Views\Fountain\Call.cshtml" />
     <Content Include="Views\Fountain\Call_History.cshtml" />
     <Content Include="Views\Fountain\Close_Incident.cshtml" />
-    <Content Include="Views\Fountain\Create_Institution.cshtml" />
+    <Content Include="Views\Fountain\CreateLoan.cshtml" />
     <Content Include="Views\Fountain\Create_Menu.cshtml" />
     <Content Include="Views\Fountain\Create_Menuitem.cshtml" />
     <Content Include="Views\Fountain\Create_Role.cshtml" />
-    <Content Include="Views\Fountain\Create_Account.cshtml" />
-    <Content Include="Views\Fountain\Create_User.cshtml" />
+    <Content Include="Views\Fountain\CreateAccount.cshtml" />
+    <Content Include="Views\Fountain\CreateUser.cshtml" />
     <Content Include="Views\Fountain\Dashboard.cshtml" />
     <Content Include="Views\Fountain\Edit_Institution.cshtml" />
     <Content Include="Views\Fountain\Edit_Menu.cshtml" />
     <Content Include="Views\Fountain\Edit_Menuitem.cshtml" />
-    <Content Include="Views\Fountain\Edit_Profile.cshtml" />
+    <Content Include="Views\Fountain\EditProfile.cshtml" />
     <Content Include="Views\Fountain\Edit_Profile1.cshtml" />
     <Content Include="Views\Fountain\Edit_Role.cshtml" />
     <Content Include="Views\Fountain\Edit_Terminal.cshtml" />
@@ -618,14 +621,14 @@
     <Content Include="Views\Fountain\View_Menuitem.cshtml" />
     <Content Include="Views\Fountain\View_Report - Copy.cshtml" />
     <Content Include="Views\Fountain\View_Report.cshtml" />
-    <Content Include="Views\Fountain\View_Role.cshtml" />
+    <Content Include="Views\Fountain\ViewRole.cshtml" />
     <Content Include="Views\Fountain\View_Terminal - Copy %282%29.cshtml" />
     <Content Include="Views\Fountain\View_Terminal - Copy %283%29.cshtml" />
     <Content Include="Views\Fountain\View_Terminal - Copy %284%29.cshtml" />
     <Content Include="Views\Fountain\View_Terminal - Copy %285%29.cshtml" />
     <Content Include="Views\Fountain\View_Terminal - Copy.cshtml" />
     <Content Include="Views\Fountain\View_Terminal.cshtml" />
-    <Content Include="Views\Fountain\View_User.cshtml" />
+    <Content Include="Views\Fountain\ViewUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -650,11 +653,15 @@
       <Name>DAL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">

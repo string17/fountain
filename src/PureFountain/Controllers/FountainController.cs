@@ -19,7 +19,7 @@ namespace PureFountain.Controllers
             return View();
         }
 
-        public ActionResult Create_User()
+        public ActionResult CreateUser()
         {
             ViewBag.Message = "New User";
             RoleManagement rolemgt = new RoleManagement();
@@ -30,7 +30,7 @@ namespace PureFountain.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create_User(UserViewModel Account)
+        public ActionResult CreateUser(UserViewModel Account)
         {
             if (!ModelState.IsValid)
             {
@@ -108,7 +108,7 @@ namespace PureFountain.Controllers
         }
 
 
-        public ActionResult View_User()
+        public ActionResult ViewUser()
         {
             ViewBag.Message = "Users";
             TempData["SuccessMsg"] = TempData["SuccessMsg"];
@@ -119,7 +119,7 @@ namespace PureFountain.Controllers
 
         [HttpGet]
         [Route("view_user/{Id}")]
-        public ActionResult View_User(UserView User)
+        public ActionResult ViewUser(UserView User)
         {
             if (!ModelState.IsValid)
             {
@@ -133,7 +133,7 @@ namespace PureFountain.Controllers
 
         [HttpGet]
         [Route("Edit_User/{Id}")]
-        public ActionResult Edit_User(int? Id)
+        public ActionResult EditUser(int? Id)
         {
             ViewBag.Message = "Edit User";
             RoleManagement rolemgt = new RoleManagement();
@@ -146,7 +146,7 @@ namespace PureFountain.Controllers
         }
 
         [Route("Edit_User/{Id}")]
-        public ActionResult Edit_User(UserViewModel Account, int? Id, FormCollection c)
+        public ActionResult EditUser(UserViewModel Account, int? Id, FormCollection c)
         {
             if (!ModelState.IsValid)
             {
@@ -211,7 +211,7 @@ namespace PureFountain.Controllers
 
         }
 
-        public ActionResult Edit_Profile()
+        public ActionResult EditProfile()
         {
             ViewBag.Message = "Edit Profile";
             RoleManagement rolemgt = new RoleManagement();
@@ -223,7 +223,7 @@ namespace PureFountain.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit_Profile(UserViewModel account, FormCollection c)
+        public ActionResult EditProfile(UserViewModel account, FormCollection c)
         {
             if (!ModelState.IsValid)
             {
@@ -274,7 +274,7 @@ namespace PureFountain.Controllers
 
 
         [HttpGet]
-        public ActionResult View_Role()
+        public ActionResult ViewRole()
         {
             ViewBag.Message = "Role";
             RoleManagement rolemgt = new RoleManagement();
@@ -282,7 +282,7 @@ namespace PureFountain.Controllers
             return View();
         }
 
-        public ActionResult View_Role(PureRole Account)
+        public ActionResult ViewRole(PureRole Account)
         {
             if (!ModelState.IsValid)
             {
@@ -340,8 +340,8 @@ namespace PureFountain.Controllers
         }
 
         [HttpGet]
-        [Route("Edit_Role/{Id}")]
-        public ActionResult Edit_Role(int? Id)
+        [Route("EditRole/{Id}")]
+        public ActionResult EditRole(int? Id)
         {
             ViewBag.Message = "Role";
             int RoleId = Id.GetValueOrDefault();
@@ -351,8 +351,8 @@ namespace PureFountain.Controllers
             return View();
         }
 
-        [Route("Edit_Role/{Id}")]
-        public ActionResult Edit_Role(RoleViewModel extRole, int Id)
+        [Route("EditRole/{Id}")]
+        public ActionResult EditRole(RoleViewModel extRole, int Id)
         {
             int RoleId = Id;
             RoleManagement existingRole = new RoleManagement();
@@ -386,7 +386,7 @@ namespace PureFountain.Controllers
         }
 
 
-        public ActionResult Create_Account()
+        public ActionResult CreateAccount()
         {
             ViewBag.Message = "Account";
             AccountManagement account = new AccountManagement();
@@ -400,7 +400,16 @@ namespace PureFountain.Controllers
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetUserDetails(int UserId)
+        {
+            var codes = new UserManagement().getUserById(UserId);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
 
+        public ActionResult CreateLoan()
+        {
+            return View();
+        }
 
 
 

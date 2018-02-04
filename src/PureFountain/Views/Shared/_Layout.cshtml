@@ -66,8 +66,24 @@
 
     <link href="~/assets/plugins/gridforms/gridforms/gridforms.css" type="text/css" rel="stylesheet"> 									<!-- Gridforms -->
 
+
+    <style>
+        .w3-modal {
+            z-index: 1000;
+            display: none;
+            padding-top: 100px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+    </style>
 </head>
-<body class="infobar-offcanvas">
+<body class="infobar-offcanvas" onclick="pageLoader()">
 
     <div id="headerbar">
         <div class="container-fluid">
@@ -385,7 +401,7 @@
                     </div>
                 </div>
             </div>
-            <div class="static-content-wrapper">
+            <div class="static-content-wrapper" id="workdone">
                 <div class="static-content">
                     <div class="page-content">
 
@@ -429,6 +445,39 @@
                             <button class="pull-right btn btn-link btn-xs hidden-print" id="back-to-top"><i class="fa fa-arrow-up"></i></button>
                         </div>
                     </footer>
+
+
+                    <div id="message_dialog" class="w3-modal">
+                        <div class="w3-modal-content w3-round-xxlarge centermiddle" style="minwidth: 200px; max-width: 250px; margin-top:150px;">
+                            <div class="w3-container">
+                                <div>&nbsp;</div>
+                                <p id="message_pram" style="text-align: center; font-weight: bold" class="progress_text">Processing Please Wait.</p>
+                                <div align="center">
+                                    <div class="progress">
+                                        <div class="indeterminate"></div>
+                                    </div>
+                                </div>
+                                <div>&nbsp;</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- set up the modal to start hidden and fade in and out -->
+                    <div id="myModal" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <!-- dialog body -->
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    Hello world!
+                                </div>
+                                <!-- dialog buttons -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -507,23 +556,10 @@
     <script src="~/assets/demo/demo-formcomponents.js"></script>
     <script src="~/assets/plugins/wijets/wijets.js"></script>     							<!-- Wijet -->
 
-    <script src="~/assets/js/workdone.js"></script>
+    
     <!-- End loading page level scripts-->
 
 
-    <script>
-// See Docs
-	window.ParsleyConfig = {
-    	  successClass: 'has-success'
-		, errorClass: 'has-error'
-		, errorElem: '<span></span>'
-		, errorsWrapper: '<span class="help-block"></span>'
-		, errorTemplate: "<div></div>"
-		, classHandler: function(el) {
-                                            return el.$element.closest(".form-group");
-                                        }
-                                    };
-    </script>
 
     <script src="~/assets/plugins/form-parsley/parsley.js"></script>  					<!-- Validate Plugin / Parsley -->
     <script src="~/assets/demo/demo-formvalidation.js"></script>
@@ -549,31 +585,19 @@
     <script src="~/assets/plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
     <script src="~/assets/plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
     <script src="~/assets/plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
-
+    <script src="~/assets/js/custom.js"></script>
 
     <script src="~/assets/js/dist/jquery.table2excel.js"></script>
+    <script src="~/assets/js/workdone.js"></script>
+
 
     <script>
-
-        $("#datepicker1").datepicker(
-           {
-               format: 'dd-M-yyyy',
-               autoclose: 1,
-               todayHighlight: 1
-           }
-       );
-
-        $("#datepicker2").datepicker(
-          {
-              format: 'dd-M-yyyy',
-              autoclose: 1,
-              todayHighlight: 1
-          }
-      );
+        function pageLoader() {
+            //alert("good");
+            progressIndicator("PROCESSING");
+            
+            
+        }
     </script>
-
-
-
-
 </body>
 </html>
