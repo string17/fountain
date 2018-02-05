@@ -34,7 +34,8 @@ namespace BLL.ApplicationLogic
             CustomerProfileModified,
             ProfileModified,
             PasswordChanged,
-            UploadUser
+            UploadUser,
+            CustomerAccount
         }
     }
 }

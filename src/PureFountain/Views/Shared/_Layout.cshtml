@@ -69,6 +69,7 @@
 
     <style>
         .w3-modal {
+         
             z-index: 1000;
             display: none;
             padding-top: 100px;
@@ -80,10 +81,11 @@
             overflow: auto;
             background-color: rgb(0,0,0);
             background-color: rgba(0,0,0,0.4);
+           
         }
     </style>
 </head>
-<body class="infobar-offcanvas" onclick="pageLoader()">
+<body class="infobar-offcanvas">
 
     <div id="headerbar">
         <div class="container-fluid">
@@ -329,9 +331,9 @@
                 <a href="#" class="dropdown-toggle" data-toggle='dropdown'><span class="icon-bg"><i class="fa fa-fw fa-user"></i></span></a>
                 <ul class="dropdown-menu userinfo arrow">
                     <li><a href="#View_Profile" data-toggle="modal"><span class="pull-left">Profile</span> <span class="badge badge-info">80%</span></a></li>
-                    <li><a href="@Url.Action("Edit_Profile")"><span class="pull-left">Settings</span> <i class="pull-right fa fa-cog"></i></a></li>
+                    <li><a href="@Url.Action("EditProfile")"><span class="pull-left">Settings</span> <i class="pull-right fa fa-cog"></i></a></li>
                     <li class="divider"></li>
-                    <li><a href="@Url.Action("Logout")"><span class="pull-left">Sign Out</span> <i class="pull-right fa fa-sign-out"></i></a></li>
+                    <li><a href="@Url.Action("Logout")" onclick="pageLoader()"><span class="pull-left">Sign Out</span> <i class="pull-right fa fa-sign-out"></i></a></li>
                 </ul>
             </li>
         </ul>
@@ -380,7 +382,7 @@
                                                         <ul class="acc-menu">
                                                             @foreach (var children in childmenu)
                                                             {
-                                                                <li><a href="@children.Externalurl">@children.Menuname</a></li>
+                                                                <li><a href="@children.Externalurl"  onclick="pageLoader()">@children.Menuname</a></li>
                                                             }
                                                         </ul>
                                                     </li>
@@ -388,7 +390,7 @@
                                                 else
                                                 {
                                                     @:
-                                                    <li><a href="@parentMenu.Menuurl"><i class="@parentMenu.Linkicon"></i><span>@parentMenu.Menuname</span><span class="badge badge-success"></span></a></li>
+                                                    <li><a href="@parentMenu.Menuurl"  onclick="pageLoader()"><i class="@parentMenu.Linkicon"></i><span>@parentMenu.Menuname</span><span class="badge badge-success"></span></a></li>
                                                 }
                                             }
 
@@ -448,7 +450,7 @@
 
 
                     <div id="message_dialog" class="w3-modal">
-                        <div class="w3-modal-content w3-round-xxlarge centermiddle" style="minwidth: 200px; max-width: 250px; margin-top:150px;">
+                        <div class="w3-modal-content w3-round-xxlarge centermiddle" style="minwidth: 200px; max-width: 250px; margin-top:150px; ">
                             <div class="w3-container">
                                 <div>&nbsp;</div>
                                 <p id="message_pram" style="text-align: center; font-weight: bold" class="progress_text">Processing Please Wait.</p>
@@ -598,6 +600,9 @@
             
             
         }
+
+
+
     </script>
 </body>
 </html>

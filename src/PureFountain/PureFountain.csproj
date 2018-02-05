@@ -597,7 +597,7 @@
     <Content Include="Views\Fountain\Edit_Profile1.cshtml" />
     <Content Include="Views\Fountain\Edit_Role.cshtml" />
     <Content Include="Views\Fountain\Edit_Terminal.cshtml" />
-    <Content Include="Views\Fountain\Edit_User.cshtml" />
+    <Content Include="Views\Fountain\EditUser.cshtml" />
     <Content Include="Views\Fountain\ElementPage.cshtml" />
     <Content Include="Views\Fountain\Existing_Terminal.cshtml" />
     <Content Include="Views\Fountain\Generate_Invoice.cshtml" />

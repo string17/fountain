@@ -30,7 +30,11 @@ namespace PureFountain.Controllers
         public ActionResult Login(UserLogin User)
         {
             string ErrorMsg = "";
-            string ComputerDetails= "";
+         
+            var ipaddress = AuditService.DetermineIPAddress();
+            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
+            string MethodName = Constants.AuditActionType.Login.ToString();
+           
             try
             {
                 User.Username = User.Username;
@@ -39,17 +43,16 @@ namespace PureFountain.Controllers
                 if (!userManagement.DoesUsernameExists(User.Username))
                 {
                     ErrorMsg = "Invalid Username";
-                    ErrorLogManager.LogError(ComputerDetails, ErrorMsg, User.Username);
+                    ErrorLogManager.LogWarning(ComputerDetails, MethodName, ErrorMsg);
                     ViewBag.ErrorMsg = "Invalid Username";
-
                     return View();
                 }
-                User.Password = userManagement.base64Encode(User.Password);// Encode password
+                User.Password = userManagement.EncryptPassword(User.Password);// Encode password
 
                 if (!userManagement.DoesPasswordExists(User.Username, User.Password))
                 {
                     ViewBag.ErrorMsg = "Invalid Password";
-                    ErrorLogManager.LogError(ComputerDetails, ErrorMsg, User.Username);
+                    ErrorLogManager.LogWarning(ComputerDetails, MethodName, ErrorMsg);
                     return View();
                 }
                 
@@ -59,23 +62,31 @@ namespace PureFountain.Controllers
                     var AccountStatus = ActiveUser.Userstatus;
                     if (AccountStatus == true)
                     {
-                        //var userDetails = userManagement.getUserByUsername(User.Username);
-                       
                         var newUser = userManagement.getFreshUser(User.Username);
                         if (newUser != 0)
                         {
                             var ExtLogin = userManagement.TrackLogin(User.Username);
-                            if (ExtLogin == null)
+                            if (ExtLogin==null)
                             {
                                 FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
-                                ErrorLogManager.LogError(ComputerDetails, Constants.AuditActionType.Login.ToString(), User.Username);
+                                ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
                                 InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Username);
+                                InsertTracking(User.Username, ipaddress, ComputerDetails);
+                                return RedirectToAction("Dashboard", "Fountain");
+                            }
+
+                            else if(ExtLogin!=null && ExtLogin.Systemname == ComputerDetails && ExtLogin.Systemip == ipaddress)
+                            {
+                                FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
+                                ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
+                                InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Username);
+                                InsertTracking(User.Username, ipaddress, ComputerDetails);
                                 return RedirectToAction("Dashboard", "Fountain");
                             }
                             else
                             {
                                 ViewBag.ErrorMsg = "You didn't logout properly last time";
-                                ErrorLogManager.LogError(ComputerDetails, ErrorMsg, User.Username);
+                                ErrorLogManager.LogWarning(ComputerDetails, MethodName, ErrorMsg);
                                 return View();
                             }
                             
@@ -89,17 +100,13 @@ namespace PureFountain.Controllers
                         }
 
                     }
-                    //else
-                    //{
-                    //    ViewBag.ErrorMsg = "Your institution is not active";
-                    //    return View();
-                    //}
+               
                 }
             }
             catch (Exception ex)
             {
                 ViewBag.ErrorMsg = ex.Message;
-                ErrorLogManager.LogError(ComputerDetails, ex.Message, User.Username);
+                ErrorLogManager.LogError(ComputerDetails, MethodName, ex);
                 return View();
             }
             
@@ -191,7 +198,11 @@ namespace PureFountain.Controllers
             {
                 return View();
             }
-            string ComputerDetails = "";
+            string ErrorMsg = "";
+            var ipaddress = AuditService.DetermineIPAddress();
+            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
+            string MethodName = Constants.AuditActionType.PasswordChanged.ToString();
+           
             var editUser = new PureUser();
             editUser.Userid = Id.GetValueOrDefault();
             editUser.Userpwd = User.Password;
@@ -202,7 +213,7 @@ namespace PureFountain.Controllers
                 {
                     UserManagement userService = new UserManagement();
                     var ExtDetails = userService.getUserById(editUser.Userid);
-                    editUser.Userpwd = userService.base64Encode(editUser.Userpwd);
+                    editUser.Userpwd = userService.EncryptPassword(editUser.Userpwd);
                     if (ExtDetails.Userpwd != editUser.Userpwd)
                     {
                         try
@@ -211,7 +222,7 @@ namespace PureFountain.Controllers
                             //editUser.UserPWD = User.Password;
                             bool ValidatePassword = false;
                             ValidatePassword = userService.UpdatePassword(editUser.Userpwd, Id);
-                            ErrorLogManager.LogError(ComputerDetails, Constants.AuditActionType.PasswordChanged.ToString(), User.Username);
+                            ErrorLogManager.LogWarning(ComputerDetails, MethodName, ErrorMsg);
                             InsertAudit(Constants.AuditActionType.PasswordChanged, editUser.Username + "Changed password", ExtDetails.Username);
                             TempData["SuccessMsg"] = "Kindly login with the new password";
                             return RedirectToAction("login");

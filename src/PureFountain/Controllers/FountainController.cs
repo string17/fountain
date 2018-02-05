@@ -11,7 +11,7 @@ using System.Web.Security;
 
 namespace PureFountain.Controllers
 {
-    public class FountainController : Controller
+    public class FountainController : BaseController
     {
         // GET: Fountain
         public ActionResult Dashboard()
@@ -38,7 +38,7 @@ namespace PureFountain.Controllers
             }
 
             ViewBag.Message = "New User";
-            string ComputerDetails = "";
+            //string ComputerDetails = "";
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
             //Company company = new Company();
@@ -63,7 +63,7 @@ namespace PureFountain.Controllers
                     Acc.Createdon = DateTime.Now;
 
                     UserManagement usermgt = new UserManagement();
-                    Acc.Userpwd = usermgt.base64Encode(Account.UserPWD);
+                    Acc.Userpwd = usermgt.EncryptPassword(Account.UserPWD);
                     Acc.Userimg = usermgt.DoFileUpload(Account.UserImg);
                     var validUser = usermgt.getUserByUsername(Account.UserName);
                     if (validUser != null && validUser.Username == Account.UserName)
@@ -118,7 +118,7 @@ namespace PureFountain.Controllers
         }
 
         [HttpGet]
-        [Route("view_user/{Id}")]
+        [Route("viewuser/{Id}")]
         public ActionResult ViewUser(UserView User)
         {
             if (!ModelState.IsValid)
@@ -132,7 +132,7 @@ namespace PureFountain.Controllers
         }
 
         [HttpGet]
-        [Route("Edit_User/{Id}")]
+        [Route("EditUser/{Id}")]
         public ActionResult EditUser(int? Id)
         {
             ViewBag.Message = "Edit User";
@@ -145,14 +145,16 @@ namespace PureFountain.Controllers
             return View();
         }
 
-        [Route("Edit_User/{Id}")]
+        [Route("EditUser/{Id}")]
         public ActionResult EditUser(UserViewModel Account, int? Id, FormCollection c)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
-
+            var ipaddress = AuditService.DetermineIPAddress();
+            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
+            string MethodName = Constants.AuditActionType.ModifiedUser.ToString();
             ViewBag.Message = "Modify User";
             int UserId = Id.GetValueOrDefault();
             RoleManagement rolemgt = new RoleManagement();
@@ -177,14 +179,15 @@ namespace PureFountain.Controllers
                     Acc.Modifiedby = User.Identity.Name;
                     Acc.Modifiedon = DateTime.Now;
                     UserManagement usermgt = new UserManagement();
-                    Acc.Userpwd = usermgt.base64Encode(Account.UserPWD);
+                    Acc.Userpwd = usermgt.EncryptPassword(Account.UserPWD);
                     Acc.Userimg = usermgt.DoFileUpload(Account.UserImg, c["UserImg1"]);
                     var updateUser = usermgt.UpdateUser(Acc.Firstname, Acc.Middlename, Acc.Lastname, Acc.Username,Acc.Useremail, Acc.Userpwd, Acc.Userimg, Acc.Phonenos, Acc.Roleid, Acc.Userstatus, User.Identity.Name, DateTime.Now, UserId);
                     if (updateUser == true)
                     {
-                        //InsertAudit(Constants.AuditActionType.UserModified, "Modified a user " + Acc.Username, User.Identity.Name);
+                        InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Identity.Name);
+                        ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Modified a user");
                         TempData["SuccessMsg"] = "Account successfully modified";
-                        return RedirectToAction("view_user");
+                        return RedirectToAction("viewuser");
                         //return View();
                     }
                     else
@@ -251,9 +254,9 @@ namespace PureFountain.Controllers
                     editUser.Modifiedon = DateTime.Now;
                     editUser.Userimg = usermgt.DoFileUpload(account.UserImg, c["UserImg1"]);
                     UserManagement userManagement = new UserManagement();
-                    editUser.Userpwd = usermgt.base64Encode(account.UserPWD);
+                    editUser.Userpwd = usermgt.EncryptPassword(account.UserPWD);
                     bool UpdateUser = userManagement.UpdateProfile(editUser.Firstname, editUser.Middlename, editUser.Lastname, editUser.Username,editUser.Useremail, editUser.Userpwd, editUser.Userimg, editUser.Phonenos, User.Identity.Name, DateTime.Now, User.Identity.Name);
-                    //InsertAudit(Constants.AuditActionType.ProfileModified, "Modified a user " + editUser.UserName, User.Identity.Name);
+                    InsertAudit(Constants.AuditActionType.ProfileModified, "Modified a user " + editUser.Username, User.Identity.Name);
                     TempData["ProfileMsg"] = "Profile updated successfully. Please Kindly login";
                     return RedirectToAction("Logout", "Fountain");
                     //ViewBag.SuccessMsg = "Account successfully modified";
@@ -391,6 +394,92 @@ namespace PureFountain.Controllers
             ViewBag.Message = "Account";
             AccountManagement account = new AccountManagement();
             ViewBag.Country = account.GetAllCountries();
+            ViewBag.Referral = account.GetReferral();
+            ViewBag.Banks = account.GetAllBank();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateAccount(CustomerAccountView customer)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var ipaddress = AuditService.DetermineIPAddress();
+            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
+            string MethodName = Constants.AuditActionType.CustomerAccount.ToString();
+            AccountManagement account = new AccountManagement();
+            ViewBag.Country = account.GetAllCountries();
+            ViewBag.Referral = account.GetReferral();
+            ViewBag.Banks = account.GetAllBank();
+            try
+            {
+                var Acc = new PureCustomerInfo();
+                Acc.Nametitle = customer.NameTitle;
+                Acc.Firstname = customer.FirstName;
+                Acc.Middlename = customer.MiddleName;
+                Acc.Lastname = customer.LastName;
+                Acc.Useremail = customer.UserEmail;
+                Acc.Phonenos1 = customer.PhoneNos1;
+                Acc.Phonenos2 = customer.PhoneNos2;
+                Acc.Homeaddress = customer.UserAddress;
+                Acc.Lga = customer.UserLGA;
+                Acc.Stateorigin = customer.StateId;
+                Acc.Dob = customer.DOB;
+                Acc.Maritalstatus = customer.MaritalStatus;
+                Acc.Homecity = customer.HomeCity;
+                Acc.Homelga = customer.HomeLGA;
+                Acc.Homecountry = customer.HomeCountry;
+                Acc.Occupationid = customer.OccupationalId;
+                Acc.Jobtitle = customer.JobTitle;
+                Acc.Department = customer.Department;
+                Acc.Businesstype = customer.BusinessType;
+                Acc.Incomerange = customer.IncomeRange;
+                Acc.Nationality = customer.Nationality;
+                Acc.Idnos = customer.IdNos;
+                Acc.Idissuedate = customer.IdIssueDate;
+                Acc.Idexpirydate = customer.IdExpiryDate;
+                Acc.Userbvn = customer.UserBVN;
+                Acc.Iddetails = customer.IdDetails;
+                Acc.Accounttype = customer.AccountType;
+                Acc.Otherbankid = customer.OtherBankId;
+                Acc.Otheraccountnos = customer.OtherAccountNos;
+                Acc.Nextofkin = customer.KFName +" " +customer.KMName +" " +customer.KLName;
+                Acc.Knumber = customer.KNumber;
+                Acc.Krelationship = customer.KRelationship;
+                Acc.Klga = customer.KLGA;
+                Acc.Kcity = customer.KCity;
+                Acc.Kcountry = customer.KCountry;
+                Acc.Signature = customer.Signature;
+                Acc.Refname = customer.ReferralName;
+                Acc.Reasonforaccount = customer.ReasonForAccount;
+                Acc.Accountstatus = customer.AccountStatus;
+                Acc.Createdby = User.Identity.Name;
+                Acc.Createdon = DateTime.Now;
+                Acc.Modifiedby = "";
+                Acc.Modifiedon = DateTime.Now;
+                //AccountManagement CustomerAccount = new AccountManagement();
+                Acc.Accountimg = new UserManagement().DoFileUpload(customer.AccountImg);
+                bool NewAccount = false;
+                NewAccount = account.InsertAccount(Acc);
+                if (NewAccount == true)
+                {
+                    ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
+                    InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
+                    ViewBag.SuccessMsg = "Account successfully created";
+                    return View();
+                }
+                else
+                {
+
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+          
             return View();
         }
 
@@ -416,7 +505,8 @@ namespace PureFountain.Controllers
         public ActionResult Logout()
         {
             TempData["ProfileMsg"] = TempData["ProfileMsg"];
-            //InsertAudit(Constants.AuditActionType.Logout, "User signed out successfully", User.Identity.Name);
+            InsertAudit(Constants.AuditActionType.Logout, "Successfully Logout", User.Identity.Name);
+            new UserManagement().DeleteTracking(User.Identity.Name);
             FormsAuthentication.SignOut();
             return RedirectToAction("Login", "Account");
         }

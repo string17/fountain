@@ -24,5 +24,33 @@ namespace BLL.ApplicationLogic
             var actual = context.Fetch<PureState>(sql,CountryCode);
             return actual;
         }
+
+        public List<PureBank> GetAllBank()
+        {
+            string sql = "select * from Pure_Bank";
+            var actual = context.Fetch<PureBank>(sql).ToList();
+            return actual;
+        }
+
+
+        public List<PureUser> GetReferral()
+        {
+            string sql = "select * from Pure_User";
+            var actual = context.Fetch<PureUser>(sql).ToList();
+            return actual;
+        }
+
+        public bool InsertAccount(PureCustomerInfo LastName)
+        {
+            try
+            {
+                context.Insert(LastName);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }

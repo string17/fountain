@@ -3,7 +3,9 @@ using DataAccessLayer.CustomObjects;
 using FountainContext.Data.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -92,26 +94,8 @@ namespace BLL.ApplicationLogic
             return actual;
         }
 
-        //public EngineerViewModel getEngineerTerminal(string roleName)
-        //{
-        //    var term = context.SingleOrDefault<DolRole>("where RoleName=@0", roleName);
-        //    var actual = context.SingleOrDefault<PureUser>("Where RoleId=@0", term.RoleId);
-        //    var termNum = context.ExecuteScalar<int>("select Count(*) from DolTerminal where UserId =@0", actual.UserId);
-        //    EngineerViewModel engineerView = new EngineerViewModel()
-        //    {
-        //        FirstName = actual.FirstName,
-        //        MiddleName = actual.MiddleName,
-        //        LastName = actual.LastName,
-        //        UserName = actual.UserName,
-        //        UserPWD = actual.UserPWD,
-        //        RoleId = actual.RoleId,
-        //        PhoneNos = actual.PhoneNos,
-        //        RoleName = term.RoleName,
-        //        //UserImg = actual.UserImg
+     
 
-        //    };
-        //    return engineerView;
-        //}
 
 
         public List<PureUser> getAllUsers()
@@ -152,39 +136,39 @@ namespace BLL.ApplicationLogic
             }
         }
 
-        public string base64Encode(string UserPWD) //Encode
-        {
-            try
-            {
-                byte[] encData_byte = new byte[UserPWD.Length];
-                encData_byte = System.Text.Encoding.UTF8.GetBytes(UserPWD);
-                string encodedData = Convert.ToBase64String(encData_byte);
-                return encodedData;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error in base64Encode" + ex.Message);
-            }
-        }
+        //public string base64Encode(string UserPWD) //Encode
+        //{
+        //    try
+        //    {
+        //        byte[] encData_byte = new byte[UserPWD.Length];
+        //        encData_byte = System.Text.Encoding.UTF8.GetBytes(UserPWD);
+        //        string encodedData = Convert.ToBase64String(encData_byte);
+        //        return encodedData;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error in base64Encode" + ex.Message);
+        //    }
+        //}
 
-        public string base64Decode(string UserPWD) //Decode    
-        {
-            try
-            {
-                var encoder = new System.Text.UTF8Encoding();
-                System.Text.Decoder utf8Decode = encoder.GetDecoder();
-                byte[] todecodeByte = Convert.FromBase64String(UserPWD);
-                int charCount = utf8Decode.GetCharCount(todecodeByte, 0, todecodeByte.Length);
-                char[] decodedChar = new char[charCount];
-                utf8Decode.GetChars(todecodeByte, 0, todecodeByte.Length, decodedChar, 0);
-                string result = new String(decodedChar);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error in base64Decode" + ex.Message);
-            }
-        }
+        //public string base64Decode(string UserPWD) //Decode    
+        //{
+        //    try
+        //    {
+        //        var encoder = new System.Text.UTF8Encoding();
+        //        System.Text.Decoder utf8Decode = encoder.GetDecoder();
+        //        byte[] todecodeByte = Convert.FromBase64String(UserPWD);
+        //        int charCount = utf8Decode.GetCharCount(todecodeByte, 0, todecodeByte.Length);
+        //        char[] decodedChar = new char[charCount];
+        //        utf8Decode.GetChars(todecodeByte, 0, todecodeByte.Length, decodedChar, 0);
+        //        string result = new String(decodedChar);
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error in base64Decode" + ex.Message);
+        //    }
+        //}
 
         public bool InsertUser(PureUser Username)
         {
@@ -199,10 +183,10 @@ namespace BLL.ApplicationLogic
             }
         }
 
-        public int Delete(string Username)
+        public int DeleteTracking(string Username)
         {
-            string sql = "WHERE username = " + Username;
-            int actual= context.Delete<PureTracking>(sql);
+            string sql = "delete from Pure_Tracking where UserName =@0";
+            int actual= context.Delete<PureTracking>(sql, Username);
             return actual;
         }
 
@@ -305,6 +289,51 @@ namespace BLL.ApplicationLogic
             string result = DateTime.Now.Millisecond + "UserPics.jpg";
             pic.SaveAs(HttpContext.Current.Server.MapPath("~/UserImg/") + result);
             return result;
+        }
+
+
+        public string EncryptPassword(string UserPWD)
+        {
+            string EncryptionKey = "MAKV2SPBNI99212";
+            byte[] clearBytes = Encoding.Unicode.GetBytes(UserPWD);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Close();
+                    }
+                    UserPWD = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            return UserPWD;
+        }
+
+        public string DecryptPassword(string UserPWD)
+        {
+            string EncryptionKey = "MAKV2SPBNI99212";
+            byte[] cipherBytes = Convert.FromBase64String(UserPWD);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                        cs.Close();
+                    }
+                    UserPWD = Encoding.Unicode.GetString(ms.ToArray());
+                }
+            }
+            return UserPWD;
         }
     }
 }

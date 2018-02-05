@@ -34,6 +34,7 @@
             overflow: auto;
             background-color: rgb(0,0,0);
             background-color: rgba(0,0,0,0.4);
+        
         }
     </style>
 </head>
@@ -90,7 +91,7 @@
     <script type="text/javascript" src="~/assets/demo/demo-kpi-dashboard.js"></script>               <!-- demo-kpi-dashboard -->
     <!-- End loading page level scripts-->
 
-
+    <script src="~/assets/js/workdone.js"></script>
     <script>
         var $_contextPath = '${pageContext.request.contextPath}';
 
@@ -98,27 +99,10 @@
         $("#validate-form").submit(function () {
 
            progressIndicator("PROCESSING");
-           var ret = processLogin();
-           closeProgressIndicator();
-           return ret;
+                 
         })
 
-        function processLogin() {
-            $(".error_meg").html("");
-            //if ($("#UserEmail").val().trim().length < 1) {
-
-                //alert("Please enter your login Email");
-                //$(".error_meg").html("Please enter your login Email");
-                //return false;
-            //}
-            //if ($("#Password").val().trim().length < 1) {
-                //alert("Please enter your Password.");
-                //$(".error_meg").html("Please enter your Password.");
-               // return false;
-            //}
-
-            $("form[name='workdone_form']").submit();
-        }
+   
     </script>
 </body>
 </html>
