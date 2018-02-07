@@ -392,16 +392,17 @@ namespace PureFountain.Controllers
         public ActionResult CreateAccount()
         {
             ViewBag.Message = "Account";
-            AccountManagement account = new AccountManagement();
-            ViewBag.Country = account.GetAllCountries();
-            ViewBag.Referral = account.GetReferral();
-            ViewBag.Banks = account.GetAllBank();
+            AccountManagement accountmgt = new AccountManagement();
+            ViewBag.Country = accountmgt.GetAllCountries();
+            ViewBag.Referral = accountmgt.GetReferral();
+            ViewBag.Banks = accountmgt.GetAllBank();
             return View();
         }
 
         [HttpPost]
         public ActionResult CreateAccount(CustomerAccountView customer)
         {
+           
             if (!ModelState.IsValid)
             {
                 return View();
@@ -409,10 +410,9 @@ namespace PureFountain.Controllers
             var ipaddress = AuditService.DetermineIPAddress();
             var ComputerDetails = AuditService.DetermineCompName(ipaddress);
             string MethodName = Constants.AuditActionType.CustomerAccount.ToString();
-            AccountManagement account = new AccountManagement();
-            ViewBag.Country = account.GetAllCountries();
-            ViewBag.Referral = account.GetReferral();
-            ViewBag.Banks = account.GetAllBank();
+            AccountManagement accountmgt = new AccountManagement();
+            ViewBag.Country = accountmgt.GetAllCountries();
+
             try
             {
                 var Acc = new PureCustomerInfo();
@@ -442,10 +442,9 @@ namespace PureFountain.Controllers
                 Acc.Idexpirydate = customer.IdExpiryDate;
                 Acc.Userbvn = customer.UserBVN;
                 Acc.Iddetails = customer.IdDetails;
-                Acc.Accounttype = customer.AccountType;
                 Acc.Otherbankid = customer.OtherBankId;
                 Acc.Otheraccountnos = customer.OtherAccountNos;
-                Acc.Nextofkin = customer.KFName +" " +customer.KMName +" " +customer.KLName;
+                Acc.Nextofkin = customer.KFName + " " + customer.KMName + " " + customer.KLName;
                 Acc.Knumber = customer.KNumber;
                 Acc.Krelationship = customer.KRelationship;
                 Acc.Klga = customer.KLGA;
@@ -454,15 +453,19 @@ namespace PureFountain.Controllers
                 Acc.Signature = customer.Signature;
                 Acc.Refname = customer.ReferralName;
                 Acc.Reasonforaccount = customer.ReasonForAccount;
-                Acc.Accountstatus = customer.AccountStatus;
+                Acc.Accountname = customer.AccountName;
+                Acc.Accountnos = "";
+                Acc.Accountstatus = false;
                 Acc.Createdby = User.Identity.Name;
                 Acc.Createdon = DateTime.Now;
                 Acc.Modifiedby = "";
                 Acc.Modifiedon = DateTime.Now;
-                //AccountManagement CustomerAccount = new AccountManagement();
+                Acc.Approvedby = "";
+                Acc.Approvedon =null;
+                AccountManagement CustomerAccount = new AccountManagement();
                 Acc.Accountimg = new UserManagement().DoFileUpload(customer.AccountImg);
                 bool NewAccount = false;
-                NewAccount = account.InsertAccount(Acc);
+                NewAccount = CustomerAccount.InsertAccount(Acc);
                 if (NewAccount == true)
                 {
                     ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
@@ -472,16 +475,21 @@ namespace PureFountain.Controllers
                 }
                 else
                 {
-
+                    ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
+                    InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
+                    ViewBag.ErrorMsg = "Unable to create Account";
+                    return View();
                 }
             }
             catch(Exception ex)
             {
-
+                ErrorLogManager.LogError(ComputerDetails, MethodName, ex);
+                InsertAudit(Constants.AuditActionType.CustomerAccount, ex.Message, User.Identity.Name);
+                ViewBag.ErrorMsg = ex.Message;
             }
-          
             return View();
         }
+
 
         public ActionResult GetStates(string code)
         {
@@ -493,6 +501,28 @@ namespace PureFountain.Controllers
         {
             var codes = new UserManagement().getUserById(UserId);
             return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetPendingAccount(int AccountId)
+        {
+            var codes = new AccountManagement().NewAccountDetails(AccountId);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ViewAccount()
+        {
+            ViewBag.Message = "Customers";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetCustomerInfo();
+            return View();
+        }
+
+        public ActionResult ViewCustomer()
+        {
+            ViewBag.Message = "Customers";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.NewAccount();
+            return View();
         }
 
         public ActionResult CreateLoan()

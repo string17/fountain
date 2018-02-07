@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationLogic\AccountManagement.cs" />
+    <Compile Include="ApplicationLogic\AccountSequence.cs" />
     <Compile Include="ApplicationLogic\AuditService.cs" />
     <Compile Include="ApplicationLogic\BaseService.cs" />
     <Compile Include="ApplicationLogic\Constants.cs" />

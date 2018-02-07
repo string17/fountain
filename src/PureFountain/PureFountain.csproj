@@ -612,7 +612,7 @@
     <Content Include="Views\Fountain\Upload_User.cshtml" />
     <Content Include="Views\Fountain\View_Audit.cshtml" />
     <Content Include="Views\Fountain\View_Call.cshtml" />
-    <Content Include="Views\Fountain\View_Incident - Copy %285%29.cshtml" />
+    <Content Include="Views\Fountain\ViewAccount.cshtml" />
     <Content Include="Views\Fountain\View_Incident - Copy %286%29.cshtml" />
     <Content Include="Views\Fountain\View_Incident - Copy %287%29.cshtml" />
     <Content Include="Views\Fountain\View_Incident.cshtml" />
@@ -629,6 +629,8 @@
     <Content Include="Views\Fountain\View_Terminal - Copy.cshtml" />
     <Content Include="Views\Fountain\View_Terminal.cshtml" />
     <Content Include="Views\Fountain\ViewUser.cshtml" />
+    <Content Include="Views\Fountain\ViewCustomer.cshtml" />
+    <Content Include="Views\Fountain\CreateAccount1 - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
