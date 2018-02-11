@@ -13,8 +13,11 @@ namespace BLL.ApplicationLogic
     public class ErrorLogManager
     {
     
-        public static int LogError(string computerDetails, string methodName, Exception ex)
+        public static int LogError(string methodName, Exception ex)
         {
+            var ipaddress = AuditService.DetermineIPAddress();
+            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
+            string MethodName = Constants.AuditActionType.CustomerAccount.ToString();
             int insertError = 0;
             ILog myLog = LogManager.GetLogger(methodName);
 
@@ -23,8 +26,11 @@ namespace BLL.ApplicationLogic
             return insertError;
 
         }
-        public static int LogWarning(string computerDetails, string methodName, string errorMessage)
+        public static int LogWarning(string methodName, string errorMessage)
         {
+            var ipaddress = AuditService.DetermineIPAddress();
+            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
+            string MethodName = Constants.AuditActionType.CustomerAccount.ToString();
             int insertError = 0;
             ILog myLog = LogManager.GetLogger(methodName);
 

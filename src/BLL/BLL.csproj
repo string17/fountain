@@ -63,6 +63,7 @@
     <Compile Include="ApplicationLogic\ErrorLogManager.cs" />
     <Compile Include="ApplicationLogic\MenuManagement.cs" />
     <Compile Include="ApplicationLogic\RoleManagement.cs" />
+    <Compile Include="ApplicationLogic\SequenceManager.cs" />
     <Compile Include="ApplicationLogic\TransactionManagement.cs" />
     <Compile Include="ApplicationLogic\UserManagement.cs" />
     <Compile Include="Class1.cs" />

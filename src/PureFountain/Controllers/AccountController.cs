@@ -43,7 +43,7 @@ namespace PureFountain.Controllers
                 if (!userManagement.DoesUsernameExists(User.Username))
                 {
                     ErrorMsg = "Invalid Username";
-                    ErrorLogManager.LogWarning(ComputerDetails, MethodName, ErrorMsg);
+                    ErrorLogManager.LogWarning(MethodName, ErrorMsg);
                     ViewBag.ErrorMsg = "Invalid Username";
                     return View();
                 }
@@ -52,7 +52,7 @@ namespace PureFountain.Controllers
                 if (!userManagement.DoesPasswordExists(User.Username, User.Password))
                 {
                     ViewBag.ErrorMsg = "Invalid Password";
-                    ErrorLogManager.LogWarning(ComputerDetails, MethodName, ErrorMsg);
+                    ErrorLogManager.LogWarning(MethodName, ErrorMsg);
                     return View();
                 }
                 
@@ -69,7 +69,7 @@ namespace PureFountain.Controllers
                             if (ExtLogin==null)
                             {
                                 FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
-                                ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
+                                ErrorLogManager.LogWarning(MethodName, "Login Successful");
                                 InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Username);
                                 InsertTracking(User.Username, ipaddress, ComputerDetails);
                                 return RedirectToAction("Dashboard", "Fountain");
@@ -78,7 +78,7 @@ namespace PureFountain.Controllers
                             else if(ExtLogin!=null && ExtLogin.Systemname == ComputerDetails && ExtLogin.Systemip == ipaddress)
                             {
                                 FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
-                                ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
+                                ErrorLogManager.LogWarning(MethodName, "Login Successful");
                                 InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Username);
                                 InsertTracking(User.Username, ipaddress, ComputerDetails);
                                 return RedirectToAction("Dashboard", "Fountain");
@@ -86,7 +86,7 @@ namespace PureFountain.Controllers
                             else
                             {
                                 ViewBag.ErrorMsg = "You didn't logout properly last time";
-                                ErrorLogManager.LogWarning(ComputerDetails, MethodName, ErrorMsg);
+                                ErrorLogManager.LogWarning(MethodName, ErrorMsg);
                                 return View();
                             }
                             
@@ -105,8 +105,9 @@ namespace PureFountain.Controllers
             }
             catch (Exception ex)
             {
+               
+                ErrorLogManager.LogError(MethodName, ex);
                 ViewBag.ErrorMsg = ex.Message;
-                ErrorLogManager.LogError(ComputerDetails, MethodName, ex);
                 return View();
             }
             
@@ -222,7 +223,7 @@ namespace PureFountain.Controllers
                             //editUser.UserPWD = User.Password;
                             bool ValidatePassword = false;
                             ValidatePassword = userService.UpdatePassword(editUser.Userpwd, Id);
-                            ErrorLogManager.LogWarning(ComputerDetails, MethodName, ErrorMsg);
+                            ErrorLogManager.LogWarning(MethodName, ErrorMsg);
                             InsertAudit(Constants.AuditActionType.PasswordChanged, editUser.Username + "Changed password", ExtDetails.Username);
                             TempData["SuccessMsg"] = "Kindly login with the new password";
                             return RedirectToAction("login");

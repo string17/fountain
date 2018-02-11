@@ -631,6 +631,9 @@
     <Content Include="Views\Fountain\ViewUser.cshtml" />
     <Content Include="Views\Fountain\ViewCustomer.cshtml" />
     <Content Include="Views\Fountain\CreateAccount1 - Copy.cshtml" />
+    <Content Include="Views\Fountain\ModifyAccount.cshtml" />
+    <Content Include="Views\Fountain\ApproveAccount.cshtml" />
+    <Content Include="Views\Fountain\EditAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

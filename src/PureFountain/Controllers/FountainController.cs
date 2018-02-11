@@ -185,7 +185,7 @@ namespace PureFountain.Controllers
                     if (updateUser == true)
                     {
                         InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Identity.Name);
-                        ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Modified a user");
+                        ErrorLogManager.LogWarning(MethodName, "Modified a user");
                         TempData["SuccessMsg"] = "Account successfully modified";
                         return RedirectToAction("viewuser");
                         //return View();
@@ -412,6 +412,9 @@ namespace PureFountain.Controllers
             string MethodName = Constants.AuditActionType.CustomerAccount.ToString();
             AccountManagement accountmgt = new AccountManagement();
             ViewBag.Country = accountmgt.GetAllCountries();
+            ViewBag.Referral = accountmgt.GetReferral();
+            ViewBag.Banks = accountmgt.GetAllBank();
+            DateTime NewTime = DateTime.Now;
 
             try
             {
@@ -422,9 +425,8 @@ namespace PureFountain.Controllers
                 Acc.Lastname = customer.LastName;
                 Acc.Useremail = customer.UserEmail;
                 Acc.Phonenos1 = customer.PhoneNos1;
-                Acc.Phonenos2 = customer.PhoneNos2;
+                Acc.Usersex = customer.UserSex;
                 Acc.Homeaddress = customer.UserAddress;
-                Acc.Lga = customer.UserLGA;
                 Acc.Stateorigin = customer.StateId;
                 Acc.Dob = customer.DOB;
                 Acc.Maritalstatus = customer.MaritalStatus;
@@ -434,9 +436,8 @@ namespace PureFountain.Controllers
                 Acc.Occupationid = customer.OccupationalId;
                 Acc.Jobtitle = customer.JobTitle;
                 Acc.Department = customer.Department;
-                Acc.Businesstype = customer.BusinessType;
-                Acc.Incomerange = customer.IncomeRange;
-                Acc.Nationality = customer.Nationality;
+                 Acc.Incomerange = customer.IncomeRange;
+                Acc.Nationality = customer.CountryCode;
                 Acc.Idnos = customer.IdNos;
                 Acc.Idissuedate = customer.IdIssueDate;
                 Acc.Idexpirydate = customer.IdExpiryDate;
@@ -447,11 +448,9 @@ namespace PureFountain.Controllers
                 Acc.Nextofkin = customer.KFName + " " + customer.KMName + " " + customer.KLName;
                 Acc.Knumber = customer.KNumber;
                 Acc.Krelationship = customer.KRelationship;
-                Acc.Klga = customer.KLGA;
-                Acc.Kcity = customer.KCity;
-                Acc.Kcountry = customer.KCountry;
-                Acc.Signature = customer.Signature;
+                Acc.Kaddress = customer.KAddress;
                 Acc.Refname = customer.ReferralName;
+                Acc.Accounttype = 1;
                 Acc.Reasonforaccount = customer.ReasonForAccount;
                 Acc.Accountname = customer.AccountName;
                 Acc.Accountnos = "";
@@ -468,14 +467,14 @@ namespace PureFountain.Controllers
                 NewAccount = CustomerAccount.InsertAccount(Acc);
                 if (NewAccount == true)
                 {
-                    ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
+                    ErrorLogManager.LogWarning(MethodName, "Account Successfully created");
                     InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
                     ViewBag.SuccessMsg = "Account successfully created";
                     return View();
                 }
                 else
                 {
-                    ErrorLogManager.LogWarning(ComputerDetails, MethodName, "Login Successful");
+                    ErrorLogManager.LogWarning(MethodName, "Login Successful");
                     InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
                     ViewBag.ErrorMsg = "Unable to create Account";
                     return View();
@@ -483,7 +482,7 @@ namespace PureFountain.Controllers
             }
             catch(Exception ex)
             {
-                ErrorLogManager.LogError(ComputerDetails, MethodName, ex);
+                ErrorLogManager.LogError(MethodName, ex);
                 InsertAudit(Constants.AuditActionType.CustomerAccount, ex.Message, User.Identity.Name);
                 ViewBag.ErrorMsg = ex.Message;
             }
@@ -503,17 +502,32 @@ namespace PureFountain.Controllers
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetPendingAccount(int AccountId)
+        public ActionResult GetPendingAccount (int CustomerId)
         {
-            var codes = new AccountManagement().NewAccountDetails(AccountId);
+            var codes = new AccountManagement().GetAccountDetails(CustomerId);
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
+
 
         public ActionResult ViewAccount()
         {
             ViewBag.Message = "Customers";
             AccountManagement accountMgt = new AccountManagement();
             ViewBag.Customer = accountMgt.GetCustomerInfo();
+            return View();
+        }
+
+
+        [HttpGet]
+        [Route("EditAccount/{Id}")]
+        public ActionResult EditAccount(int Id)
+        {
+            ViewBag.Message = "Customers";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetAccountDetails(Id);
+            ViewBag.Country = accountMgt.GetAllCountries();
+            ViewBag.Referral = accountMgt.GetReferral();
+            ViewBag.Banks = accountMgt.GetAllBank();
             return View();
         }
 
@@ -525,6 +539,84 @@ namespace PureFountain.Controllers
             return View();
         }
 
+        public ActionResult ApproveAccount()
+        {
+            ViewBag.Message = "Approve Account";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+        public ActionResult GenerateAccountNos(int CustomerId)
+        {
+            var AccountNos = new SequenceManager().GenerateAccountNos().ToString();
+            var acc= new PureCustomerInfo();
+            acc.Accountnos = AccountNos;
+            acc.Accountstatus = true;
+            AccountManagement accountMgt = new AccountManagement();
+            //var ExistingNos = accountMgt.GetAccountNos(AccountNos);
+            bool UpdateAccount = accountMgt.ApproveAccount(CustomerId, acc.Accountnos, acc.Accountstatus);
+            var codes = new AccountManagement().GetAccountDetails(CustomerId);
+            var accNos = new PureAccountNo();
+            accNos.Accountnos = AccountNos;
+            accNos.Customerid = CustomerId;
+            bool InsertAccount = accountMgt.NewAccountNos(accNos);
+            ErrorLogManager.LogWarning(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created");
+            InsertAudit(Constants.AuditActionType.ApproveAccount, "Account Successfully Created", User.Identity.Name);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+            
+           
+           
+        }
+
+    //    [HttpGet]
+    //    [Route("ApproveAccount/{Id}")]
+    //    public ActionResult ApproveAccount(int Id)
+    //    {
+    //        if (!ModelState.IsValid)
+    //        {
+    //            return View();
+    //        }
+    //        AccountManagement accountMgt = new AccountManagement();
+    //        ViewBag.Customer = accountMgt.GetCustomerInfo();
+    //        int CustomerId = Id;
+    //        var acc = new PureCustomerInfo();
+    //        //var accNos = new PureAccountNo();
+    //        try
+    //        {
+    //            string AccountNos = new SequenceManager().GenerateAccountNos().ToString();
+    //            acc.Accountnos = AccountNos;
+    //            acc.Accountstatus = true;
+    //            //accNos.Accountnos = AccountNos;
+    //            //accNos.Customerid = CustomerId;
+    //            bool CreateAccountNos = false;
+    //            bool UpdateAccount = accountMgt.ApproveAccount(CustomerId, acc.Accountnos, acc.Accountstatus);
+    //            //CreateAccountNos = accountMgt.NewAccountNos(accNos);
+    //            //if (CreateAccountNos == true)
+    //            //{
+    //                ErrorLogManager.LogWarning(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created");
+    //                InsertAudit(Constants.AuditActionType.ApproveAccount, "Account Successfully Created", User.Identity.Name);
+    //                ViewBag.SuccessMsg = "Account Number " + acc.Accountnos + " is successfully created";
+    //           // }
+
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            ErrorLogManager.LogError(Constants.AuditActionType.ApproveAccount.ToString(), ex);
+    //            InsertAudit(Constants.AuditActionType.CustomerAccount, ex.Message, User.Identity.Name);
+    //            ViewBag.ErrorMsg = ex.Message;
+    //        }
+
+    //        return View();
+    //}
+
+    public ActionResult ModifyAccount()
+        {
+            ViewBag.Message = "Modify Account";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.NewAccount();
+            return View();
+        }
         public ActionResult CreateLoan()
         {
             return View();
