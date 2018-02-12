@@ -49,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="CustomObjects\CompanyViewModel.cs" />
     <Compile Include="CustomObjects\CustomerAccountView.cs" />
     <Compile Include="CustomObjects\CustomerInfoViewModel.cs" />
     <Compile Include="CustomObjects\RoleViewModel.cs" />

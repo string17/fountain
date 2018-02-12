@@ -11,14 +11,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Dolphin</title>
+    <title>Fountain</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-touch-fullscreen" content="yes">
     <meta name="description" content="Avenger Admin Theme">
     <meta name="author" content="KaijuThemes">
-    <link rel="icon" href="~/assets/img/icon-s.jpeg" type="image/x-icon">
+    <link rel="icon" href="~/assets/img/ico.jpeg" type="image/x-icon">
     <link href='http://fonts.googleapis.com/css?family=RobotoDraft:300,400,400italic,500,700' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,400italic,600,700' rel='stylesheet' type='text/css'>
     <!--[if lt IE 10]>
@@ -85,7 +85,7 @@
         }
     </style>
 </head>
-<body class="infobar-offcanvas">
+<body class="infobar-offcanvas" >
 
     <div id="headerbar">
         <div class="container-fluid">
@@ -160,7 +160,7 @@
         <span id="trigger-sidebar" class="toolbar-trigger toolbar-icon-bg">
             <a data-toggle="tooltips" data-placement="right" title="Toggle Sidebar"><span class="icon-bg"><i class="fa fa-fw fa-bars"></i></span></a>
         </span>
-        <img src="~/assets/img/logo-s.jpeg" style="height:40px;width:80px; margin-top:5px;">Avenger
+        <img src="~/assets/img/log.jpeg" style="height:40px;width:80px; margin-top:5px;">Avenger
         <span id="trigger-infobar" class="toolbar-trigger toolbar-icon-bg">
             <a data-toggle="tooltips" data-placement="left" title="Toggle Infobar"><span class="icon-bg"><i class="fa fa-fw fa-bars"></i></span></a>
         </span>
@@ -594,6 +594,26 @@
 
 
     <script>
+        function checkRefresh() {
+            if (document.refreshForm.visited.value == "") {
+                // This is a fresh page load
+                progressIndicator("PROCESSING");
+                document.refreshForm.visited.value = "1";
+
+                closeProgressIndicator();
+
+                // You may want to add code here special for
+                // fresh page loads
+            }
+            else {
+                // This is a page refresh
+                progressIndicator("PROCESSING");
+                closeProgressIndicator();
+                // Insert code here representing what to do on
+                // a refresh
+            }
+        }
+
         function pageLoader() {
             //alert("good");
             progressIndicator("PROCESSING");

@@ -69,7 +69,8 @@ namespace BLL.ApplicationLogic
 
         public List<PureAuditTrail> getAuditById()
         {
-            var actual = context.Fetch<PureAuditTrail>().ToList();
+            string sql = "select * from Pure_AuditTrail order by Id desc";
+            var actual = context.Fetch<PureAuditTrail>(sql).ToList();
             return actual;
         }
 

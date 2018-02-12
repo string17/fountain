@@ -396,6 +396,9 @@ namespace PureFountain.Controllers
             ViewBag.Country = accountmgt.GetAllCountries();
             ViewBag.Referral = accountmgt.GetReferral();
             ViewBag.Banks = accountmgt.GetAllBank();
+            ViewBag.Religion = accountmgt.GetAllReligion();
+            ViewBag.Card = accountmgt.GetAllCard();
+            ViewBag.Account = accountmgt.GetAccountCategory();
             return View();
         }
 
@@ -414,12 +417,14 @@ namespace PureFountain.Controllers
             ViewBag.Country = accountmgt.GetAllCountries();
             ViewBag.Referral = accountmgt.GetReferral();
             ViewBag.Banks = accountmgt.GetAllBank();
+            ViewBag.Religion = accountmgt.GetAllReligion();
+            ViewBag.Card = accountmgt.GetAllCard();
+            ViewBag.Account = accountmgt.GetAccountCategory();
             DateTime NewTime = DateTime.Now;
 
             try
             {
                 var Acc = new PureCustomerInfo();
-                Acc.Nametitle = customer.NameTitle;
                 Acc.Firstname = customer.FirstName;
                 Acc.Middlename = customer.MiddleName;
                 Acc.Lastname = customer.LastName;
@@ -430,13 +435,9 @@ namespace PureFountain.Controllers
                 Acc.Stateorigin = customer.StateId;
                 Acc.Dob = customer.DOB;
                 Acc.Maritalstatus = customer.MaritalStatus;
-                Acc.Homecity = customer.HomeCity;
-                Acc.Homelga = customer.HomeLGA;
-                Acc.Homecountry = customer.HomeCountry;
                 Acc.Occupationid = customer.OccupationalId;
                 Acc.Jobtitle = customer.JobTitle;
-                Acc.Department = customer.Department;
-                 Acc.Incomerange = customer.IncomeRange;
+                Acc.Incomerange = customer.IncomeRange;
                 Acc.Nationality = customer.CountryCode;
                 Acc.Idnos = customer.IdNos;
                 Acc.Idissuedate = customer.IdIssueDate;
@@ -445,7 +446,7 @@ namespace PureFountain.Controllers
                 Acc.Iddetails = customer.IdDetails;
                 Acc.Otherbankid = customer.OtherBankId;
                 Acc.Otheraccountnos = customer.OtherAccountNos;
-                Acc.Nextofkin = customer.KFName + " " + customer.KMName + " " + customer.KLName;
+                Acc.Nextofkin = customer.KFName + " " + customer.KMName;
                 Acc.Knumber = customer.KNumber;
                 Acc.Krelationship = customer.KRelationship;
                 Acc.Kaddress = customer.KAddress;
@@ -463,6 +464,7 @@ namespace PureFountain.Controllers
                 Acc.Approvedon =null;
                 AccountManagement CustomerAccount = new AccountManagement();
                 Acc.Accountimg = new UserManagement().DoFileUpload(customer.AccountImg);
+                Acc.Accountsign =new UserManagement().DoFileUpload (customer.AccountSign);
                 bool NewAccount = false;
                 NewAccount = CustomerAccount.InsertAccount(Acc);
                 if (NewAccount == true)
@@ -509,6 +511,13 @@ namespace PureFountain.Controllers
         }
 
 
+        public ActionResult GetAccountDetails(int CustomerId)
+        {
+            var codes = new AccountManagement().GetAccountDetails(CustomerId);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
+
         public ActionResult ViewAccount()
         {
             ViewBag.Message = "Customers";
@@ -547,6 +556,94 @@ namespace PureFountain.Controllers
             return View();
         }
 
+        public ActionResult ListAccount()
+        {
+            ViewBag.Message = "View Account";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+        public ActionResult PostDeposit()
+        {
+            ViewBag.Message = "Post Deposit";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+        public ActionResult TransactionHistory()
+        {
+            ViewBag.Message = "Transaction History";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+        public ActionResult BankStatement()
+        {
+            ViewBag.Message = "Bank Statement";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+
+        public ActionResult LoanHistory()
+        {
+            ViewBag.Message = "Loan History";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+        public ActionResult LoanReport()
+        {
+            ViewBag.Message = "Loan Report";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+        public ActionResult TransactionReport()
+        {
+            ViewBag.Message = "Transaction Reportt";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+        public ActionResult RepostTransaction()
+        {
+            ViewBag.Message = "Repost Transaction";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+        public ActionResult ApproveDeposit()
+        {
+            ViewBag.Message = "Approve Deposit";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+
+        public ActionResult ApproveLoan()
+        {
+            ViewBag.Message = "Approve Loan";
+            AccountManagement accountMgt = new AccountManagement();
+            ViewBag.Customer = accountMgt.GetPendingAccount();
+            return View();
+        }
+        public ActionResult ViewAudit()
+        {
+            ViewBag.Message = "Audit Trail";
+            AuditService auditMgt = new AuditService();
+            ViewBag.Audit = auditMgt.getAuditById();
+            return View();
+        }
+
+
         public ActionResult GenerateAccountNos(int CustomerId)
         {
             var AccountNos = new SequenceManager().GenerateAccountNos().ToString();
@@ -564,9 +661,7 @@ namespace PureFountain.Controllers
             ErrorLogManager.LogWarning(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created");
             InsertAudit(Constants.AuditActionType.ApproveAccount, "Account Successfully Created", User.Identity.Name);
             return Json(codes, JsonRequestBehavior.AllowGet);
-            
-           
-           
+                      
         }
 
     //    [HttpGet]
