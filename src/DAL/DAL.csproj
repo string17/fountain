@@ -49,9 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="CustomObjects\AccountBalance.cs" />
+    <Compile Include="CustomObjects\CreditAccount.cs" />
     <Compile Include="CustomObjects\CustomerAccountView.cs" />
     <Compile Include="CustomObjects\CustomerInfoViewModel.cs" />
     <Compile Include="CustomObjects\RoleViewModel.cs" />
+    <Compile Include="CustomObjects\TillManager.cs" />
+    <Compile Include="CustomObjects\TransactionViewModel.cs" />
     <Compile Include="CustomObjects\UserLogin.cs" />
     <Compile Include="CustomObjects\UserProfileView.cs" />
     <Compile Include="CustomObjects\UserView.cs" />

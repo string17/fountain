@@ -252,6 +252,7 @@
     <Content Include="assets\img\flags\jp.png" />
     <Content Include="assets\img\flags\ru.png" />
     <Content Include="assets\img\flags\us.png" />
+    <Content Include="assets\img\Fountainlogo.png" />
     <Content Include="assets\img\icon-s.jpeg" />
     <Content Include="assets\img\login-logo.png" />
     <Content Include="assets\img\logo-s.jpeg" />
@@ -559,8 +560,36 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="UserImg\133UserPics.jpg" />
+    <Content Include="UserImg\225UserPics.jpg" />
+    <Content Include="UserImg\253UserPics.jpg" />
+    <Content Include="UserImg\255UserPics.jpg" />
+    <Content Include="UserImg\257UserPics.jpg" />
+    <Content Include="UserImg\293UserPics.jpg" />
+    <Content Include="UserImg\313UserPics.jpg" />
+    <Content Include="UserImg\314UserPics.jpg" />
+    <Content Include="UserImg\46UserPics.jpg" />
+    <Content Include="UserImg\559UserPics.jpg" />
+    <Content Include="UserImg\575UserPics.jpg" />
+    <Content Include="UserImg\579UserPics.jpg" />
+    <Content Include="UserImg\580UserPics.jpg" />
+    <Content Include="UserImg\59UserPics.jpg" />
+    <Content Include="UserImg\649UserPics.jpg" />
+    <Content Include="UserImg\650UserPics.jpg" />
     <Content Include="UserImg\674CompanyLogo.jpg" />
+    <Content Include="UserImg\711UserPics.jpg" />
+    <Content Include="UserImg\717UserPics.jpg" />
+    <Content Include="UserImg\731UserPics.jpg" />
+    <Content Include="UserImg\756UserPics.jpg" />
+    <Content Include="UserImg\783UserPics.jpg" />
+    <Content Include="UserImg\787UserPics.jpg" />
+    <Content Include="UserImg\81UserPics.jpg" />
+    <Content Include="UserImg\823UserPics.jpg" />
+    <Content Include="UserImg\839UserPics.jpg" />
+    <Content Include="UserImg\894UserPics.jpg" />
+    <Content Include="UserImg\922UserPics.jpg" />
     <Content Include="UserImg\929UserImg.jpg" />
+    <Content Include="UserImg\982UserPics.jpg" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -624,6 +653,10 @@
     <Content Include="Views\Fountain\ApproveLoan.cshtml" />
     <Content Include="Views\Fountain\ListAccount.cshtml" />
     <Content Include="Views\Fountain\BankStatement.cshtml" />
+    <Content Include="Views\Fountain\ModifyTill.cshtml" />
+    <Content Include="Views\Fountain\CreateTill.cshtml" />
+    <Content Include="Views\Fountain\ViewAudit - Copy.cshtml" />
+    <Content Include="Views\Fountain\ViewTill.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

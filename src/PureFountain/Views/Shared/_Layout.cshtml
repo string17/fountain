@@ -160,7 +160,7 @@
         <span id="trigger-sidebar" class="toolbar-trigger toolbar-icon-bg">
             <a data-toggle="tooltips" data-placement="right" title="Toggle Sidebar"><span class="icon-bg"><i class="fa fa-fw fa-bars"></i></span></a>
         </span>
-        <img src="~/assets/img/log.jpeg" style="height:40px;width:80px; margin-top:5px;">Avenger
+        <img src="~/assets/img/Fountainlogo.png" style="height:40px;width:80px; margin-top:5px;">Avenger
         <span id="trigger-infobar" class="toolbar-trigger toolbar-icon-bg">
             <a data-toggle="tooltips" data-placement="left" title="Toggle Infobar"><span class="icon-bg"><i class="fa fa-fw fa-bars"></i></span></a>
         </span>
@@ -617,10 +617,20 @@
         function pageLoader() {
             //alert("good");
             progressIndicator("PROCESSING");
+            closeProgressIndicator();
+            //progressIndicator();
             
             
         }
 
+        function SubmitLoader() {
+            //alert("good");
+            progressIndicator();
+            closeProgressIndicator();
+            //progressIndicator();
+
+
+        }
 
 
     </script>

@@ -54,16 +54,65 @@ namespace BLL.ApplicationLogic
             }
         }
 
+
+        public bool InsertTransaction(PureTransactionLog RequestId)
+        {
+            try
+            {
+                context.Insert(RequestId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool InsertDeposit(PureDeposit RequestId)
+        {
+            try
+            {
+                context.Insert(RequestId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public bool InsertRequest(PurePostRequest RequestId)
+        {
+            try
+            {
+                context.Insert(RequestId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public CreditAccount CreditAccount(float Amount, float Balance)
+        {
+            string sql = "SELECT CAST(SUM(@0 + @1) AS NUMERIC(18,2)) AS BALANCE";
+            var actual = context.FirstOrDefault<CreditAccount>(sql, Amount, Balance);
+            return actual;
+        }
+
         public List<CustomerInfoViewModel> GetCustomerInfo()
         {
-            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,A.PhoneNos1,A.UserSex,A.AccountImg,A.HomeAddress,A.DOB,A.HomeCity,A.HomeLGA,A.JobTitle,A.Department,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,B.TitleName,C.OccupationName,D.CountryName, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_UserTitle B on A.NameTitle = B.TitleId inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.HomeCountry inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos order by CustomerId desc";
+            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,J.ReligionName,I.AccountTitle,A.PhoneNos1,A.PhoneNos2,A.MaidenName,A.UserSex,A.UserLGA,A.IDIssueAuth,A.AccountImg,A.HomeAddress,A.DOB,A.JobTitle,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.AccountSign,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,A.ReligionId,C.OccupationName,D.CountryName,A.Nationality,A.EmploymentDate,A.AccountType,A.OfficeAddress, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.Nationality inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos inner join Pure_Account_Category I on A.AccountType=I.AccountId inner join Pure_Religion J on J.ReligionId=A.ReligionId order by CustomerId desc";
             var actual = context.Fetch<CustomerInfoViewModel>(sql).ToList();
             return actual;
         }
 
         public List<CustomerInfoViewModel> GetPendingAccount()
         {
-            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,A.PhoneNos1,A.UserSex,A.AccountImg,A.HomeAddress,A.DOB,A.HomeCity,A.HomeLGA,A.JobTitle,A.Department,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,B.TitleName,C.OccupationName,D.CountryName, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_UserTitle B on A.NameTitle = B.TitleId inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.HomeCountry inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos where A.AccountStatus='false' order by CustomerId desc";
+            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,J.ReligionName,I.AccountTitle,A.PhoneNos1,A.PhoneNos2,A.MaidenName,A.UserSex,A.UserLGA,A.IDIssueAuth,A.AccountImg,A.HomeAddress,A.DOB,A.JobTitle,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.AccountSign,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,A.ReligionId,C.OccupationName,D.CountryName,A.Nationality,A.EmploymentDate,A.AccountType,A.OfficeAddress, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.Nationality inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos inner join Pure_Account_Category I on A.AccountType=I.AccountId inner join Pure_Religion J on J.ReligionId=A.ReligionId where A.AccountStatus='false' order by CustomerId desc";
             var actual = context.Fetch<CustomerInfoViewModel>(sql).ToList();
             return actual;
         }
@@ -84,18 +133,84 @@ namespace BLL.ApplicationLogic
 
         public CustomerInfoViewModel GetAccountDetails(int CustomerId)
         {
-            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,A.OtherAccountNos,A.PhoneNos1,A.UserSex,A.AccountImg,A.HomeAddress,A.DOB,A.HomeCity,A.HomeLGA,A.JobTitle,A.Department,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.AccountStatus,A.NextOfKin,A.KNumber,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,B.TitleName,C.OccupationName,D.CountryName, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_UserTitle B on A.NameTitle = B.TitleId inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.HomeCountry inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos where A.CustomerId=@0";
+            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,J.ReligionName,I.AccountTitle,A.PhoneNos1,A.PhoneNos2,A.MaidenName,A.UserSex,A.UserLGA,A.IDIssueAuth,A.AccountImg,A.HomeAddress,A.DOB,A.JobTitle,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.AccountSign,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,A.ReligionId,C.OccupationName,D.CountryName,A.Nationality,A.EmploymentDate,A.AccountType,A.OfficeAddress, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.Nationality inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos inner join Pure_Account_Category I on A.AccountType=I.AccountId inner join Pure_Religion J on J.ReligionId=A.ReligionId where A.CustomerId=@0 order by CustomerId desc";
             var actual = context.SingleOrDefault<CustomerInfoViewModel>(sql, CustomerId);
             return actual;
         }
 
-
+        public CustomerInfoViewModel GetAccountBal(string AccountNos)
+        {
+            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,J.ReligionName,A.PhoneNos1,A.PhoneNos2,A.MaidenName,A.UserSex,A.UserLGA,A.IDIssueAuth,A.AccountImg,A.HomeAddress,A.DOB,A.JobTitle,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.AccountSign,A.KRelationship,K.AccountNos,CAST(K.AccountBal AS NUMERIC(18,2)) As Balance,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,A.ReligionId,C.OccupationName,D.CountryName,A.Nationality,A.EmploymentDate,A.AccountType,A.OfficeAddress, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.Nationality inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos inner join Pure_Account_Category I on A.AccountType=I.AccountId inner join Pure_Religion J on J.ReligionId=A.ReligionId inner join Pure_Account_Details K on K.AccountNos=A.AccountNos where K.AccountNos=@0";
+            var actual = context.SingleOrDefault<CustomerInfoViewModel>(sql,AccountNos);
+            return actual;
+        }
         public List<PureIdCard> GetAllCard()
         {
             string sql = "select * from Pure_IDCard";
             var actual = context.Fetch<PureIdCard>(sql).ToList();
             return actual;
         }
+
+        // display all Till account
+        public List<TillManager> GetTillAccount()
+        {
+            string sql = "select * from Pure_TillAccount";
+            var actual = context.Fetch<TillManager>(sql).ToList();
+            return actual;
+        }
+
+        // Fetch Till Account details
+        public TillManager GetTillAccountDetails(int TillId)
+        {
+            string sql = "select * from Pure_TillAccount where TillId=@0";
+            var actual = context.SingleOrDefault<TillManager>(sql, TillId);
+            return actual;
+        }
+
+
+        // Fetch Till Account details
+        public TillManager GetTellerTill(string TellerId)
+        {
+            string sql = "select * from Pure_TillAccount where TellerId=@0";
+            var actual = context.SingleOrDefault<TillManager>(sql,TellerId);
+            return actual;
+        }
+        // create new Till Account
+        public bool CreateTill(PureTillAccount account)
+        {
+            try
+            {
+                context.Insert(account);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        // Modify Till Account
+        public bool UpdateTill(string AccountName,double? AccountBal, string TellerId,bool? AccountStatus,string CreditedBy, DateTime? CreditedOn, int TillId)
+        {
+
+            try
+            {
+                var Account = context.SingleOrDefault<PureTillAccount>("Where TillId=@0", TillId);
+                Account.Accountstatus = AccountStatus;
+                Account.Accountname = AccountName;
+                Account.Accountbal = AccountBal;
+                Account.Creditedby = CreditedBy;
+                Account.Creditedon = CreditedOn;
+                Account.Tellerid = TellerId;
+                context.Update(Account);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         public List<PureAccountCategory> GetAccountCategory()
         {
@@ -145,6 +260,18 @@ namespace BLL.ApplicationLogic
                 return false;
             }
         }
-
+         
+        public bool FreshAccount(PureAccountDetail CustomerId)
+        {
+            try
+            {
+                context.Insert(CustomerId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }
