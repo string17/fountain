@@ -707,6 +707,7 @@ namespace PureFountain.Controllers
         public ActionResult PostDeposit()
         {
             ViewBag.Message = "Post Deposit";
+            ViewBag.SuccessMsg= TempData["SuccessMsg"];
             AccountManagement accountMgt = new AccountManagement();
             return View();
         }
@@ -720,24 +721,32 @@ namespace PureFountain.Controllers
             }
             string MethodName = Constants.AuditActionType.PostTransaction.ToString();
             string RequestId = new SequenceManager().ReturnPostingSequence();
-            string Amount=tran.Amount.ToString("#,##.00");
-            var CustomerDetails= new AccountManagement().GetAccountBal(tran.AccountNos.ToString());
+            string Amount = tran.Amount.ToString("#,##.00");
+            var CustomerDetails = new AccountManagement().GetAccountBal(tran.AccountNos.ToString());
+            //var DoTransaction = new TransactionManagement().CreditCustomer(tran.AccountNos, tran.Amount, User.Identity.Name);
             var TellerTill = new AccountManagement().GetTellerTill(User.Identity.Name);
             double TillBal = TellerTill.AccountBal;
             try
             {
                 if (TillBal > Convert.ToDouble(Amount))
                 {
+                    var CreditRem = new PureRemittance();
+                    CreditRem.Requestid = RequestId;
+                    CreditRem.Creditedby = User.Identity.Name;
+                    CreditRem.Remamount = tran.Amount;
+                    CreditRem.Creditedon = DateTime.Now;
+                    bool UpdateRem = new TransactionManagement().CreditRemAccount(CreditRem);
+
                     var acc = new PureTransactionLog();
-                    acc.Sourceaccount = "";
+                    acc.Sourceaccount = TellerTill.AccountNos;
                     acc.Destinationaccount = CustomerDetails.AccountNos;
                     acc.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
-                    //acc.Amount = tran.Amount;
+                    acc.Amount = tran.Amount;
                     acc.Transtatus = "P";
                     acc.Customerid = CustomerDetails.CustomerId;
-                    acc.Trancurrency = tran.TranCurrency;
+                    acc.Trancurrency = "NGN";
                     acc.Traninitiator = User.Identity.Name;
-                    acc.Tranapprover = tran.TranApprover;
+                    acc.Tranapprover = "";
                     acc.Trandate = DateTime.Now;
                     acc.Posteddate = null;
                     acc.Requestid = RequestId;
@@ -748,14 +757,17 @@ namespace PureFountain.Controllers
                     {
                         try
                         {
+
                             var deposit = new PureDeposit();
                             deposit.Requestid = RequestId;
-                            deposit.Accounttitle = "";
-                            deposit.Accountnos = "";
+                            deposit.Accounttitle = CustomerDetails.AccountName;
+                            deposit.Accountnos = tran.AccountNos;
                             deposit.Depositorname = tran.DepositorName;
                             deposit.Depositornos = tran.DepositorNos;
-                            deposit.Narration = tran.RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
+                            deposit.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
                             deposit.Amount = tran.Amount;
+                            deposit.Processor = User.Identity.Name;
+                            deposit.Status = "P";
                             deposit.Currencyiso = "NGN";
                             deposit.Depositeddate = DateTime.Now;
                             bool newDeposit = false;
@@ -777,8 +789,8 @@ namespace PureFountain.Controllers
                                     {
                                         var request1 = new PurePostRequest();
                                         request1.Requestid = RequestId;
-                                        request1.Accountname = "";
-                                        request1.Accountnos = "";
+                                        request1.Accountname = TellerTill.AccountName;
+                                        request1.Accountnos = TellerTill.AccountNos;
                                         request1.Drcrindicator = "DR";
                                         request1.Tranamount = tran.Amount;
                                         request1.Transtatus = "P";
@@ -788,8 +800,9 @@ namespace PureFountain.Controllers
                                         {
                                             ErrorLogManager.LogWarning(MethodName, "Login Successful");
                                             InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
-                                            ViewBag.SuccessMsg = "Transaction SuccessFul";
-                                            return View();
+                                            TempData["SuccessMsg"] = "Kindly contact your Supervisor for approval";
+                                            return RedirectToAction("postdeposit");
+                                            // return View();
                                         }
                                         else
                                         {
@@ -837,19 +850,20 @@ namespace PureFountain.Controllers
                     }
                     else
                     {
-                        ErrorLogManager.LogWarning(MethodName, "Login Successful");
-                        InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
-                        ViewBag.ErrorMsg = "Unable to create Account";
+                        ErrorLogManager.LogWarning(MethodName, "Deposit Successful");
+                        InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Deposit", User.Identity.Name);
+                        ViewBag.ErrorMsg = "Unable to Deposit";
                         return View();
                     }
                 }
                 else
                 {
-
+                    ViewBag.ErrorMsg = "Amount is greater than the Till";
+                    return View();
                 }
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogManager.LogError(MethodName, ex);
                 InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
@@ -864,10 +878,17 @@ namespace PureFountain.Controllers
         public ActionResult TransactionHistory()
         {
             ViewBag.Message = "Transaction History";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            ViewBag.Deposit = new AccountManagement().GetDepositByUserName(User.Identity.Name);
             return View();
         }
+
+        //Receipt
+        public ActionResult Receipt()
+        {
+            ViewBag.Message = "Receipt";
+            return View();
+        }
+
 
         public ActionResult BankStatement()
         {
@@ -912,11 +933,46 @@ namespace PureFountain.Controllers
         public ActionResult ApproveDeposit()
         {
             ViewBag.Message = "Approve Deposit";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            ViewBag.Transaction = new AccountManagement().GetPendingTransaction();
             return View();
         }
 
+        public ActionResult ApproveTransaction(string RequestId)
+        {
+               
+            TransactionManagement transactionMgt = new TransactionManagement();
+            string MethodName = "Approve Transaction";
+            var codes = transactionMgt.GetTransactionDetails(RequestId);
+            string TellerId = codes.Traninitiator;
+            string TranStatus = "S";
+            string CustomerAccount = codes.Destinationaccount;
+            double DepositAmount = Convert.ToDouble(codes.Amount);
+            bool UpdateTransaction = transactionMgt.ApproveTransaction(RequestId, CustomerAccount, DepositAmount, TellerId, TranStatus);//Transaction
+            ErrorLogManager.LogWarning(MethodName, "Account Successfully created");
+            InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+            
+
+        public ActionResult RejectTransaction(string RequestId)
+        {
+            TransactionManagement transactionMgt = new TransactionManagement();
+            var codes = transactionMgt.GetTransactionDetails(RequestId);
+            string MethodName = "Cancel Transaction";
+            string ApproverId = User.Identity.Name;
+            string TranStatus = "F";
+            var UpdateTransaction = transactionMgt.RejectTransaction(RequestId, ApproverId, TranStatus);//Transaction
+            ErrorLogManager.LogWarning(MethodName, "Account Successfully created");
+            InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ShowTransaction(string RequestId)
+        {
+            TransactionManagement transactionMgt = new TransactionManagement();
+            var codes = transactionMgt.GetTransactionDetails(RequestId);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult ApproveLoan()
         {
             ViewBag.Message = "Approve Loan";

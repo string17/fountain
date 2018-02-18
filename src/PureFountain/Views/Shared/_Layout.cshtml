@@ -160,7 +160,7 @@
         <span id="trigger-sidebar" class="toolbar-trigger toolbar-icon-bg">
             <a data-toggle="tooltips" data-placement="right" title="Toggle Sidebar"><span class="icon-bg"><i class="fa fa-fw fa-bars"></i></span></a>
         </span>
-        <img src="~/assets/img/Fountainlogo.png" style="height:40px;width:80px; margin-top:5px;">Avenger
+        <img src="~/assets/img/FountainBanner.jpeg" style="height:40px;width:80px; margin-top:5px;">Avenger
         <span id="trigger-infobar" class="toolbar-trigger toolbar-icon-bg">
             <a data-toggle="tooltips" data-placement="left" title="Toggle Infobar"><span class="icon-bg"><i class="fa fa-fw fa-bars"></i></span></a>
         </span>
@@ -594,25 +594,7 @@
 
 
     <script>
-        function checkRefresh() {
-            if (document.refreshForm.visited.value == "") {
-                // This is a fresh page load
-                progressIndicator("PROCESSING");
-                document.refreshForm.visited.value = "1";
-
-                closeProgressIndicator();
-
-                // You may want to add code here special for
-                // fresh page loads
-            }
-            else {
-                // This is a page refresh
-                progressIndicator("PROCESSING");
-                closeProgressIndicator();
-                // Insert code here representing what to do on
-                // a refresh
-            }
-        }
+ 
 
         function pageLoader() {
             //alert("good");
@@ -626,7 +608,7 @@
         function SubmitLoader() {
             //alert("good");
             progressIndicator();
-            closeProgressIndicator();
+            //closeProgressIndicator();
             //progressIndicator();
 
 

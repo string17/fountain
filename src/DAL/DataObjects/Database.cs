@@ -604,6 +604,100 @@ namespace FountainContext.Data.Models
             }
 		}
 		
+		[TableName("dbo.Pure_Deposit")]
+		[PrimaryKey("DepositId")]
+		[ExplicitColumns]
+		public partial class PureDeposit : FountainDb.Record<PureDeposit>  
+		{
+			[Column("DepositId")] public int Depositid 
+			{ 
+				get { return _Depositid; }
+				set { _Depositid = value; Track("DepositId"); }
+			}
+			int _Depositid;
+			[Column("RequestId")] public string Requestid 
+			{ 
+				get { return _Requestid; }
+				set { _Requestid = value; Track("RequestId"); }
+			}
+			string _Requestid;
+			[Column("AccountTitle")] public string Accounttitle 
+			{ 
+				get { return _Accounttitle; }
+				set { _Accounttitle = value; Track("AccountTitle"); }
+			}
+			string _Accounttitle;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("DepositorName")] public string Depositorname 
+			{ 
+				get { return _Depositorname; }
+				set { _Depositorname = value; Track("DepositorName"); }
+			}
+			string _Depositorname;
+			[Column("DepositorNos")] public string Depositornos 
+			{ 
+				get { return _Depositornos; }
+				set { _Depositornos = value; Track("DepositorNos"); }
+			}
+			string _Depositornos;
+	        [Column] public string Narration 
+			{ 
+				get { return _Narration; }
+				set { _Narration = value; Track("Narration"); }
+			}
+			string _Narration;
+	        [Column] public double? Amount 
+			{ 
+				get { return _Amount; }
+				set { _Amount = value; Track("Amount"); }
+			}
+			double? _Amount;
+			[Column("CurrencyISO")] public string Currencyiso 
+			{ 
+				get { return _Currencyiso; }
+				set { _Currencyiso = value; Track("CurrencyISO"); }
+			}
+			string _Currencyiso;
+	        [Column] public string Status 
+			{ 
+				get { return _Status; }
+				set { _Status = value; Track("Status"); }
+			}
+			string _Status;
+	        [Column] public string Processor 
+			{ 
+				get { return _Processor; }
+				set { _Processor = value; Track("Processor"); }
+			}
+			string _Processor;
+			[Column("DepositedDate")] public DateTime? Depositeddate 
+			{ 
+				get { return _Depositeddate; }
+				set { _Depositeddate = value; Track("DepositedDate"); }
+			}
+			DateTime? _Depositeddate;
+		
+			public static IEnumerable<PureDeposit> Query(Database db, string[] columns = null, int[] Depositid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Deposit (NOLOCK)");
+
+				if (Depositid != null)
+					sql.Where("DepositId IN (@0)", Depositid);
+
+                return db.Query<PureDeposit>(sql);
+            }
+		}
+		
 		[TableName("dbo.Pure_UserTitle")]
 		[PrimaryKey("TitleId")]
 		[ExplicitColumns]
@@ -845,6 +939,58 @@ namespace FountainContext.Data.Models
 					sql.Where("LoanId IN (@0)", Loanid);
 
                 return db.Query<PureLoan>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Remittance")]
+		[PrimaryKey("RemId")]
+		[ExplicitColumns]
+		public partial class PureRemittance : FountainDb.Record<PureRemittance>  
+		{
+			[Column("RemId")] public int Remid 
+			{ 
+				get { return _Remid; }
+				set { _Remid = value; Track("RemId"); }
+			}
+			int _Remid;
+			[Column("RequestId")] public string Requestid 
+			{ 
+				get { return _Requestid; }
+				set { _Requestid = value; Track("RequestId"); }
+			}
+			string _Requestid;
+			[Column("RemAmount")] public double? Remamount 
+			{ 
+				get { return _Remamount; }
+				set { _Remamount = value; Track("RemAmount"); }
+			}
+			double? _Remamount;
+			[Column("CreditedBy")] public string Creditedby 
+			{ 
+				get { return _Creditedby; }
+				set { _Creditedby = value; Track("CreditedBy"); }
+			}
+			string _Creditedby;
+			[Column("CreditedOn")] public DateTime? Creditedon 
+			{ 
+				get { return _Creditedon; }
+				set { _Creditedon = value; Track("CreditedOn"); }
+			}
+			DateTime? _Creditedon;
+		
+			public static IEnumerable<PureRemittance> Query(Database db, string[] columns = null, int[] Remid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Remittance (NOLOCK)");
+
+				if (Remid != null)
+					sql.Where("RemId IN (@0)", Remid);
+
+                return db.Query<PureRemittance>(sql);
             }
 		}
 		
@@ -1529,88 +1675,6 @@ namespace FountainContext.Data.Models
 					sql.Where("CurrencyId IN (@0)", Currencyid);
 
                 return db.Query<PureCurrency>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Deposit")]
-		[PrimaryKey("DepositId")]
-		[ExplicitColumns]
-		public partial class PureDeposit : FountainDb.Record<PureDeposit>  
-		{
-			[Column("DepositId")] public int Depositid 
-			{ 
-				get { return _Depositid; }
-				set { _Depositid = value; Track("DepositId"); }
-			}
-			int _Depositid;
-			[Column("RequestId")] public string Requestid 
-			{ 
-				get { return _Requestid; }
-				set { _Requestid = value; Track("RequestId"); }
-			}
-			string _Requestid;
-			[Column("AccountTitle")] public string Accounttitle 
-			{ 
-				get { return _Accounttitle; }
-				set { _Accounttitle = value; Track("AccountTitle"); }
-			}
-			string _Accounttitle;
-			[Column("AccountNos")] public string Accountnos 
-			{ 
-				get { return _Accountnos; }
-				set { _Accountnos = value; Track("AccountNos"); }
-			}
-			string _Accountnos;
-			[Column("DepositorName")] public string Depositorname 
-			{ 
-				get { return _Depositorname; }
-				set { _Depositorname = value; Track("DepositorName"); }
-			}
-			string _Depositorname;
-			[Column("DepositorNos")] public string Depositornos 
-			{ 
-				get { return _Depositornos; }
-				set { _Depositornos = value; Track("DepositorNos"); }
-			}
-			string _Depositornos;
-	        [Column] public string Narration 
-			{ 
-				get { return _Narration; }
-				set { _Narration = value; Track("Narration"); }
-			}
-			string _Narration;
-	        [Column] public double? Amount 
-			{ 
-				get { return _Amount; }
-				set { _Amount = value; Track("Amount"); }
-			}
-			double? _Amount;
-			[Column("CurrencyISO")] public string Currencyiso 
-			{ 
-				get { return _Currencyiso; }
-				set { _Currencyiso = value; Track("CurrencyISO"); }
-			}
-			string _Currencyiso;
-			[Column("DepositedDate")] public DateTime? Depositeddate 
-			{ 
-				get { return _Depositeddate; }
-				set { _Depositeddate = value; Track("DepositedDate"); }
-			}
-			DateTime? _Depositeddate;
-		
-			public static IEnumerable<PureDeposit> Query(Database db, string[] columns = null, int[] Depositid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Deposit (NOLOCK)");
-
-				if (Depositid != null)
-					sql.Where("DepositId IN (@0)", Depositid);
-
-                return db.Query<PureDeposit>(sql);
             }
 		}
 		

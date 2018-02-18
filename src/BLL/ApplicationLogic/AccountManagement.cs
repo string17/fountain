@@ -151,6 +151,24 @@ namespace BLL.ApplicationLogic
             return actual;
         }
 
+        //Get all Transaction by Teller
+        public List<PureDeposit> GetDepositByUserName(string UserName)
+        {
+            string sql = "select * from Pure_Deposit where Processor=@0";
+            var actual = context.Fetch<PureDeposit>(sql, UserName).ToList();
+            return actual;
+        }
+
+
+        //Get Pending Transaction
+        public List<PureTransactionLog> GetPendingTransaction()
+        {
+            string sql = "select * from Pure_TransactionLog where TranStatus='P'";
+            var actual = context.Fetch<PureTransactionLog>(sql).ToList();
+            return actual;
+        }
+
+
         // display all Till account
         public List<TillManager> GetTillAccount()
         {

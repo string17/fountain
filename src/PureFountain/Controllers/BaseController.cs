@@ -29,6 +29,7 @@ namespace PureFountain.Controllers
             if (String.IsNullOrEmpty(User.Identity.Name))
             {
                 TempData["ProfileMsg"] = TempData["ProfileMsg"];
+                TempData["SuccessMsg"] = TempData["SuccessMsg"];
                 FormsAuthentication.SignOut();
                 RedirectToAction("Login", "Account", new { SystemIP= SystemIP,SystemName=SystemName });
             }

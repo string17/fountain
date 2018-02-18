@@ -252,6 +252,7 @@
     <Content Include="assets\img\flags\jp.png" />
     <Content Include="assets\img\flags\ru.png" />
     <Content Include="assets\img\flags\us.png" />
+    <Content Include="assets\img\FountainBanner.jpeg" />
     <Content Include="assets\img\Fountainlogo.png" />
     <Content Include="assets\img\icon-s.jpeg" />
     <Content Include="assets\img\login-logo.png" />
@@ -657,6 +658,7 @@
     <Content Include="Views\Fountain\CreateTill.cshtml" />
     <Content Include="Views\Fountain\ViewAudit - Copy.cshtml" />
     <Content Include="Views\Fountain\ViewTill.cshtml" />
+    <Content Include="Views\Fountain\Receipt.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
