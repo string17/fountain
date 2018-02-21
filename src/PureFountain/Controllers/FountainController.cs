@@ -53,8 +53,10 @@ namespace PureFountain.Controllers
                 Till.Accountbal = 0;
                 Till.Currencycode = "NGN";
                 Till.Tellerid = "";
+                Till.Amountdebited = 0;
                 Till.Accountstatus = false;
-                Till.Creditedon = DateTime.Now;
+                Till.Drcrindicator = "CR";
+                Till.Createdon = DateTime.Now;
                 Till.Creditedby = User.Identity.Name;
                 bool NewTill = new AccountManagement().CreateTill(Till);
                 if (NewTill == true)
@@ -69,13 +71,13 @@ namespace PureFountain.Controllers
                     ViewBag.ErrorMsg = "Account not Successfully";
                 }
             }
-            catch(Exception EX)
+            catch (Exception EX)
             {
-                ErrorLogManager.LogError(MethodName,EX);
+                ErrorLogManager.LogError(MethodName, EX);
                 InsertAudit(Constants.AuditActionType.CustomerAccount, EX.Message, User.Identity.Name);
                 ViewBag.SuccessMsg = "Account Successfully created";
             }
-           
+
             return View();
         }
 
@@ -120,9 +122,11 @@ namespace PureFountain.Controllers
                 account.Accountbal = Till.AccountBal;
                 account.Tellerid = Till.TellerId;
                 account.Accountstatus = Till.AccountStatus;
+                account.Drcrindicator = "CR";
+                account.Amountdebited = 0;
                 account.Creditedby = User.Identity.Name;
-                account.Creditedon = DateTime.Now;
-                bool EditTill = new AccountManagement().UpdateTill(account.Accountname, account.Accountbal,account.Tellerid, account.Accountstatus,account.Creditedby,account.Creditedon,TillId);
+                account.Createdon = DateTime.Now;
+                bool EditTill = new AccountManagement().UpdateTill(account.Accountname, account.Accountbal, account.Tellerid, account.Accountstatus, account.Drcrindicator, account.Creditedby, account.Createdon, TillId);
                 if (EditTill == true)
                 {
                     ErrorLogManager.LogWarning(MethodName, "Till Update Successful");
@@ -137,13 +141,13 @@ namespace PureFountain.Controllers
                     ViewBag.SuccessMsg = "Till Update Unsuccessful";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogManager.LogError(MethodName, ex);
                 InsertAudit(Constants.AuditActionType.ModifyTill, "Till Update Unsuccessful", User.Identity.Name);
                 ViewBag.SuccessMsg = "Till Update Unsuccessful";
             }
-           
+
             return View();
         }
 
@@ -300,7 +304,7 @@ namespace PureFountain.Controllers
                     UserManagement usermgt = new UserManagement();
                     Acc.Userpwd = usermgt.EncryptPassword(Account.UserPWD);
                     Acc.Userimg = usermgt.DoFileUpload(Account.UserImg, c["UserImg1"]);
-                    var updateUser = usermgt.UpdateUser(Acc.Firstname, Acc.Middlename, Acc.Lastname, Acc.Username,Acc.Useremail, Acc.Userpwd, Acc.Userimg, Acc.Phonenos, Acc.Roleid, Acc.Userstatus, User.Identity.Name, DateTime.Now, UserId);
+                    var updateUser = usermgt.UpdateUser(Acc.Firstname, Acc.Middlename, Acc.Lastname, Acc.Username, Acc.Useremail, Acc.Userpwd, Acc.Userimg, Acc.Phonenos, Acc.Roleid, Acc.Userstatus, User.Identity.Name, DateTime.Now, UserId);
                     if (updateUser == true)
                     {
                         InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Identity.Name);
@@ -374,7 +378,7 @@ namespace PureFountain.Controllers
                     editUser.Userimg = usermgt.DoFileUpload(account.UserImg, c["UserImg1"]);
                     UserManagement userManagement = new UserManagement();
                     editUser.Userpwd = usermgt.EncryptPassword(account.UserPWD);
-                    bool UpdateUser = userManagement.UpdateProfile(editUser.Firstname, editUser.Middlename, editUser.Lastname, editUser.Username,editUser.Useremail, editUser.Userpwd, editUser.Userimg, editUser.Phonenos, User.Identity.Name, DateTime.Now, User.Identity.Name);
+                    bool UpdateUser = userManagement.UpdateProfile(editUser.Firstname, editUser.Middlename, editUser.Lastname, editUser.Username, editUser.Useremail, editUser.Userpwd, editUser.Userimg, editUser.Phonenos, User.Identity.Name, DateTime.Now, User.Identity.Name);
                     InsertAudit(Constants.AuditActionType.ProfileModified, "Modified a user " + editUser.Username, User.Identity.Name);
                     TempData["ProfileMsg"] = "Profile updated successfully. Please Kindly login";
                     return RedirectToAction("Logout", "Fountain");
@@ -524,7 +528,7 @@ namespace PureFountain.Controllers
         [HttpPost]
         public ActionResult CreateAccount(CustomerAccountView customer)
         {
-           
+
             if (!ModelState.IsValid)
             {
                 return View();
@@ -588,10 +592,10 @@ namespace PureFountain.Controllers
                 Acc.Modifiedby = "";
                 Acc.Modifiedon = DateTime.Now;
                 Acc.Approvedby = "";
-                Acc.Approvedon =null;
+                Acc.Approvedon = null;
                 AccountManagement CustomerAccount = new AccountManagement();
                 Acc.Accountimg = new UserManagement().DoFileUpload(customer.AccountImg);
-                Acc.Accountsign =new UserManagement().DoFileUpload (customer.AccountSign);
+                Acc.Accountsign = new UserManagement().DoFileUpload(customer.AccountSign);
                 bool NewAccount = false;
                 NewAccount = CustomerAccount.InsertAccount(Acc);
                 if (NewAccount == true)
@@ -609,7 +613,7 @@ namespace PureFountain.Controllers
                     return View();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogManager.LogError(MethodName, ex);
                 InsertAudit(Constants.AuditActionType.CustomerAccount, ex.Message, User.Identity.Name);
@@ -639,7 +643,7 @@ namespace PureFountain.Controllers
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetPendingAccount (int CustomerId)
+        public ActionResult GetPendingAccount(int CustomerId)
         {
             var codes = new AccountManagement().GetAccountDetails(CustomerId);
             return Json(codes, JsonRequestBehavior.AllowGet);
@@ -707,132 +711,147 @@ namespace PureFountain.Controllers
         public ActionResult PostDeposit()
         {
             ViewBag.Message = "Post Deposit";
-            ViewBag.SuccessMsg= TempData["SuccessMsg"];
+            ViewBag.SuccessMsg = TempData["SuccessMsg"];
             AccountManagement accountMgt = new AccountManagement();
             return View();
         }
 
+
+
         [HttpPost]
         public ActionResult PostDeposit(TransactionViewModel tran)
         {
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
             string MethodName = Constants.AuditActionType.PostTransaction.ToString();
+            string TellerId = User.Identity.Name;
             string RequestId = new SequenceManager().ReturnPostingSequence();
             string Amount = tran.Amount.ToString("#,##.00");
+            decimal DepositAmount = Convert.ToDecimal(Amount);
             var CustomerDetails = new AccountManagement().GetAccountBal(tran.AccountNos.ToString());
             //var DoTransaction = new TransactionManagement().CreditCustomer(tran.AccountNos, tran.Amount, User.Identity.Name);
-            var TellerTill = new AccountManagement().GetTellerTill(User.Identity.Name);
-            double TillBal = TellerTill.AccountBal;
+            DateTime PostdDate = DateTime.Now;
+            string ddate = PostdDate.ToString("yyyy-MM-dd");
+            string UserName = User.Identity.Name;
+            var TellerTill = new TransactionManagement().GetTillByUserName(UserName, ddate);
+            if (TellerTill == null)
+            {
+                ErrorLogManager.LogWarning(MethodName, "No Till account");
+                InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
+                ViewBag.ErrorMsg = "There is no Till Account Assigned";
+                return View();
+            }
+            decimal? TillBal = TellerTill.Initialbalance;
+            if (TillBal < Convert.ToDecimal(DepositAmount))
+            {
+                ErrorLogManager.LogWarning(MethodName, "Transaction Failed");
+                InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
+                ViewBag.ErrorMsg = "Amount is greater than the Till Balance";
+                return View();
+
+            }
             try
             {
-                if (TillBal > Convert.ToDouble(Amount))
+                var CreditRem = new PureRemittance();
+                CreditRem.Requestid = RequestId;
+                CreditRem.Creditedby = TellerId;
+                CreditRem.Remamount = tran.Amount;
+                CreditRem.Creditedon = DateTime.Now;
+                bool UpdateRem = new TransactionManagement().CreditRemAccount(CreditRem);
+                if (UpdateRem == false)
                 {
-                    var CreditRem = new PureRemittance();
-                    CreditRem.Requestid = RequestId;
-                    CreditRem.Creditedby = User.Identity.Name;
-                    CreditRem.Remamount = tran.Amount;
-                    CreditRem.Creditedon = DateTime.Now;
-                    bool UpdateRem = new TransactionManagement().CreditRemAccount(CreditRem);
+                    ViewBag.ErrorMsg = "Unable to Remit the till";
+                    return View();
+                }
 
-                    var acc = new PureTransactionLog();
-                    acc.Sourceaccount = TellerTill.AccountNos;
-                    acc.Destinationaccount = CustomerDetails.AccountNos;
-                    acc.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
-                    acc.Amount = tran.Amount;
-                    acc.Transtatus = "P";
-                    acc.Customerid = CustomerDetails.CustomerId;
-                    acc.Trancurrency = "NGN";
-                    acc.Traninitiator = User.Identity.Name;
-                    acc.Tranapprover = "";
-                    acc.Trandate = DateTime.Now;
-                    acc.Posteddate = null;
-                    acc.Requestid = RequestId;
+                var ProcessTill = new AccountManagement().GetTellerTill(TellerId, ddate);
+                bool DebitTill = new TransactionManagement().ConfirmTransaction(RequestId, CustomerDetails.AccountNos, DepositAmount, TellerId);
+                if (DebitTill == false)
+                {
+                    ViewBag.ErrorMsg = "Unable to Post the Transaction";
+                    return View();
+                }
 
-                    bool firstPost = false;
-                    firstPost = new AccountManagement().InsertTransaction(acc);
-                    if (firstPost == true)
+                var acc = new PureTransactionLog();
+                acc.Sourceaccount = ProcessTill.AccountNos;
+                acc.Destinationaccount = CustomerDetails.AccountNos;
+                acc.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
+                acc.Amount = tran.Amount;
+                acc.Transtatus = "P";
+                acc.Customerid = CustomerDetails.CustomerId;
+                acc.Trancurrency = "NGN";
+                acc.Traninitiator = User.Identity.Name;
+                acc.Tranapprover = "";
+                acc.Trandate = DateTime.Now;
+                acc.Approveddate = null;
+                acc.Requestid = RequestId;
+
+                bool firstPost = false;
+                firstPost = new AccountManagement().InsertTransaction(acc);
+                if (firstPost == true)
+                {
+                    try
                     {
+
+                        var deposit = new PureDeposit();
+                        deposit.Requestid = RequestId;
+                        deposit.Accounttitle = CustomerDetails.AccountName;
+                        deposit.Accountnos = tran.AccountNos;
+                        deposit.Depositorname = tran.DepositorName;
+                        deposit.Depositornos = tran.DepositorNos;
+                        deposit.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
+                        deposit.Amount = tran.Amount;
+                        deposit.Processor = User.Identity.Name;
+                        deposit.Status = "P";
+                        deposit.Currencyiso = "NGN";
+                        deposit.Depositeddate = DateTime.Now;
+                        bool newDeposit = false;
+                        newDeposit = new AccountManagement().InsertDeposit(deposit);
+                        if (newDeposit == false)
+                        {
+                            ViewBag.ErrorMsg = "Unable to Post the Transaction";
+                            return View();
+                        }
                         try
                         {
-
-                            var deposit = new PureDeposit();
-                            deposit.Requestid = RequestId;
-                            deposit.Accounttitle = CustomerDetails.AccountName;
-                            deposit.Accountnos = tran.AccountNos;
-                            deposit.Depositorname = tran.DepositorName;
-                            deposit.Depositornos = tran.DepositorNos;
-                            deposit.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
-                            deposit.Amount = tran.Amount;
-                            deposit.Processor = User.Identity.Name;
-                            deposit.Status = "P";
-                            deposit.Currencyiso = "NGN";
-                            deposit.Depositeddate = DateTime.Now;
-                            bool newDeposit = false;
-                            newDeposit = new AccountManagement().InsertDeposit(deposit);
-                            if (newDeposit == true)
+                            var request = new PurePostRequest();
+                            request.Requestid = RequestId;
+                            request.Accountname = CustomerDetails.AccountName;
+                            request.Accountnos = CustomerDetails.AccountNos;
+                            request.Drcrindicator = "CR";
+                            request.Tranamount = tran.Amount;
+                            request.Transtatus = "P";
+                            bool DrRequest = false;
+                            DrRequest = new AccountManagement().InsertRequest(request);
+                            if (DrRequest == true)
                             {
-                                try
+                                var request1 = new PurePostRequest();
+                                request1.Requestid = RequestId;
+                                request1.Accountname = ProcessTill.AccountName;
+                                request1.Accountnos = ProcessTill.AccountNos;
+                                request1.Drcrindicator = "DR";
+                                request1.Tranamount = tran.Amount;
+                                request1.Transtatus = "P";
+                                bool CrRequest = false;
+                                CrRequest = new AccountManagement().InsertRequest(request1);
+                                if (CrRequest == true)
                                 {
-                                    var request = new PurePostRequest();
-                                    request.Requestid = RequestId;
-                                    request.Accountname = CustomerDetails.AccountName;
-                                    request.Accountnos = CustomerDetails.AccountNos;
-                                    request.Drcrindicator = "CR";
-                                    request.Tranamount = tran.Amount;
-                                    request.Transtatus = "P";
-                                    bool DrRequest = false;
-                                    DrRequest = new AccountManagement().InsertRequest(request);
-                                    if (DrRequest == true)
-                                    {
-                                        var request1 = new PurePostRequest();
-                                        request1.Requestid = RequestId;
-                                        request1.Accountname = TellerTill.AccountName;
-                                        request1.Accountnos = TellerTill.AccountNos;
-                                        request1.Drcrindicator = "DR";
-                                        request1.Tranamount = tran.Amount;
-                                        request1.Transtatus = "P";
-                                        bool CrRequest = false;
-                                        CrRequest = new AccountManagement().InsertRequest(request1);
-                                        if (CrRequest == true)
-                                        {
-                                            ErrorLogManager.LogWarning(MethodName, "Login Successful");
-                                            InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
-                                            TempData["SuccessMsg"] = "Kindly contact your Supervisor for approval";
-                                            return RedirectToAction("postdeposit");
-                                            // return View();
-                                        }
-                                        else
-                                        {
-                                            ErrorLogManager.LogWarning(MethodName, "Transaction Failed");
-                                            InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
-                                            ViewBag.ErrorMsg = "Transaction Failed";
-                                            return View();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        ErrorLogManager.LogWarning(MethodName, "Transaction Failed");
-                                        InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
-                                        ViewBag.ErrorMsg = "Transaction Failed";
-                                        return View();
-                                    }
-
+                                    ErrorLogManager.LogWarning(MethodName, "Login Successful");
+                                    InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
+                                    ViewBag.SuccessMsg = "Transaction Successful";
+                                    return View();
+                                    
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    ErrorLogManager.LogError(MethodName, ex);
-                                    InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
-                                    ViewBag.ErrorMsg = ex.Message;
+                                    ErrorLogManager.LogWarning(MethodName, "Transaction Failed");
+                                    InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
+                                    ViewBag.ErrorMsg = "Transaction Failed";
                                     return View();
                                 }
                             }
                             else
                             {
                                 ErrorLogManager.LogWarning(MethodName, "Transaction Failed");
-                                InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
+                                InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
                                 ViewBag.ErrorMsg = "Transaction Failed";
                                 return View();
                             }
@@ -843,25 +862,18 @@ namespace PureFountain.Controllers
                             ErrorLogManager.LogError(MethodName, ex);
                             InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
                             ViewBag.ErrorMsg = ex.Message;
-
+                            return View();
                         }
-
-
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        ErrorLogManager.LogWarning(MethodName, "Deposit Successful");
-                        InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Deposit", User.Identity.Name);
-                        ViewBag.ErrorMsg = "Unable to Deposit";
+                        ErrorLogManager.LogError(MethodName, ex);
+                        InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
+                        ViewBag.ErrorMsg = ex.Message;
                         return View();
                     }
                 }
-                else
-                {
-                    ViewBag.ErrorMsg = "Amount is greater than the Till";
-                    return View();
-                }
-
+            
             }
             catch (Exception ex)
             {
@@ -870,9 +882,9 @@ namespace PureFountain.Controllers
                 ViewBag.ErrorMsg = ex.Message;
                 return View();
             }
-
             return View();
         }
+        
 
 
         public ActionResult TransactionHistory()
@@ -943,11 +955,11 @@ namespace PureFountain.Controllers
             TransactionManagement transactionMgt = new TransactionManagement();
             string MethodName = "Approve Transaction";
             var codes = transactionMgt.GetTransactionDetails(RequestId);
-            string TellerId = codes.Traninitiator;
             string TranStatus = "S";
+            string Approver = User.Identity.Name;
             string CustomerAccount = codes.Destinationaccount;
-            double DepositAmount = Convert.ToDouble(codes.Amount);
-            bool UpdateTransaction = transactionMgt.ApproveTransaction(RequestId, CustomerAccount, DepositAmount, TellerId, TranStatus);//Transaction
+          
+            bool UpdateTransaction = transactionMgt.ApproveTransaction(RequestId, Approver,TranStatus);//Transaction
             ErrorLogManager.LogWarning(MethodName, "Account Successfully created");
             InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
             return Json(codes, JsonRequestBehavior.AllowGet);
@@ -962,8 +974,8 @@ namespace PureFountain.Controllers
             string ApproverId = User.Identity.Name;
             string TranStatus = "F";
             var UpdateTransaction = transactionMgt.RejectTransaction(RequestId, ApproverId, TranStatus);//Transaction
-            ErrorLogManager.LogWarning(MethodName, "Account Successfully created");
-            InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
+            ErrorLogManager.LogWarning(MethodName, "Transaction Successfully cancelled");
+            InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Successfully Cancelled", User.Identity.Name);
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
@@ -1004,7 +1016,7 @@ namespace PureFountain.Controllers
             accNos.Customerid = CustomerId;
             bool InsertAccount = accountMgt.NewAccountNos(accNos);
             var Bal = new PureAccountDetail();
-            Bal.Accountbal = 0.00;
+            Bal.Accountbal = Convert.ToDecimal(0.00);
             Bal.Accountnos = AccountNos;
             Bal.Customerid = CustomerId;
             Bal.Modifiedby = User.Identity.Name;
@@ -1016,47 +1028,7 @@ namespace PureFountain.Controllers
                       
         }
 
-    //    [HttpGet]
-    //    [Route("ApproveAccount/{Id}")]
-    //    public ActionResult ApproveAccount(int Id)
-    //    {
-    //        if (!ModelState.IsValid)
-    //        {
-    //            return View();
-    //        }
-    //        AccountManagement accountMgt = new AccountManagement();
-    //        ViewBag.Customer = accountMgt.GetCustomerInfo();
-    //        int CustomerId = Id;
-    //        var acc = new PureCustomerInfo();
-    //        //var accNos = new PureAccountNo();
-    //        try
-    //        {
-    //            string AccountNos = new SequenceManager().GenerateAccountNos().ToString();
-    //            acc.Accountnos = AccountNos;
-    //            acc.Accountstatus = true;
-    //            //accNos.Accountnos = AccountNos;
-    //            //accNos.Customerid = CustomerId;
-    //            bool CreateAccountNos = false;
-    //            bool UpdateAccount = accountMgt.ApproveAccount(CustomerId, acc.Accountnos, acc.Accountstatus);
-    //            //CreateAccountNos = accountMgt.NewAccountNos(accNos);
-    //            //if (CreateAccountNos == true)
-    //            //{
-    //                ErrorLogManager.LogWarning(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created");
-    //                InsertAudit(Constants.AuditActionType.ApproveAccount, "Account Successfully Created", User.Identity.Name);
-    //                ViewBag.SuccessMsg = "Account Number " + acc.Accountnos + " is successfully created";
-    //           // }
-
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            ErrorLogManager.LogError(Constants.AuditActionType.ApproveAccount.ToString(), ex);
-    //            InsertAudit(Constants.AuditActionType.CustomerAccount, ex.Message, User.Identity.Name);
-    //            ViewBag.ErrorMsg = ex.Message;
-    //        }
-
-    //        return View();
-    //}
-
+    
     public ActionResult ModifyAccount()
         {
             ViewBag.Message = "Modify Account";
@@ -1066,9 +1038,183 @@ namespace PureFountain.Controllers
         }
         public ActionResult CreateLoan()
         {
+            LoanManagement loanMgt = new LoanManagement();
+            ViewBag.Loan = loanMgt.GetLoanCategory();
             return View();
         }
 
+
+        public ActionResult WithdrawalHistory()
+        {
+            ViewBag.Message = "Withdrawal";
+            ViewBag.Withdrawal = new TransactionManagement().GetWithdrawalByUsername(User.Identity.Name);
+            return View();
+        }
+
+        public ActionResult Withdrawal()
+        {
+            ViewBag.Message = "Withdrawal";
+            return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult Withdrawal(TransactionViewModel tran)
+        {
+            string MethodName = Constants.AuditActionType.PostTransaction.ToString();
+            string RequestId = new SequenceManager().ReturnPostingSequence();
+            string Amount = tran.Amount.ToString("#,##.00");
+            var CustomerDetails = new AccountManagement().GetAccountBal(tran.AccountNos.ToString());
+            //var DoTransaction = new TransactionManagement().CreditCustomer(tran.AccountNos, tran.Amount, User.Identity.Name);
+            string UserName = User.Identity.Name;
+            DateTime PostdDate = DateTime.Now;
+            string ddate = PostdDate.ToString("yyyy-MM-dd");
+            var TellerTill = new AccountManagement().GetTellerTill(UserName, ddate);
+            decimal TillBal = TellerTill.AccountBal;
+            decimal CustomerBal = CustomerDetails.Balance;
+            try
+            {
+                if (CustomerBal > Convert.ToDecimal(Amount))
+                {
+                    bool DebitCustomer = new TransactionManagement().DebitTillBal(Convert.ToDecimal(Amount), User.Identity.Name);
+
+                    var acc = new PureTransactionLog();
+                    acc.Sourceaccount = CustomerDetails.AccountNos;
+                    acc.Destinationaccount = TellerTill.AccountNos;
+                    acc.Narration = RequestId;
+                    acc.Amount = tran.Amount;
+                    acc.Transtatus = "P";
+                    acc.Customerid = CustomerDetails.CustomerId;
+                    acc.Trancurrency = "NGN";
+                    acc.Traninitiator = User.Identity.Name;
+                    acc.Tranapprover = "";
+                    acc.Trandate = DateTime.Now;
+                    acc.Approveddate = null;
+                    acc.Requestid = RequestId;
+
+                    bool firstPost = false;
+                    firstPost = new AccountManagement().InsertTransaction(acc);
+                    if (firstPost == true)
+                    {
+                        try
+                        {
+
+                            var withdraw = new PureWithdrawal();
+                            withdraw.Requestid = RequestId;
+                            //deposit.Accounttitle = CustomerDetails.AccountName;
+                            withdraw.Accountnos = tran.AccountNos;
+                            //deposit.Depositorname = tran.DepositorName;
+                            //deposit.Depositornos = tran.DepositorNos;
+                            // withdraw.Narration = RequestId;
+                            withdraw.Amount = tran.Amount;
+                            withdraw.Processor = User.Identity.Name;
+                            withdraw.Transtatus = "S";
+                            withdraw.Currencyiso = "NGN";
+                            withdraw.Withdrawaldate = DateTime.Now;
+                            bool newWithdrawal = false;
+                            newWithdrawal = new AccountManagement().InsertWithdrawal(withdraw);
+                            if (newWithdrawal == true)
+                            {
+                                try
+                                {
+                                    var request = new PurePostRequest();
+                                    request.Requestid = RequestId;
+                                    request.Accountname = TellerTill.AccountName;
+                                    request.Accountnos = TellerTill.AccountNos;
+                                    request.Drcrindicator = "CR";
+                                    request.Tranamount = tran.Amount;
+                                    request.Transtatus = "P";
+                                    bool DrRequest = false;
+                                    DrRequest = new AccountManagement().InsertRequest(request);
+                                    if (DrRequest == true)
+                                    {
+                                        var request1 = new PurePostRequest();
+                                        request1.Requestid = RequestId;
+                                        request1.Accountname = CustomerDetails.AccountName;
+                                        request1.Accountnos =  CustomerDetails.AccountNos;
+                                        request1.Drcrindicator = "DR";
+                                        request1.Tranamount = tran.Amount;
+                                        request1.Transtatus = "P";
+                                        bool CrRequest = false;
+                                        CrRequest = new AccountManagement().InsertRequest(request1);
+                                        if (CrRequest == true)
+                                        {
+                                            ErrorLogManager.LogWarning(MethodName, "Login Successful");
+                                            InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
+                                            ViewBag.SuccessMsg = "Kindly contact your Supervisor for approval";
+                                            //return RedirectToAction("postdeposit");
+                                            return View();
+                                            //return Json();
+                                        }
+                                        else
+                                        {
+                                            ErrorLogManager.LogWarning(MethodName, "Transaction Failed");
+                                            InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
+                                            ViewBag.ErrorMsg = "Transaction Failed";
+                                            return View();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ErrorLogManager.LogWarning(MethodName, "Transaction Failed");
+                                        InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
+                                        ViewBag.ErrorMsg = "Transaction Failed";
+                                        return View();
+                                    }
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    ErrorLogManager.LogError(MethodName, ex);
+                                    InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
+                                    ViewBag.ErrorMsg = ex.Message;
+                                    return View();
+                                }
+                            }
+                            else
+                            {
+                                ErrorLogManager.LogWarning(MethodName, "Transaction Failed");
+                                InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
+                                ViewBag.ErrorMsg = "Transaction Failed";
+                                return View();
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            ErrorLogManager.LogError(MethodName, ex);
+                            InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
+                            ViewBag.ErrorMsg = ex.Message;
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        ErrorLogManager.LogWarning(MethodName, "Deposit Successful");
+                        InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Deposit", User.Identity.Name);
+                        ViewBag.ErrorMsg = "Unable to Deposit";
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMsg = "Amount is greater than the Till Balance";
+                    return View();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ErrorLogManager.LogError(MethodName, ex);
+                InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
+                ViewBag.ErrorMsg = ex.Message;
+                return View();
+            }
+
+            return View();
+        }
 
 
         public ActionResult Logout()

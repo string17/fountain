@@ -1,4 +1,5 @@
-﻿using FountainContext.Data.Models;
+﻿using DAL.CustomObjects;
+using FountainContext.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,42 +27,108 @@ namespace BLL.ApplicationLogic
         }
 
         //get the customer details
-        public PureAccountDetail GetAccount(string AccountNos)
+        public AccountBalance GetAccount(string AccountNos)
         {
-            string sql = "select * from Pure_AccountNos where AccountNos=@0";
-            var actual = context.FirstOrDefault<PureAccountDetail>(sql, AccountNos);
+            string sql = "select * from Pure_Account_Details where AccountNos=@0";
+            var actual = context.FirstOrDefault<AccountBalance>(sql, AccountNos);
             return actual;
         }
 
         //Get the till Account
-        public PureTillAccount GetTillAccount(string UserName)
+        public List<PureWithdrawal> GetWithdrawalByUsername(string UserName)
         {
-            string sql = "select * from Pure_TillAccount where TellerId=@0";
-            var actual = context.FirstOrDefault<PureTillAccount>(sql, UserName);
+            string sql = "select * from Pure_Withdrawal where Processor=@0 order by WithdrawalId desc;";
+            var actual = context.Fetch<PureWithdrawal>(sql, UserName).ToList();
             return actual;
         }
 
-        //Update Till Account
-        public bool UpdateTillBal(double TillBal, string UserName)
+        //Get the till Account
+        public PureTillAccount GetTillAccount(string UserName, string TillDay)
         {
-         
-            try
+            string sql = "select top 1 TillId,AccountName,AccountNos,AccountBal,TellerId from Pure_TillAccount where TellerId=@0 and CreatedOn=@1 order by TillId desc;";
+            var actual = context.FirstOrDefault<PureTillAccount>(sql, UserName,TillDay);
+            return actual;
+        }
+
+
+        //Get the Teller till
+        public PureTellerTill GetTillByUserName(string UserName, string TillDay)
+        {
+            string sql = "select top 1 DebitId,TellerId,InitialBalance from Pure_TellerTill where TellerId=@0 and DebitedDate=@1 order by DebitId desc";
+            var actual = context.FirstOrDefault<PureTellerTill>(sql, UserName, TillDay);
+            return actual;
+        }
+
+
+        //Update Till Account
+        public bool DebitTillBal(decimal TillAmt, string UserName)
+        {
+            DateTime PostdDate = DateTime.Now;
+            string ddate = PostdDate.ToString("yyyyMMdd");
+            var TillDetails=GetTillAccount(UserName, ddate);
+            var account = new PureTillAccount();
+            account.Accountname = TillDetails.Accountname;
+            account.Accountnos = TillDetails.Accountnos;
+            account.Accountbal = TillDetails.Accountbal- TillAmt;
+            account.Amountdebited = TillAmt;
+            account.Currencycode = "NGN";
+            account.Tellerid = UserName;
+            account.Drcrindicator = "DR";
+            account.Accountstatus = TillDetails.Accountstatus;
+            account.Createdon = DateTime.Now;
+            account.Creditedby = UserName;
+           try
             {
-                var Account = new PureRemittance();
-                Account.Remamount = TillBal;
-                Account.Creditedby = UserName;
-                Account.Creditedon = DateTime.Now;
-                context.Insert(Account);
+                context.Insert(account);
                 return true;
-             
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
         }
 
-        public bool UpdateCustomerBal(double CurrentBal, string AccountNos)
+
+        public bool InsertDebit(decimal TillBal, decimal Amount, string UserName, string Indicator)
+        {
+            //var TillBal = new TransactionManagement().GetTillAccount(TellerId);
+            var account = new PureTellerTill();
+            account.Tellerid = UserName;
+            account.Initialbalance = TillBal;
+            account.Amount = Amount;
+            account.Drcrindicator = Indicator;
+            account.Debiteddate = DateTime.Now;
+            try
+            {
+                context.Insert(account);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public bool DebitCustomer(decimal Amount, string AccountNos)
+        {
+            var CustomerDetails = GetAccount(AccountNos);
+            decimal CurrentBal = CustomerDetails.AccountBal - Amount;
+          try
+            {
+                var Account = context.SingleOrDefault<PureAccountDetail>("Where AccountNos=@0", AccountNos);
+                Account.Accountbal = CurrentBal;
+                Account.Modifiedon = DateTime.Now;
+                context.Update(Account);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateCustomerBal(decimal CurrentBal, string AccountNos)
         {
 
             try
@@ -80,34 +147,34 @@ namespace BLL.ApplicationLogic
         }
 
         // Debit till account
-        public bool ApproveTransaction(string RequestId,string AccountNos, double Amount, string UserName, string TranStatus)
+        public bool ConfirmTransaction(string RequestId,string AccountNos, decimal Amount, string UserName)
         {
             //string MethodName="Debit Till";
             bool PostingStatus = false;
-            double CurrentBal = 0;
-            var TillDetails = GetTillAccount(UserName);
-            double TillBal = Convert.ToDouble(TillDetails.Accountbal);
+            DateTime PostdDate = DateTime.Now;
+            string ddate= PostdDate.ToString("yyyy-MM-dd");
+            var TillDetails = GetTillByUserName(UserName, ddate);
+            decimal TillBal = Convert.ToDecimal(TillDetails.Initialbalance);
             var CustomerAcc = GetAccount(AccountNos);
-            string DRIndicator = "DR";
-            string CRIndicator = "CR";
+            decimal? customerBal = CustomerAcc.AccountBal;
+            string Indicator = "DR";
+            //string CRIndicator = "CR";
             try
             {
-                if (TillBal > Amount)
-                {
+              
                     TillBal = TillBal - Amount;
-                    bool UpdateTill = UpdateTillBal(TillBal, UserName);//Debit the Till Account
+                    //bool UpdateTill = DebitTillBal(TillBal, UserName);//Debit the Till Account
 
-                    CurrentBal = Convert.ToDouble(CustomerAcc.Accountbal + Amount);
+                    decimal CurrentBal = Convert.ToDecimal(customerBal + Amount);
                     bool UpdateCustomer = UpdateCustomerBal(CurrentBal, AccountNos);//Credit the customer
+                    bool PostTransaction = InsertDebit(TillBal,Amount, UserName, Indicator);
 
-                    bool Transaction = UpdateTransactionLog(RequestId, UserName, TranStatus);//Debit the Till Account
-                    bool Deposit = UpdateDeposit(RequestId, TranStatus);//Debit the Till Account
-                    bool FlexPostDR = UpdateFlexRequest(RequestId, TranStatus,DRIndicator);//Debit the Till Account
-                    bool FlexPostCR = UpdateFlexRequest(RequestId, TranStatus, CRIndicator);//Debit the Till Account
+                    //bool Transaction = UpdateTransactionLog(RequestId, Approver, TranStatus);//Debit the Till Account
+                    //bool Deposit = UpdateDeposit(RequestId, TranStatus);//Debit the Till Account
+                    //bool FlexPostDR = UpdateFlexRequest(RequestId, TranStatus,DRIndicator);//Debit the Till Account
+                    //bool FlexPostCR = UpdateFlexRequest(RequestId, TranStatus, CRIndicator);//Debit the Till Account
                     PostingStatus = true;
-                }
-               
-               
+   
             }
             catch(Exception ex)
             {
@@ -117,11 +184,29 @@ namespace BLL.ApplicationLogic
             return PostingStatus;
         }
 
-        public double CreditTill(string AccountNos, double Amount,string UserName)
+
+
+        public bool ApproveTransaction(string RequestId, string Approver, string TranStatus)
         {
-            double CurrentBal = 0;
+           try
+            {
+                
+                bool Transaction = UpdateTransactionLog(RequestId, Approver, TranStatus);//Debit the Till Account
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        public decimal CreditTill(string AccountNos, decimal Amount,string UserName)
+        {
+            decimal CurrentBal = 0;
             var CustomerAcc = GetAccount(AccountNos);
-            CurrentBal = Convert.ToDouble(CustomerAcc.Accountbal - Amount);
+            CurrentBal = Convert.ToDecimal(CustomerAcc.AccountBal - Amount);
             return CurrentBal;
         }
 
@@ -178,7 +263,7 @@ namespace BLL.ApplicationLogic
                 var Account = context.SingleOrDefault<PureTransactionLog>("Where RequestId=@0", RequestId);
                 Account.Transtatus = TranStatus;
                 Account.Tranapprover = UserName;
-                Account.Posteddate = DateTime.Now;
+                Account.Approveddate = DateTime.Now;
                 //Account.Modifiedby = User.Identity.Name;
                 context.Update(Account);
                 return true;

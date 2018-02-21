@@ -68,6 +68,20 @@ namespace BLL.ApplicationLogic
             }
         }
 
+
+        public bool InsertWithdrawal(PureWithdrawal RequestId)
+        {
+            try
+            {
+                context.Insert(RequestId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool InsertDeposit(PureDeposit RequestId)
         {
             try
@@ -154,7 +168,7 @@ namespace BLL.ApplicationLogic
         //Get all Transaction by Teller
         public List<PureDeposit> GetDepositByUserName(string UserName)
         {
-            string sql = "select * from Pure_Deposit where Processor=@0";
+            string sql = "select * from Pure_Deposit where Processor=@0 order by DepositId desc";
             var actual = context.Fetch<PureDeposit>(sql, UserName).ToList();
             return actual;
         }
@@ -187,10 +201,10 @@ namespace BLL.ApplicationLogic
 
 
         // Fetch Till Account details
-        public TillManager GetTellerTill(string TellerId)
+        public TillManager GetTellerTill(string TellerId, string dDate)
         {
-            string sql = "select * from Pure_TillAccount where TellerId=@0";
-            var actual = context.SingleOrDefault<TillManager>(sql,TellerId);
+            string sql = "select top 1 TillId,AccountName,AccountNos,AccountBal,TellerId from Pure_TillAccount where TellerId=@0 and CreatedOn=@1 order by TillId desc;";
+            var actual = context.SingleOrDefault<TillManager>(sql,TellerId,dDate);
             return actual;
         }
         // create new Till Account
@@ -208,7 +222,7 @@ namespace BLL.ApplicationLogic
         }
 
         // Modify Till Account
-        public bool UpdateTill(string AccountName,double? AccountBal, string TellerId,bool? AccountStatus,string CreditedBy, DateTime? CreditedOn, int TillId)
+        public bool UpdateTill(string AccountName,decimal? AccountBal, string TellerId,bool? AccountStatus,string Drcrindicator,string CreditedBy, DateTime? CreditedOn, int TillId)
         {
 
             try
@@ -218,7 +232,9 @@ namespace BLL.ApplicationLogic
                 Account.Accountname = AccountName;
                 Account.Accountbal = AccountBal;
                 Account.Creditedby = CreditedBy;
-                Account.Creditedon = CreditedOn;
+                Account.Drcrindicator = "DR";
+                Account.Amountdebited = 0;
+                Account.Createdon = CreditedOn;
                 Account.Tellerid = TellerId;
                 context.Update(Account);
                 return true;

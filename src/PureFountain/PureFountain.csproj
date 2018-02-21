@@ -659,6 +659,8 @@
     <Content Include="Views\Fountain\ViewAudit - Copy.cshtml" />
     <Content Include="Views\Fountain\ViewTill.cshtml" />
     <Content Include="Views\Fountain\Receipt.cshtml" />
+    <Content Include="Views\Fountain\Withdrawal.cshtml" />
+    <Content Include="Views\Fountain\WithdrawalHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
