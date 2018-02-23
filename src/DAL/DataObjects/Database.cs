@@ -294,70 +294,6 @@ namespace FountainContext.Data.Models
             }
 		}
 		
-		[TableName("dbo.Pure_TellerTill")]
-		[PrimaryKey("DebitId")]
-		[ExplicitColumns]
-		public partial class PureTellerTill : FountainDb.Record<PureTellerTill>  
-		{
-			[Column("DebitId")] public int Debitid 
-			{ 
-				get { return _Debitid; }
-				set { _Debitid = value; Track("DebitId"); }
-			}
-			int _Debitid;
-			[Column("TellerId")] public string Tellerid 
-			{ 
-				get { return _Tellerid; }
-				set { _Tellerid = value; Track("TellerId"); }
-			}
-			string _Tellerid;
-			[Column("InitialBalance")] public decimal? Initialbalance 
-			{ 
-				get { return _Initialbalance; }
-				set { _Initialbalance = value; Track("InitialBalance"); }
-			}
-			decimal? _Initialbalance;
-	        [Column] public decimal? Amount 
-			{ 
-				get { return _Amount; }
-				set { _Amount = value; Track("Amount"); }
-			}
-			decimal? _Amount;
-			[Column("DRCRIndicator")] public string Drcrindicator 
-			{ 
-				get { return _Drcrindicator; }
-				set { _Drcrindicator = value; Track("DRCRIndicator"); }
-			}
-			string _Drcrindicator;
-			[Column("DebitedDate")] public DateTime? Debiteddate 
-			{ 
-				get { return _Debiteddate; }
-				set { _Debiteddate = value; Track("DebitedDate"); }
-			}
-			DateTime? _Debiteddate;
-			[Column("CreatedBy")] public string Createdby 
-			{ 
-				get { return _Createdby; }
-				set { _Createdby = value; Track("CreatedBy"); }
-			}
-			string _Createdby;
-		
-			public static IEnumerable<PureTellerTill> Query(Database db, string[] columns = null, int[] Debitid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_TellerTill (NOLOCK)");
-
-				if (Debitid != null)
-					sql.Where("DebitId IN (@0)", Debitid);
-
-                return db.Query<PureTellerTill>(sql);
-            }
-		}
-		
 		[TableName("dbo.Pure_Country")]
 		[PrimaryKey("CountryId")]
 		[ExplicitColumns]
@@ -641,6 +577,76 @@ namespace FountainContext.Data.Models
 					sql.Where("IDNos IN (@0)", Idnos);
 
                 return db.Query<PureIdCard>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_TellerTill")]
+		[PrimaryKey("DebitId")]
+		[ExplicitColumns]
+		public partial class PureTellerTill : FountainDb.Record<PureTellerTill>  
+		{
+			[Column("DebitId")] public int Debitid 
+			{ 
+				get { return _Debitid; }
+				set { _Debitid = value; Track("DebitId"); }
+			}
+			int _Debitid;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("TellerId")] public string Tellerid 
+			{ 
+				get { return _Tellerid; }
+				set { _Tellerid = value; Track("TellerId"); }
+			}
+			string _Tellerid;
+			[Column("InitialBalance")] public decimal? Initialbalance 
+			{ 
+				get { return _Initialbalance; }
+				set { _Initialbalance = value; Track("InitialBalance"); }
+			}
+			decimal? _Initialbalance;
+	        [Column] public decimal? Amount 
+			{ 
+				get { return _Amount; }
+				set { _Amount = value; Track("Amount"); }
+			}
+			decimal? _Amount;
+			[Column("DRCRIndicator")] public string Drcrindicator 
+			{ 
+				get { return _Drcrindicator; }
+				set { _Drcrindicator = value; Track("DRCRIndicator"); }
+			}
+			string _Drcrindicator;
+			[Column("DebitedDate")] public DateTime? Debiteddate 
+			{ 
+				get { return _Debiteddate; }
+				set { _Debiteddate = value; Track("DebitedDate"); }
+			}
+			DateTime? _Debiteddate;
+			[Column("CreatedBy")] public string Createdby 
+			{ 
+				get { return _Createdby; }
+				set { _Createdby = value; Track("CreatedBy"); }
+			}
+			string _Createdby;
+		
+			public static IEnumerable<PureTellerTill> Query(Database db, string[] columns = null, int[] Debitid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_TellerTill (NOLOCK)");
+
+				if (Debitid != null)
+					sql.Where("DebitId IN (@0)", Debitid);
+
+                return db.Query<PureTellerTill>(sql);
             }
 		}
 		

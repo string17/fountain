@@ -15,6 +15,7 @@ namespace BLL.ApplicationLogic
             Login,
             Logout,
             CreatedUser,
+            Withdrawal,
             CreatedRole,
             ApproveAccount,
             CustomerCreated,

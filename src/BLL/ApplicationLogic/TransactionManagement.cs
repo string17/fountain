@@ -26,6 +26,19 @@ namespace BLL.ApplicationLogic
             }
         }
 
+        public bool InsertTellerTill(PureTellerTill account)
+        {
+            try
+            {
+                context.Insert(account);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         //get the customer details
         public AccountBalance GetAccount(string AccountNos)
         {
@@ -34,7 +47,7 @@ namespace BLL.ApplicationLogic
             return actual;
         }
 
-        //Get the till Account
+        //Get the withdrawal by Teller
         public List<PureWithdrawal> GetWithdrawalByUsername(string UserName)
         {
             string sql = "select * from Pure_Withdrawal where Processor=@0 order by WithdrawalId desc;";
@@ -110,6 +123,24 @@ namespace BLL.ApplicationLogic
         }
 
 
+
+        public bool InsertWithdrawal(PureWithdrawal UserName)
+        {
+            //var TillBal = new TransactionManagement().GetTillAccount(TellerId);
+            try
+            {
+                context.Insert(UserName);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+
+
         public bool DebitCustomer(decimal Amount, string AccountNos)
         {
             var CustomerDetails = GetAccount(AccountNos);
@@ -163,16 +194,9 @@ namespace BLL.ApplicationLogic
             {
               
                     TillBal = TillBal - Amount;
-                    //bool UpdateTill = DebitTillBal(TillBal, UserName);//Debit the Till Account
-
                     decimal CurrentBal = Convert.ToDecimal(customerBal + Amount);
                     bool UpdateCustomer = UpdateCustomerBal(CurrentBal, AccountNos);//Credit the customer
                     bool PostTransaction = InsertDebit(TillBal,Amount, UserName, Indicator);
-
-                    //bool Transaction = UpdateTransactionLog(RequestId, Approver, TranStatus);//Debit the Till Account
-                    //bool Deposit = UpdateDeposit(RequestId, TranStatus);//Debit the Till Account
-                    //bool FlexPostDR = UpdateFlexRequest(RequestId, TranStatus,DRIndicator);//Debit the Till Account
-                    //bool FlexPostCR = UpdateFlexRequest(RequestId, TranStatus, CRIndicator);//Debit the Till Account
                     PostingStatus = true;
    
             }
@@ -185,7 +209,36 @@ namespace BLL.ApplicationLogic
         }
 
 
+        public bool PostWithdrawal(string RequestId, string AccountNos, decimal Amount, string UserName)
+        {
+            //string MethodName="Debit Till";
+            bool PostingStatus = false;
+            DateTime PostdDate = DateTime.Now;
+            string ddate = PostdDate.ToString("yyyy-MM-dd");
+            var TillDetails = GetTillByUserName(UserName, ddate);
+            decimal TillBal = Convert.ToDecimal(TillDetails.Initialbalance);
+            var CustomerAcc = GetAccount(AccountNos);
+            decimal? customerBal = CustomerAcc.AccountBal;
+            string Indicator = "CR";
+            //string CRIndicator = "CR";
+            try
+            {
 
+                TillBal = TillBal + Amount;
+                decimal CurrentBal = Convert.ToDecimal(customerBal - Amount);
+                        
+                bool UpdateCustomer = UpdateCustomerBal(CurrentBal, AccountNos);//Credit the customer
+                bool PostTransaction = InsertDebit(TillBal, Amount, UserName, Indicator);
+                PostingStatus = true;
+
+            }
+            catch (Exception ex)
+            {
+                PostingStatus = false;
+            }
+
+            return PostingStatus;
+        }
         public bool ApproveTransaction(string RequestId, string Approver, string TranStatus)
         {
            try

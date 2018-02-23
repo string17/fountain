@@ -203,10 +203,19 @@ namespace BLL.ApplicationLogic
         // Fetch Till Account details
         public TillManager GetTellerTill(string TellerId, string dDate)
         {
-            string sql = "select top 1 TillId,AccountName,AccountNos,AccountBal,TellerId from Pure_TillAccount where TellerId=@0 and CreatedOn=@1 order by TillId desc;";
+            string sql = "select top 1 TillId,AccountName,AccountNos,AccountBal,TellerId from Pure_TillAccount where TellerId=@0 and CreatedOn=@1 order by TillId desc";
             var actual = context.SingleOrDefault<TillManager>(sql,TellerId,dDate);
             return actual;
         }
+
+
+        public PureTellerTill GetDailyTill(string TellerId, string dDate)
+        {
+            string sql = "select top 1 * from Pure_TellerTill where TellerId=@0 and DebitedDate=@1 order by DebitId desc";
+            var actual = context.FirstOrDefault<PureTellerTill>(sql, TellerId, dDate);
+            return actual;
+        }
+
         // create new Till Account
         public bool CreateTill(PureTillAccount account)
         {
