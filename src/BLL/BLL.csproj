@@ -34,6 +34,7 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NPoco, Version=3.9.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NPoco.3.9.3\lib\net45\NPoco.dll</HintPath>
       <Private>True</Private>
@@ -55,6 +56,7 @@
   <ItemGroup>
     <Compile Include="ApplicationLogic\AccountManagement.cs" />
     <Compile Include="ApplicationLogic\AccountSequence.cs" />
+    <Compile Include="ApplicationLogic\AmountToWordsManager.cs" />
     <Compile Include="ApplicationLogic\AuditService.cs" />
     <Compile Include="ApplicationLogic\BaseService.cs" />
     <Compile Include="ApplicationLogic\Constants.cs" />

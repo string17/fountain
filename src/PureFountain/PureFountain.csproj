@@ -616,7 +616,7 @@
     <Content Include="Views\Fountain\CreateLoan.cshtml" />
     <Content Include="Views\Fountain\Create_Menu.cshtml" />
     <Content Include="Views\Fountain\Create_Menuitem.cshtml" />
-    <Content Include="Views\Fountain\Create_Role.cshtml" />
+    <Content Include="Views\Fountain\CreateRole.cshtml" />
     <Content Include="Views\Fountain\CreateAccount.cshtml" />
     <Content Include="Views\Fountain\CreateUser.cshtml" />
     <Content Include="Views\Fountain\Dashboard.cshtml" />
@@ -661,9 +661,11 @@
     <Content Include="Views\Fountain\Receipt.cshtml" />
     <Content Include="Views\Fountain\Withdrawal.cshtml" />
     <Content Include="Views\Fountain\WithdrawalHistory.cshtml" />
+    <Content Include="Views\Fountain\_LoadModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="LoanImg\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>

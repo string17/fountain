@@ -14,6 +14,7 @@ namespace BLL.ApplicationLogic
 
             Login,
             Logout,
+            LoanApplication,
             CreatedUser,
             Withdrawal,
             CreatedRole,

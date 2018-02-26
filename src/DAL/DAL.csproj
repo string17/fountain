@@ -53,7 +53,10 @@
     <Compile Include="CustomObjects\CreditAccount.cs" />
     <Compile Include="CustomObjects\CustomerAccountView.cs" />
     <Compile Include="CustomObjects\CustomerInfoViewModel.cs" />
+    <Compile Include="CustomObjects\LoanStatement.cs" />
+    <Compile Include="CustomObjects\LoanViewModel.cs" />
     <Compile Include="CustomObjects\ReportViewModel.cs" />
+    <Compile Include="CustomObjects\RoleManager.cs" />
     <Compile Include="CustomObjects\RoleViewModel.cs" />
     <Compile Include="CustomObjects\TillManager.cs" />
     <Compile Include="CustomObjects\TransactionViewModel.cs" />

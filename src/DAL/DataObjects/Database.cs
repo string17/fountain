@@ -752,148 +752,6 @@ namespace FountainContext.Data.Models
             }
 		}
 		
-		[TableName("dbo.Pure_Loan")]
-		[PrimaryKey("LoanId")]
-		[ExplicitColumns]
-		public partial class PureLoan : FountainDb.Record<PureLoan>  
-		{
-			[Column("LoanId")] public int Loanid 
-			{ 
-				get { return _Loanid; }
-				set { _Loanid = value; Track("LoanId"); }
-			}
-			int _Loanid;
-			[Column("LoanCateId")] public int? Loancateid 
-			{ 
-				get { return _Loancateid; }
-				set { _Loancateid = value; Track("LoanCateId"); }
-			}
-			int? _Loancateid;
-			[Column("LoanAmount")] public decimal? Loanamount 
-			{ 
-				get { return _Loanamount; }
-				set { _Loanamount = value; Track("LoanAmount"); }
-			}
-			decimal? _Loanamount;
-			[Column("LoanInterest")] public decimal? Loaninterest 
-			{ 
-				get { return _Loaninterest; }
-				set { _Loaninterest = value; Track("LoanInterest"); }
-			}
-			decimal? _Loaninterest;
-			[Column("LoanDuration")] public string Loanduration 
-			{ 
-				get { return _Loanduration; }
-				set { _Loanduration = value; Track("LoanDuration"); }
-			}
-			string _Loanduration;
-			[Column("Guarantor1FName")] public string Guarantor1fname 
-			{ 
-				get { return _Guarantor1fname; }
-				set { _Guarantor1fname = value; Track("Guarantor1FName"); }
-			}
-			string _Guarantor1fname;
-			[Column("Guarantor1MName")] public string Guarantor1mname 
-			{ 
-				get { return _Guarantor1mname; }
-				set { _Guarantor1mname = value; Track("Guarantor1MName"); }
-			}
-			string _Guarantor1mname;
-			[Column("Guarantor1LName")] public string Guarantor1lname 
-			{ 
-				get { return _Guarantor1lname; }
-				set { _Guarantor1lname = value; Track("Guarantor1LName"); }
-			}
-			string _Guarantor1lname;
-			[Column("Guarantor1PhoneNos")] public string Guarantor1phonenos 
-			{ 
-				get { return _Guarantor1phonenos; }
-				set { _Guarantor1phonenos = value; Track("Guarantor1PhoneNos"); }
-			}
-			string _Guarantor1phonenos;
-			[Column("Guarantor1Occupation")] public string Guarantor1occupation 
-			{ 
-				get { return _Guarantor1occupation; }
-				set { _Guarantor1occupation = value; Track("Guarantor1Occupation"); }
-			}
-			string _Guarantor1occupation;
-			[Column("GuarantorIdNos")] public int? Guarantoridnos 
-			{ 
-				get { return _Guarantoridnos; }
-				set { _Guarantoridnos = value; Track("GuarantorIdNos"); }
-			}
-			int? _Guarantoridnos;
-			[Column("Guarantor2FName")] public string Guarantor2fname 
-			{ 
-				get { return _Guarantor2fname; }
-				set { _Guarantor2fname = value; Track("Guarantor2FName"); }
-			}
-			string _Guarantor2fname;
-			[Column("Guarantor2MName")] public string Guarantor2mname 
-			{ 
-				get { return _Guarantor2mname; }
-				set { _Guarantor2mname = value; Track("Guarantor2MName"); }
-			}
-			string _Guarantor2mname;
-			[Column("Guarantor2LName")] public string Guarantor2lname 
-			{ 
-				get { return _Guarantor2lname; }
-				set { _Guarantor2lname = value; Track("Guarantor2LName"); }
-			}
-			string _Guarantor2lname;
-			[Column("Guarantor2PhoneNos")] public string Guarantor2phonenos 
-			{ 
-				get { return _Guarantor2phonenos; }
-				set { _Guarantor2phonenos = value; Track("Guarantor2PhoneNos"); }
-			}
-			string _Guarantor2phonenos;
-			[Column("Guarantor2Occupation")] public string Guarantor2occupation 
-			{ 
-				get { return _Guarantor2occupation; }
-				set { _Guarantor2occupation = value; Track("Guarantor2Occupation"); }
-			}
-			string _Guarantor2occupation;
-			[Column("Guarantor2IdNos")] public int? Guarantor2idnos 
-			{ 
-				get { return _Guarantor2idnos; }
-				set { _Guarantor2idnos = value; Track("Guarantor2IdNos"); }
-			}
-			int? _Guarantor2idnos;
-			[Column("ChequeNos")] public string Chequenos 
-			{ 
-				get { return _Chequenos; }
-				set { _Chequenos = value; Track("ChequeNos"); }
-			}
-			string _Chequenos;
-			[Column("RLoan")] public string Rloan 
-			{ 
-				get { return _Rloan; }
-				set { _Rloan = value; Track("RLoan"); }
-			}
-			string _Rloan;
-			[Column("LoanStatus")] public bool? Loanstatus 
-			{ 
-				get { return _Loanstatus; }
-				set { _Loanstatus = value; Track("LoanStatus"); }
-			}
-			bool? _Loanstatus;
-		
-			public static IEnumerable<PureLoan> Query(Database db, string[] columns = null, int[] Loanid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Loan (NOLOCK)");
-
-				if (Loanid != null)
-					sql.Where("LoanId IN (@0)", Loanid);
-
-                return db.Query<PureLoan>(sql);
-            }
-		}
-		
 		[TableName("dbo.Pure_Customer_Info")]
 		[PrimaryKey("CustomerId")]
 		[ExplicitColumns]
@@ -1894,6 +1752,248 @@ namespace FountainContext.Data.Models
             }
 		}
 		
+		[TableName("dbo.Pure_Repayment")]
+		[PrimaryKey("RepayId")]
+		[ExplicitColumns]
+		public partial class PureRepayment : FountainDb.Record<PureRepayment>  
+		{
+			[Column("RepayId")] public int Repayid 
+			{ 
+				get { return _Repayid; }
+				set { _Repayid = value; Track("RepayId"); }
+			}
+			int _Repayid;
+			[Column("CustomerId")] public string Customerid 
+			{ 
+				get { return _Customerid; }
+				set { _Customerid = value; Track("CustomerId"); }
+			}
+			string _Customerid;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("LoanAmt")] public decimal? Loanamt 
+			{ 
+				get { return _Loanamt; }
+				set { _Loanamt = value; Track("LoanAmt"); }
+			}
+			decimal? _Loanamt;
+			[Column("AmountToBePaid")] public decimal? Amounttobepaid 
+			{ 
+				get { return _Amounttobepaid; }
+				set { _Amounttobepaid = value; Track("AmountToBePaid"); }
+			}
+			decimal? _Amounttobepaid;
+			[Column("AmountCredit")] public decimal? Amountcredit 
+			{ 
+				get { return _Amountcredit; }
+				set { _Amountcredit = value; Track("AmountCredit"); }
+			}
+			decimal? _Amountcredit;
+			[Column("TransRef")] public string Transref 
+			{ 
+				get { return _Transref; }
+				set { _Transref = value; Track("TransRef"); }
+			}
+			string _Transref;
+			[Column("ReceiptNos")] public string Receiptnos 
+			{ 
+				get { return _Receiptnos; }
+				set { _Receiptnos = value; Track("ReceiptNos"); }
+			}
+			string _Receiptnos;
+			[Column("CreditedOn")] public DateTime? Creditedon 
+			{ 
+				get { return _Creditedon; }
+				set { _Creditedon = value; Track("CreditedOn"); }
+			}
+			DateTime? _Creditedon;
+		
+			public static IEnumerable<PureRepayment> Query(Database db, string[] columns = null, int[] Repayid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Repayment (NOLOCK)");
+
+				if (Repayid != null)
+					sql.Where("RepayId IN (@0)", Repayid);
+
+                return db.Query<PureRepayment>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Loan")]
+		[PrimaryKey("LoanId")]
+		[ExplicitColumns]
+		public partial class PureLoan : FountainDb.Record<PureLoan>  
+		{
+			[Column("LoanId")] public int Loanid 
+			{ 
+				get { return _Loanid; }
+				set { _Loanid = value; Track("LoanId"); }
+			}
+			int _Loanid;
+			[Column("LoanCateId")] public int? Loancateid 
+			{ 
+				get { return _Loancateid; }
+				set { _Loancateid = value; Track("LoanCateId"); }
+			}
+			int? _Loancateid;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("LoanAmount")] public decimal? Loanamount 
+			{ 
+				get { return _Loanamount; }
+				set { _Loanamount = value; Track("LoanAmount"); }
+			}
+			decimal? _Loanamount;
+			[Column("LoanInterest")] public decimal? Loaninterest 
+			{ 
+				get { return _Loaninterest; }
+				set { _Loaninterest = value; Track("LoanInterest"); }
+			}
+			decimal? _Loaninterest;
+			[Column("LoanInterestWeek")] public decimal? Loaninterestweek 
+			{ 
+				get { return _Loaninterestweek; }
+				set { _Loaninterestweek = value; Track("LoanInterestWeek"); }
+			}
+			decimal? _Loaninterestweek;
+			[Column("LoanDuration")] public string Loanduration 
+			{ 
+				get { return _Loanduration; }
+				set { _Loanduration = value; Track("LoanDuration"); }
+			}
+			string _Loanduration;
+			[Column("Guarantor1Name")] public string Guarantor1name 
+			{ 
+				get { return _Guarantor1name; }
+				set { _Guarantor1name = value; Track("Guarantor1Name"); }
+			}
+			string _Guarantor1name;
+			[Column("Guarantor1PhoneNos")] public string Guarantor1phonenos 
+			{ 
+				get { return _Guarantor1phonenos; }
+				set { _Guarantor1phonenos = value; Track("Guarantor1PhoneNos"); }
+			}
+			string _Guarantor1phonenos;
+			[Column("Guarantor1Occupation")] public string Guarantor1occupation 
+			{ 
+				get { return _Guarantor1occupation; }
+				set { _Guarantor1occupation = value; Track("Guarantor1Occupation"); }
+			}
+			string _Guarantor1occupation;
+			[Column("GuarantorIdNos")] public string Guarantoridnos 
+			{ 
+				get { return _Guarantoridnos; }
+				set { _Guarantoridnos = value; Track("GuarantorIdNos"); }
+			}
+			string _Guarantoridnos;
+			[Column("Guarantor2Name")] public string Guarantor2name 
+			{ 
+				get { return _Guarantor2name; }
+				set { _Guarantor2name = value; Track("Guarantor2Name"); }
+			}
+			string _Guarantor2name;
+			[Column("Guarantor2PhoneNos")] public string Guarantor2phonenos 
+			{ 
+				get { return _Guarantor2phonenos; }
+				set { _Guarantor2phonenos = value; Track("Guarantor2PhoneNos"); }
+			}
+			string _Guarantor2phonenos;
+			[Column("Guarantor2Occupation")] public string Guarantor2occupation 
+			{ 
+				get { return _Guarantor2occupation; }
+				set { _Guarantor2occupation = value; Track("Guarantor2Occupation"); }
+			}
+			string _Guarantor2occupation;
+			[Column("Guarantor2IdNos")] public string Guarantor2idnos 
+			{ 
+				get { return _Guarantor2idnos; }
+				set { _Guarantor2idnos = value; Track("Guarantor2IdNos"); }
+			}
+			string _Guarantor2idnos;
+			[Column("Cheque1Nos")] public string Cheque1nos 
+			{ 
+				get { return _Cheque1nos; }
+				set { _Cheque1nos = value; Track("Cheque1Nos"); }
+			}
+			string _Cheque1nos;
+			[Column("Cheque2Nos")] public string Cheque2nos 
+			{ 
+				get { return _Cheque2nos; }
+				set { _Cheque2nos = value; Track("Cheque2Nos"); }
+			}
+			string _Cheque2nos;
+			[Column("NepaBill")] public string Nepabill 
+			{ 
+				get { return _Nepabill; }
+				set { _Nepabill = value; Track("NepaBill"); }
+			}
+			string _Nepabill;
+			[Column("LoanStatus")] public string Loanstatus 
+			{ 
+				get { return _Loanstatus; }
+				set { _Loanstatus = value; Track("LoanStatus"); }
+			}
+			string _Loanstatus;
+			[Column("RepaymentStatus")] public string Repaymentstatus 
+			{ 
+				get { return _Repaymentstatus; }
+				set { _Repaymentstatus = value; Track("RepaymentStatus"); }
+			}
+			string _Repaymentstatus;
+	        [Column] public string Processor 
+			{ 
+				get { return _Processor; }
+				set { _Processor = value; Track("Processor"); }
+			}
+			string _Processor;
+	        [Column] public string Approver 
+			{ 
+				get { return _Approver; }
+				set { _Approver = value; Track("Approver"); }
+			}
+			string _Approver;
+			[Column("ProcessedDate")] public DateTime? Processeddate 
+			{ 
+				get { return _Processeddate; }
+				set { _Processeddate = value; Track("ProcessedDate"); }
+			}
+			DateTime? _Processeddate;
+			[Column("ApprovedDate")] public DateTime? Approveddate 
+			{ 
+				get { return _Approveddate; }
+				set { _Approveddate = value; Track("ApprovedDate"); }
+			}
+			DateTime? _Approveddate;
+		
+			public static IEnumerable<PureLoan> Query(Database db, string[] columns = null, int[] Loanid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Loan (NOLOCK)");
+
+				if (Loanid != null)
+					sql.Where("LoanId IN (@0)", Loanid);
+
+                return db.Query<PureLoan>(sql);
+            }
+		}
+		
 		[TableName("dbo.Pure_Menu")]
 		[ExplicitColumns]
 		public partial class PureMenu : FountainDb.Record<PureMenu>  
@@ -2067,64 +2167,6 @@ namespace FountainContext.Data.Models
 					sql.Where("Id IN (@0)", Id);
 
                 return db.Query<PureAuditTrail>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Repayment")]
-		[PrimaryKey("RepayId")]
-		[ExplicitColumns]
-		public partial class PureRepayment : FountainDb.Record<PureRepayment>  
-		{
-			[Column("RepayId")] public int Repayid 
-			{ 
-				get { return _Repayid; }
-				set { _Repayid = value; Track("RepayId"); }
-			}
-			int _Repayid;
-			[Column("CustomerId")] public string Customerid 
-			{ 
-				get { return _Customerid; }
-				set { _Customerid = value; Track("CustomerId"); }
-			}
-			string _Customerid;
-			[Column("AmountCredit")] public decimal? Amountcredit 
-			{ 
-				get { return _Amountcredit; }
-				set { _Amountcredit = value; Track("AmountCredit"); }
-			}
-			decimal? _Amountcredit;
-			[Column("TransRef")] public string Transref 
-			{ 
-				get { return _Transref; }
-				set { _Transref = value; Track("TransRef"); }
-			}
-			string _Transref;
-			[Column("ReceiptNos")] public string Receiptnos 
-			{ 
-				get { return _Receiptnos; }
-				set { _Receiptnos = value; Track("ReceiptNos"); }
-			}
-			string _Receiptnos;
-			[Column("CreditedOn")] public DateTime? Creditedon 
-			{ 
-				get { return _Creditedon; }
-				set { _Creditedon = value; Track("CreditedOn"); }
-			}
-			DateTime? _Creditedon;
-		
-			public static IEnumerable<PureRepayment> Query(Database db, string[] columns = null, int[] Repayid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Repayment (NOLOCK)");
-
-				if (Repayid != null)
-					sql.Where("RepayId IN (@0)", Repayid);
-
-                return db.Query<PureRepayment>(sql);
             }
 		}
 }

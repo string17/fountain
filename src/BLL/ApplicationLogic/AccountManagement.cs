@@ -26,6 +26,15 @@ namespace BLL.ApplicationLogic
             return actual;
         }
 
+
+        // monitor Account by username
+        public List<PureCustomerInfo> GetAllCustomerByUsername(string UserName)
+        {
+            string sql = "";
+            var actual = context.Fetch<PureCustomerInfo>(sql, UserName).ToList();
+            return actual;
+        }
+
         public List<PureBank> GetAllBank()
         {
             string sql = "select * from Pure_Bank";

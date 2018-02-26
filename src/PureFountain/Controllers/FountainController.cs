@@ -645,6 +645,12 @@ namespace PureFountain.Controllers
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
+        //getLoan Status
+        public ActionResult GetLoanDetails(int LoanId)
+        {
+            var codes = new LoanManagement().GetLoanDetails(LoanId);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
 
         //get Till details
         public ActionResult GetTillDetails(int TillId)
@@ -666,6 +672,8 @@ namespace PureFountain.Controllers
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
+
+        //Get customer Account Balance
         public ActionResult GetCustomerBalance(string AccountNos)
         {
             var codes = new AccountManagement().GetAccountBal(AccountNos);
@@ -930,8 +938,8 @@ namespace PureFountain.Controllers
         public ActionResult LoanHistory()
         {
             ViewBag.Message = "Loan History";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            string UserName = User.Identity.Name;
+            ViewBag.Loan = new LoanManagement().GetLoanByUsername(UserName);
             return View();
         }
 
@@ -965,6 +973,8 @@ namespace PureFountain.Controllers
             return View();
         }
 
+
+       
         public ActionResult ApproveTransaction(string RequestId)
         {
                
@@ -982,6 +992,7 @@ namespace PureFountain.Controllers
         }
             
 
+
         public ActionResult RejectTransaction(string RequestId)
         {
             TransactionManagement transactionMgt = new TransactionManagement();
@@ -995,6 +1006,32 @@ namespace PureFountain.Controllers
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
+
+        public ActionResult RejectLoan(int LoanId)
+        {
+            LoanManagement loanMgt = new LoanManagement();
+            string MethodName = "Decline Loan";
+            string LoanStatus = "F";
+            string Approver = User.Identity.Name;
+            bool codes = loanMgt.ApproveLoanStatus(LoanStatus, LoanId, Approver);//Transaction
+            ErrorLogManager.LogWarning(MethodName, "Unable to grant loan");
+            InsertAudit(Constants.AuditActionType.CustomerAccount, "Unable to grant loan", User.Identity.Name);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult GrantLoan(int LoanId)
+        {
+            LoanManagement loanMgt = new LoanManagement();
+            string MethodName = "Approve Loan";
+            string LoanStatus = "A";
+            string Approver = User.Identity.Name;
+            bool codes = loanMgt.ApproveLoanStatus(LoanStatus,LoanId, Approver);//Transaction
+            ErrorLogManager.LogWarning(MethodName, "Account Successfully created");
+            InsertAudit(Constants.AuditActionType.CustomerAccount, "Loan Granted", User.Identity.Name);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult ShowTransaction(string RequestId)
         {
             TransactionManagement transactionMgt = new TransactionManagement();
@@ -1004,10 +1041,10 @@ namespace PureFountain.Controllers
         public ActionResult ApproveLoan()
         {
             ViewBag.Message = "Approve Loan";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            ViewBag.Loan = new LoanManagement().GetPendingLoan();
             return View();
         }
+
         public ActionResult ViewAudit()
         {
             ViewBag.Message = "Audit Trail";
@@ -1045,17 +1082,94 @@ namespace PureFountain.Controllers
         }
 
     
-    public ActionResult ModifyAccount()
+        public ActionResult ModifyAccount()
         {
             ViewBag.Message = "Modify Account";
             AccountManagement accountMgt = new AccountManagement();
             ViewBag.Customer = accountMgt.NewAccount();
             return View();
         }
+
+
+        public ActionResult ConvertToWords(string LoanAmount)
+        {
+            string codes = new AmountToWordsManager().NumberToNaira(LoanAmount);
+            return Json(codes, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult CreateLoan()
         {
             LoanManagement loanMgt = new LoanManagement();
             ViewBag.Loan = loanMgt.GetLoanCategory();
+            //ViewBag.Trans=new Tra
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateLoan(LoanViewModel tran)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            string MethodName = "Loan Application";
+
+            //DateTime ProcessedDate = DateTime.Now;
+            DateTime Processed = DateTime.Now;
+            //DateTime dt1 = DateTime.Now.ParseExact(DateTime, "yyyy-MM-dd", null);
+            //DateTime dt1 = (DateTime.Now).Sql.Types.SqlDateTime;
+            LoanManagement loanMgt = new LoanManagement();
+            ViewBag.Loan = loanMgt.GetLoanCategory();
+            //DateTime dt2 = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
+            decimal LoanInterest =tran.LoanAmount * Convert.ToDecimal(0.05) * Convert.ToDecimal(tran.LoanTimeline);
+            try
+            {
+                var loan = new PureLoan();
+                loan.Loanduration = tran.LoanTimeline;
+                loan.Loaninterestweek = LoanInterest;
+                loan.Loaninterest = LoanInterest * Convert.ToDecimal(tran.LoanTimeline);
+                loan.Loanstatus = "P";
+                loan.Loancateid = tran.LoanCateId;
+                loan.Accountnos = tran.AccountNos;
+                loan.Loanamount = tran.LoanAmount;
+                loan.Guarantor1name = tran.Guarantor1Name;
+                loan.Guarantor1phonenos = tran.Guarantor1Phone;
+                loan.Guarantor1occupation = tran.Guarantor1Occupation;
+                loan.Guarantor2name = tran.Guarantor2Name;
+                loan.Guarantor2phonenos = tran.Guarantor2Phone;
+                loan.Guarantor2occupation = tran.Guarantor2Occupation;
+                loan.Cheque1nos = loanMgt.DoFileUpload(tran.cheque1);
+                loan.Cheque2nos = loanMgt.DoFileUpload(tran.cheque2);
+                loan.Guarantoridnos = loanMgt.DoFileUpload(tran.Guarantor1IdCard);
+                loan.Guarantor2idnos = loanMgt.DoFileUpload(tran.Guarantor2IdCard);
+                loan.Nepabill = loanMgt.DoFileUpload(tran.NEPABill);
+                loan.Processor = User.Identity.Name;
+                loan.Approver = null;
+                loan.Repaymentstatus = "Pending";
+                loan.Processeddate = DateTime.Now;
+                loan.Approveddate = null;
+                bool NewLoan = loanMgt.InsertLoan(loan);
+                if (NewLoan == true)
+                {
+                    ErrorLogManager.LogWarning(MethodName, "Application Successful");
+                    InsertAudit(Constants.AuditActionType.CustomerAccount, "Application Successful", User.Identity.Name);
+                    ViewBag.SuccessMsg = "Application Successful";
+                }
+                else
+                {
+                    ErrorLogManager.LogWarning(MethodName, "Application Unuccessful");
+                    InsertAudit(Constants.AuditActionType.LoanApplication, "Application Unuccessful", User.Identity.Name);
+                    ViewBag.ErrorMsg = "Application Unuccessful";
+                }
+            }
+            catch(Exception ex)
+            {
+                ErrorLogManager.LogError(MethodName, ex);
+                InsertAudit(Constants.AuditActionType.LoanApplication, "Application Unuccessful", User.Identity.Name);
+                ViewBag.ErrorMsg = "Application Unuccessful";
+            }
+            
+
             return View();
         }
 
@@ -1070,6 +1184,13 @@ namespace PureFountain.Controllers
         public ActionResult Withdrawal()
         {
             ViewBag.Message = "Withdrawal";
+            return View();
+        }
+
+        public ActionResult AccountTracker()
+        {
+            ViewBag.Message = "Account Tracker";
+
             return View();
         }
 

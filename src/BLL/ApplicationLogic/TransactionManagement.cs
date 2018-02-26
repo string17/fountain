@@ -39,6 +39,15 @@ namespace BLL.ApplicationLogic
             }
         }
 
+        //Calculate interest Rate
+        //public decimal ConvertToWords(decimal LoanAmt)
+        //{
+        //    decimal rate = Convert.ToDecimal(0.05);
+        //    decimal LoanTm = Convert.ToDecimal(LoanTime);
+        //    decimal LoanInterest = rate * LoanAmt * LoanTm;
+        //    return LoanInterest;
+        //}
+
         //get the customer details
         public AccountBalance GetAccount(string AccountNos)
         {
@@ -342,8 +351,6 @@ namespace BLL.ApplicationLogic
                 return false;
             }
         }
-
-
 
     }
 }
