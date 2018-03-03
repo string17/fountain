@@ -1053,6 +1053,12 @@ namespace PureFountain.Controllers
             return View();
         }
 
+        public ActionResult AccountTracker()
+        {
+            ViewBag.Message = "Account Tracking";
+            ViewBag.Customer = new AccountManagement().GetCustomerByReferral(User.Identity.Name);
+            return View();
+        }
 
         public ActionResult GenerateAccountNos(int CustomerId)
         {
@@ -1187,14 +1193,7 @@ namespace PureFountain.Controllers
             return View();
         }
 
-        public ActionResult AccountTracker()
-        {
-            ViewBag.Message = "Account Tracker";
-
-            return View();
-        }
-
-
+       
         [HttpPost]
         public ActionResult Withdrawal(TransactionViewModel tran)
         {

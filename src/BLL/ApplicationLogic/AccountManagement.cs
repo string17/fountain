@@ -126,6 +126,13 @@ namespace BLL.ApplicationLogic
             return actual;
         }
 
+        public List<CustomerInfoViewModel> GetCustomerByReferral(string UserName)
+        {
+            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,J.ReligionName,I.AccountTitle,A.PhoneNos1,A.PhoneNos2,A.MaidenName,A.UserSex,A.UserLGA,A.IDIssueAuth,A.AccountImg,A.HomeAddress,A.DOB,A.JobTitle,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.AccountSign,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,A.ReligionId,C.OccupationName,D.CountryName,A.Nationality,A.EmploymentDate,A.AccountType,A.OfficeAddress, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.Nationality inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos inner join Pure_Account_Category I on A.AccountType=I.AccountId inner join Pure_Religion J on J.ReligionId=A.ReligionId where A.RefName=@0 order by CustomerId desc";
+            var actual = context.Fetch<CustomerInfoViewModel>(sql,UserName).ToList();
+            return actual;
+        }
+
         public List<CustomerInfoViewModel> GetCustomerInfo()
         {
             string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,J.ReligionName,I.AccountTitle,A.PhoneNos1,A.PhoneNos2,A.MaidenName,A.UserSex,A.UserLGA,A.IDIssueAuth,A.AccountImg,A.HomeAddress,A.DOB,A.JobTitle,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.AccountSign,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,A.ReligionId,C.OccupationName,D.CountryName,A.Nationality,A.EmploymentDate,A.AccountType,A.OfficeAddress, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.Nationality inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos inner join Pure_Account_Category I on A.AccountType=I.AccountId inner join Pure_Religion J on J.ReligionId=A.ReligionId order by CustomerId desc";

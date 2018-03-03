@@ -662,6 +662,7 @@
     <Content Include="Views\Fountain\Withdrawal.cshtml" />
     <Content Include="Views\Fountain\WithdrawalHistory.cshtml" />
     <Content Include="Views\Fountain\_LoadModal.cshtml" />
+    <Content Include="Views\Fountain\AccountTracker.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
