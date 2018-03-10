@@ -14,7 +14,7 @@ namespace BLL.ApplicationLogic
 {
     public class UserManagement
     {
-        private FountainDb context = FountainDb.GetInstance();
+        private readonly FountainDb context = FountainDb.GetInstance();
         public PureUser getUserByUsername(string Username)
         {
             string SQL = "Select * from Pure_User where UserName =@0";
@@ -72,7 +72,6 @@ namespace BLL.ApplicationLogic
         {
             var actual = context.SingleOrDefault<PureUser>("where UserName=@0", Username);
             var userrRole = context.SingleOrDefault<PureRole>("where RoleId=@0", actual.Roleid);
-            UserManagement company = new UserManagement();
             UserProfileView userView = new UserProfileView()
             {
                 FirstName = actual.Firstname,

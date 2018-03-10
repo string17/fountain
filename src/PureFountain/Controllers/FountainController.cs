@@ -24,8 +24,6 @@ namespace PureFountain.Controllers
             ViewBag.Message = "New User";
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
-            //Company company = new Company();
-            //ViewBag.Customer = company.getCompanyById();
             return View();
         }
 
@@ -109,8 +107,6 @@ namespace PureFountain.Controllers
             {
                 return View();
             }
-            var ipaddress = AuditService.DetermineIPAddress();
-            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
             string MethodName = Constants.AuditActionType.ModifiedUser.ToString();
             ViewBag.Teller = new UserManagement().getAllTeller();
             int TillId = Id.GetValueOrDefault();
@@ -171,11 +167,8 @@ namespace PureFountain.Controllers
             }
 
             ViewBag.Message = "New User";
-            //string ComputerDetails = "";
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
-            //Company company = new Company();
-            //ViewBag.Customer = company.getCompanyById();
             if (Account.UserPWD.Any("!@#$%^&*".Contains) && Account.UserPWD.Length >= 6)
             {
 
@@ -189,7 +182,6 @@ namespace PureFountain.Controllers
                     Acc.Useremail = Account.UserEmail;
                     Acc.Userpwd = Account.UserPWD;
                     Acc.Phonenos = Account.PhoneNos;
-                    //Acc.CustomerId = Account.CustomerId;
                     Acc.Roleid = Account.RoleId;
                     Acc.Userstatus = Account.UserStatus;
                     Acc.Createdby = User.Identity.Name;
@@ -211,12 +203,8 @@ namespace PureFountain.Controllers
                         if (NewUser == true)
                         {
                             ViewBag.SuccessMsg = "User successfully created";
-                            //InsertAudit(BLL.ApplicationLogic.Constants.AuditActionType.CreatedRole, "Created a user " + Acc.UserName, User.Identity.Name);
-                            //ErrorLogManager.LogError(ComputerDetails, Constants.AuditActionType.Login.ToString(), User.UserName);
-                            //InsertAudit(Constants.AuditActionType.Login, "User Created Successfully", User.UserName);
                             return View();
-                            //return RedirectToAction("View_User", "Dolphin");
-
+                            
                         }
                         else
                         {
@@ -259,8 +247,7 @@ namespace PureFountain.Controllers
                 return View();
             }
             ViewBag.SuccessMsg = TempData["SuccessMsg"];
-            UserManagement Usermgts = new UserManagement();
-            ViewBag.Users = Usermgts.getUserByCompany();
+            ViewBag.Users = new UserManagement().getUserByCompany();
             return View();
         }
 
@@ -272,8 +259,7 @@ namespace PureFountain.Controllers
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
             int UserId = Id.GetValueOrDefault();
-            UserManagement existingUser = new UserManagement();
-            var user = existingUser.getUserByIds(UserId);
+            var user = new UserManagement().getUserByIds(UserId);
             ViewBag.User = user;
             return View();
         }
@@ -286,14 +272,11 @@ namespace PureFountain.Controllers
                 return View();
             }
             var ipaddress = AuditService.DetermineIPAddress();
-            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
             string MethodName = Constants.AuditActionType.ModifiedUser.ToString();
             ViewBag.Message = "Modify User";
             int UserId = Id.GetValueOrDefault();
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
-            //Company company = new Company();
-            //ViewBag.Customer = company.getCompanyById();
             if (Account.UserPWD.Any("!@#$%^&*".Contains) && Account.UserPWD.Length >= 6)
             {
 
@@ -321,8 +304,7 @@ namespace PureFountain.Controllers
                         ErrorLogManager.LogWarning(MethodName, "Modified a user");
                         TempData["SuccessMsg"] = "Account successfully modified";
                         return RedirectToAction("viewuser");
-                        //return View();
-                    }
+                     }
                     else
                     {
                         ViewBag.ErrorMsg = "Account modification failed";
@@ -428,7 +410,6 @@ namespace PureFountain.Controllers
             ViewBag.Roles = rolemgt.getRoleByRoleId();
             try
             {
-                //Account.RoleStatus = false;
                 Account.Rolename = Account.Rolename.ToUpper();
                 Account.Roledesc = Account.Roledesc;
 
@@ -456,7 +437,6 @@ namespace PureFountain.Controllers
                     if (NewRole == true)
                     {
                         TempData["SuccessMsg"] = "Role created successfully";
-                        //InsertAudit(Constants.AuditActionType.CreatedRole, "Created a role " + Account.Rolename, User.Identity.Name);
                         return RedirectToAction("View_role");
 
                     }
@@ -509,7 +489,6 @@ namespace PureFountain.Controllers
                 RoleManagement roleManagement = new RoleManagement();
                 bool UpdateRole = false;
                 UpdateRole = roleManagement.UpdateRole(extRole.RoleName, extRole.RoleDesc, extRole.RoleStatus, editRole.Roleid);
-                //InsertAudit(Constants.AuditActionType.RoleModified, "Modified a role" + editRole.RoleName, User.Identity.Name);
                 ViewBag.SuccessMsg = "Role successfully modified";
                 return RedirectToAction("View_role", "Dolphin");
             }
@@ -521,6 +500,13 @@ namespace PureFountain.Controllers
 
         }
 
+
+        public ActionResult ViewProfile()
+        {
+            ViewBag.Message = "Profile";
+            ViewBag.UserProfile = new UserManagement().getUserProfileByUsername(User.Identity.Name);
+            return View();
+        }
 
         public ActionResult CreateAccount()
         {
@@ -544,7 +530,6 @@ namespace PureFountain.Controllers
                 return View();
             }
             var ipaddress = AuditService.DetermineIPAddress();
-            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
             string MethodName = Constants.AuditActionType.CustomerAccount.ToString();
             AccountManagement accountmgt = new AccountManagement();
             ViewBag.Country = accountmgt.GetAllCountries();
@@ -668,8 +653,8 @@ namespace PureFountain.Controllers
 
         public ActionResult GetAccountDetails(int CustomerId)
         {
-            var codes = new AccountManagement().GetAccountDetails(CustomerId);
-            return Json(codes, JsonRequestBehavior.AllowGet);
+            var Customercodes = new AccountManagement().GetAccountDetails(CustomerId);
+            return Json(Customercodes, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -781,8 +766,7 @@ namespace PureFountain.Controllers
                 }
 
                 var ProcessTill = new AccountManagement().GetTellerTill(TellerId, ddate);
-                //var Dailytill = new TransactionManagement().GetTillByUserName(TellerId, ddate);
-                if (ProcessTill == null)
+               if (ProcessTill == null)
                 {
                     ViewBag.ErrorMsg = "No Till Account Found";
                     return View();
@@ -929,8 +913,7 @@ namespace PureFountain.Controllers
         public ActionResult BankStatement()
         {
             ViewBag.Message = "Bank Statement";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            //ViewBag.Customer = new ReportManagement().CustomerBankStatement();
             return View();
         }
 
@@ -947,9 +930,18 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "Loan Report";
             AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            ViewBag.Customer = accountMgt.GetOverallCustomerLoan();
             return View();
         }
+
+        [HttpGet]
+        public ActionResult GetTransHistory(string startdate, string enddate, string AccountNos)
+        {
+            ViewBag.deposits = new ReportManagement().CustomerBankStatement(startdate, enddate, AccountNos);
+            return PartialView("_CustomerStatement");
+        }
+
+
         public ActionResult TransactionReport()
         {
             ViewBag.Message = "Transaction Report";

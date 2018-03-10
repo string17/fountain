@@ -2,6 +2,7 @@
 using FountainContext.Data.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace BLL.ApplicationLogic
 {
     public class LoanManagement
     {
-        private FountainDb context = FountainDb.GetInstance();
+        private readonly FountainDb context = FountainDb.GetInstance();
 
         public List<PureLoanCategory> GetLoanCategory()
         {
@@ -27,9 +28,9 @@ namespace BLL.ApplicationLogic
                 return "";
             }
             if (!string.IsNullOrWhiteSpace(filename) && pic == null) return filename;
-
+            string LoanPath = ConfigurationManager.AppSettings["LoanFile"];
             string result = DateTime.Now.Millisecond + "LoanImg.jpg";
-            pic.SaveAs(HttpContext.Current.Server.MapPath("~/LoanImg/") + result);
+            pic.SaveAs(HttpContext.Current.Server.MapPath(LoanPath + result));
             return result;
         }
 

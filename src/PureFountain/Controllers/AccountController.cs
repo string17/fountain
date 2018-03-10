@@ -1,10 +1,13 @@
 ﻿using BLL.ApplicationLogic;
+using DAL.CustomObjects;
 using DataAccessLayer.CustomObjects;
 using FountainContext.Data.Models;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
@@ -17,71 +20,69 @@ namespace PureFountain.Controllers
         // GET: Account
         [AllowAnonymous]
         [Route("Login/{SystemName,SystemIP}")]
-        public ActionResult Login(string returnUrl,string SystemName,string SystemIP)
+        public ActionResult Login(string returnUrl, string SystemName, string SystemIP)
         {
             ViewBag.ProfileMsg = TempData["ProfileMsg"];
             ViewBag.SuccessMsg = TempData["SuccessMsg"];
-            string ComputerDetails = TempData["ComputerDetails"]+", " + TempData["SystemName"];
             return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login(UserLogin User)
+        public ActionResult Login(UserLogin _user)
         {
             string ErrorMsg = "";
-         
             var ipaddress = AuditService.DetermineIPAddress();
             var ComputerDetails = AuditService.DetermineCompName(ipaddress);
             string MethodName = Constants.AuditActionType.Login.ToString();
-           
             try
             {
-                User.Username = User.Username;
-                User.Password = User.Password;
+                string _Username = _user.Username;
+                string _Password = _user.Password;
                 UserManagement userManagement = new UserManagement();
-                if (!userManagement.DoesUsernameExists(User.Username))
+                if (!userManagement.DoesUsernameExists(_Username))
                 {
                     ErrorMsg = "Invalid Username";
                     ErrorLogManager.LogWarning(MethodName, ErrorMsg);
                     ViewBag.ErrorMsg = "Invalid Username";
                     return View();
                 }
-                User.Password = userManagement.EncryptPassword(User.Password);// Encode password
+                _Password = userManagement.EncryptPassword(_Password);// Encode password
 
-                if (!userManagement.DoesPasswordExists(User.Username, User.Password))
+                if (!userManagement.DoesPasswordExists(_Username, _Password))
                 {
                     ViewBag.ErrorMsg = "Invalid Password";
                     ErrorLogManager.LogWarning(MethodName, ErrorMsg);
                     return View();
                 }
-                
-                var ActiveUser = userManagement.getUserByUsername(User.Username);
+
+                var ActiveUser = userManagement.getUserByUsername(_Username);
                 if (ActiveUser != null)
                 {
                     var AccountStatus = ActiveUser.Userstatus;
                     if (AccountStatus == true)
                     {
-                        var newUser = userManagement.getFreshUser(User.Username);
+                        var newUser = userManagement.getFreshUser(_Username);
                         if (newUser != 0)
                         {
-                            var ExtLogin = userManagement.TrackLogin(User.Username);
-                            if (ExtLogin==null)
+                            var ExtLogin = userManagement.TrackLogin(_Username);
+                            if (ExtLogin == null)
                             {
                                 FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
                                 ErrorLogManager.LogWarning(MethodName, "Login Successful");
-                                InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Username);
-                                InsertTracking(User.Username, ipaddress, ComputerDetails);
+                                InsertAudit(Constants.AuditActionType.Login, "Successfully Login", _Username);
+                                InsertTracking(_Username, ipaddress, ComputerDetails);
                                 return RedirectToAction("Dashboard", "Fountain");
                             }
 
-                            else if(ExtLogin!=null && ExtLogin.Systemname == ComputerDetails && ExtLogin.Systemip == ipaddress)
+                            else if (ExtLogin.Username == _Username && ExtLogin.Systemname == ComputerDetails && ExtLogin.Systemip == ipaddress)
                             {
                                 FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
                                 ErrorLogManager.LogWarning(MethodName, "Login Successful");
-                                InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Username);
-                                InsertTracking(User.Username, ipaddress, ComputerDetails);
-                                return RedirectToAction("Dashboard", "Fountain");
+                                InsertAudit(Constants.AuditActionType.Login, "Successfully Login", _Username);
+                                InsertTracking(_Username, ipaddress, ComputerDetails);
+                                ViewBag.ErrorMsg = "You didn't logout properly last time";
+                                return View();
                             }
                             else
                             {
@@ -89,7 +90,7 @@ namespace PureFountain.Controllers
                                 ErrorLogManager.LogWarning(MethodName, ErrorMsg);
                                 return View();
                             }
-                            
+
                         }
                         else
                         {
@@ -100,19 +101,19 @@ namespace PureFountain.Controllers
                         }
 
                     }
-               
+
                 }
             }
             catch (Exception ex)
             {
-               
+
                 ErrorLogManager.LogError(MethodName, ex);
                 ViewBag.ErrorMsg = ex.Message;
                 return View();
             }
-            
+
             return View();
-            }
+        }
 
 
         public ActionResult Forgot_password()
@@ -135,40 +136,40 @@ namespace PureFountain.Controllers
             var extAccount = usermgt.getUserByUsername(User.Username);
             if (extAccount != null)
             {
-                //EmailFormModel emailModel = new EmailFormModel();
-                //long Id = extAccount.Userid;
-                //string txtRecipient = extAccount.Username.ToLower();
-                //string PasswordUrl = WebConfigurationManager.AppSettings["BaseURL"];
-                //var body = "Kindly click on this link  to reset your password. </br>" + PasswordUrl + "Account/Reset_password?Id=" + Id;
-                //var message = new MailMessage();
-                //message.To.Add(new MailAddress(txtRecipient));  // replace with valid value 
-                //message.From = new MailAddress(WebConfigurationManager.AppSettings["SenderEmailAddress"]);  // replace with valid value
-                //message.Subject = "Update your Password";
-                //message.Body = string.Format(body, emailModel.FromEmail, emailModel.Message);
-                //message.IsBodyHtml = true;
+                EmailFormModel emailModel = new EmailFormModel();
+                long Id = extAccount.Userid;
+                string txtRecipient = extAccount.Username.ToLower();
+                string PasswordUrl = WebConfigurationManager.AppSettings["BaseURL"];
+                var body = "Kindly click on this link  to reset your password. </br>" + PasswordUrl + "Account/Reset_password?Id=" + Id;
+                var message = new MailMessage();
+                message.To.Add(new MailAddress(txtRecipient));  // replace with valid value 
+                message.From = new MailAddress(WebConfigurationManager.AppSettings["SenderEmailAddress"]);  // replace with valid value
+                message.Subject = "Update your Password";
+                message.Body = string.Format(body, emailModel.FromEmail, emailModel.Message);
+                message.IsBodyHtml = true;
 
-                //using (SmtpClient smtp = new SmtpClient())
-                //{
-                //    try
-                //    {
-                //        smtp.Host = WebConfigurationManager.AppSettings["EmailHost"];
-                //        smtp.EnableSsl = true;
-                //        NetworkCredential NetworkCred = new NetworkCredential();
-                //        smtp.UseDefaultCredentials = true;
-                //        smtp.Credentials = NetworkCred;
-                //        smtp.Port = Convert.ToInt32(WebConfigurationManager.AppSettings["EmailPort"]);
-                //        smtp.Send(message);
-                //        ViewBag.SuccessMsg = "Email sent.";
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        ViewBag.ErrorMsg = ex.Message;
-                //        return View();
-                //    }
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    try
+                    {
+                        smtp.Host = WebConfigurationManager.AppSettings["EmailHost"];
+                        smtp.EnableSsl = true;
+                        NetworkCredential NetworkCred = new NetworkCredential();
+                        smtp.UseDefaultCredentials = true;
+                        smtp.Credentials = NetworkCred;
+                        smtp.Port = Convert.ToInt32(WebConfigurationManager.AppSettings["EmailPort"]);
+                        smtp.Send(message);
+                        ViewBag.SuccessMsg = "Email sent.";
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewBag.ErrorMsg = ex.Message;
+                        return View();
+                    }
 
-                //}
+                }
 
-                //ViewBag.SuccessMsg = "Email sent.";
+                ViewBag.SuccessMsg = "Email sent.";
             }
             else
             {
@@ -200,10 +201,7 @@ namespace PureFountain.Controllers
                 return View();
             }
             string ErrorMsg = "";
-            var ipaddress = AuditService.DetermineIPAddress();
-            var ComputerDetails = AuditService.DetermineCompName(ipaddress);
             string MethodName = Constants.AuditActionType.PasswordChanged.ToString();
-           
             var editUser = new PureUser();
             editUser.Userid = Id.GetValueOrDefault();
             editUser.Userpwd = User.Password;
@@ -220,12 +218,14 @@ namespace PureFountain.Controllers
                         try
                         {
                             editUser.Userid = Convert.ToInt32(Id);
-                            //editUser.UserPWD = User.Password;
-                            bool ValidatePassword = false;
-                            ValidatePassword = userService.UpdatePassword(editUser.Userpwd, Id);
-                            ErrorLogManager.LogWarning(MethodName, ErrorMsg);
-                            InsertAudit(Constants.AuditActionType.PasswordChanged, editUser.Username + "Changed password", ExtDetails.Username);
-                            TempData["SuccessMsg"] = "Kindly login with the new password";
+                            bool validatePassword = userService.UpdatePassword(editUser.Userpwd, Id);
+                            if (validatePassword==true)
+                            {
+                                ErrorLogManager.LogWarning(MethodName, ErrorMsg);
+                                InsertAudit(Constants.AuditActionType.PasswordChanged, editUser.Username + "Changed password", ExtDetails.Username);
+                                TempData["SuccessMsg"] = "Kindly login with the new password";
+                            }
+              
                             return RedirectToAction("login");
 
                         }
@@ -255,5 +255,5 @@ namespace PureFountain.Controllers
                 return View();
             }
         }
-        }
     }
+}

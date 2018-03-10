@@ -1202,118 +1202,6 @@ namespace FountainContext.Data.Models
             }
 		}
 		
-		[TableName("dbo.Pure_User")]
-		[PrimaryKey("UserId")]
-		[ExplicitColumns]
-		public partial class PureUser : FountainDb.Record<PureUser>  
-		{
-			[Column("UserId")] public int Userid 
-			{ 
-				get { return _Userid; }
-				set { _Userid = value; Track("UserId"); }
-			}
-			int _Userid;
-			[Column("FirstName")] public string Firstname 
-			{ 
-				get { return _Firstname; }
-				set { _Firstname = value; Track("FirstName"); }
-			}
-			string _Firstname;
-			[Column("MiddleName")] public string Middlename 
-			{ 
-				get { return _Middlename; }
-				set { _Middlename = value; Track("MiddleName"); }
-			}
-			string _Middlename;
-			[Column("LastName")] public string Lastname 
-			{ 
-				get { return _Lastname; }
-				set { _Lastname = value; Track("LastName"); }
-			}
-			string _Lastname;
-			[Column("UserName")] public string Username 
-			{ 
-				get { return _Username; }
-				set { _Username = value; Track("UserName"); }
-			}
-			string _Username;
-			[Column("UserEmail")] public string Useremail 
-			{ 
-				get { return _Useremail; }
-				set { _Useremail = value; Track("UserEmail"); }
-			}
-			string _Useremail;
-			[Column("UserPWD")] public string Userpwd 
-			{ 
-				get { return _Userpwd; }
-				set { _Userpwd = value; Track("UserPWD"); }
-			}
-			string _Userpwd;
-			[Column("PhoneNos")] public string Phonenos 
-			{ 
-				get { return _Phonenos; }
-				set { _Phonenos = value; Track("PhoneNos"); }
-			}
-			string _Phonenos;
-			[Column("RoleId")] public int? Roleid 
-			{ 
-				get { return _Roleid; }
-				set { _Roleid = value; Track("RoleId"); }
-			}
-			int? _Roleid;
-			[Column("UserImg")] public string Userimg 
-			{ 
-				get { return _Userimg; }
-				set { _Userimg = value; Track("UserImg"); }
-			}
-			string _Userimg;
-			[Column("UserStatus")] public bool? Userstatus 
-			{ 
-				get { return _Userstatus; }
-				set { _Userstatus = value; Track("UserStatus"); }
-			}
-			bool? _Userstatus;
-			[Column("CreatedBy")] public string Createdby 
-			{ 
-				get { return _Createdby; }
-				set { _Createdby = value; Track("CreatedBy"); }
-			}
-			string _Createdby;
-			[Column("CreatedOn")] public DateTime? Createdon 
-			{ 
-				get { return _Createdon; }
-				set { _Createdon = value; Track("CreatedOn"); }
-			}
-			DateTime? _Createdon;
-			[Column("ModifiedBy")] public string Modifiedby 
-			{ 
-				get { return _Modifiedby; }
-				set { _Modifiedby = value; Track("ModifiedBy"); }
-			}
-			string _Modifiedby;
-			[Column("ModifiedOn")] public DateTime? Modifiedon 
-			{ 
-				get { return _Modifiedon; }
-				set { _Modifiedon = value; Track("ModifiedOn"); }
-			}
-			DateTime? _Modifiedon;
-		
-			public static IEnumerable<PureUser> Query(Database db, string[] columns = null, int[] Userid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_User (NOLOCK)");
-
-				if (Userid != null)
-					sql.Where("UserId IN (@0)", Userid);
-
-                return db.Query<PureUser>(sql);
-            }
-		}
-		
 		[TableName("dbo.Pure_Loan_Category")]
 		[PrimaryKey("LoanCateId")]
 		[ExplicitColumns]
@@ -2167,6 +2055,118 @@ namespace FountainContext.Data.Models
 					sql.Where("Id IN (@0)", Id);
 
                 return db.Query<PureAuditTrail>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_User")]
+		[PrimaryKey("UserId")]
+		[ExplicitColumns]
+		public partial class PureUser : FountainDb.Record<PureUser>  
+		{
+			[Column("UserId")] public int Userid 
+			{ 
+				get { return _Userid; }
+				set { _Userid = value; Track("UserId"); }
+			}
+			int _Userid;
+			[Column("FirstName")] public string Firstname 
+			{ 
+				get { return _Firstname; }
+				set { _Firstname = value; Track("FirstName"); }
+			}
+			string _Firstname;
+			[Column("MiddleName")] public string Middlename 
+			{ 
+				get { return _Middlename; }
+				set { _Middlename = value; Track("MiddleName"); }
+			}
+			string _Middlename;
+			[Column("LastName")] public string Lastname 
+			{ 
+				get { return _Lastname; }
+				set { _Lastname = value; Track("LastName"); }
+			}
+			string _Lastname;
+			[Column("UserName")] public string Username 
+			{ 
+				get { return _Username; }
+				set { _Username = value; Track("UserName"); }
+			}
+			string _Username;
+			[Column("UserEmail")] public string Useremail 
+			{ 
+				get { return _Useremail; }
+				set { _Useremail = value; Track("UserEmail"); }
+			}
+			string _Useremail;
+			[Column("UserPWD")] public string Userpwd 
+			{ 
+				get { return _Userpwd; }
+				set { _Userpwd = value; Track("UserPWD"); }
+			}
+			string _Userpwd;
+			[Column("PhoneNos")] public string Phonenos 
+			{ 
+				get { return _Phonenos; }
+				set { _Phonenos = value; Track("PhoneNos"); }
+			}
+			string _Phonenos;
+			[Column("RoleId")] public int? Roleid 
+			{ 
+				get { return _Roleid; }
+				set { _Roleid = value; Track("RoleId"); }
+			}
+			int? _Roleid;
+			[Column("UserImg")] public string Userimg 
+			{ 
+				get { return _Userimg; }
+				set { _Userimg = value; Track("UserImg"); }
+			}
+			string _Userimg;
+			[Column("UserStatus")] public bool? Userstatus 
+			{ 
+				get { return _Userstatus; }
+				set { _Userstatus = value; Track("UserStatus"); }
+			}
+			bool? _Userstatus;
+			[Column("CreatedBy")] public string Createdby 
+			{ 
+				get { return _Createdby; }
+				set { _Createdby = value; Track("CreatedBy"); }
+			}
+			string _Createdby;
+			[Column("CreatedOn")] public DateTime? Createdon 
+			{ 
+				get { return _Createdon; }
+				set { _Createdon = value; Track("CreatedOn"); }
+			}
+			DateTime? _Createdon;
+			[Column("ModifiedBy")] public string Modifiedby 
+			{ 
+				get { return _Modifiedby; }
+				set { _Modifiedby = value; Track("ModifiedBy"); }
+			}
+			string _Modifiedby;
+			[Column("ModifiedOn")] public DateTime? Modifiedon 
+			{ 
+				get { return _Modifiedon; }
+				set { _Modifiedon = value; Track("ModifiedOn"); }
+			}
+			DateTime? _Modifiedon;
+		
+			public static IEnumerable<PureUser> Query(Database db, string[] columns = null, int[] Userid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_User (NOLOCK)");
+
+				if (Userid != null)
+					sql.Where("UserId IN (@0)", Userid);
+
+                return db.Query<PureUser>(sql);
             }
 		}
 }
