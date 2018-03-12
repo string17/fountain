@@ -913,7 +913,7 @@ namespace PureFountain.Controllers
         public ActionResult BankStatement()
         {
             ViewBag.Message = "Bank Statement";
-            //ViewBag.Customer = new ReportManagement().CustomerBankStatement();
+           //ViewBag.Customer = new ReportManagement().CustomerBankStatement();
             return View();
         }
 
@@ -934,10 +934,11 @@ namespace PureFountain.Controllers
             return View();
         }
 
+
         [HttpGet]
         public ActionResult GetTransHistory(string startdate, string enddate, string AccountNos)
         {
-            ViewBag.deposits = new ReportManagement().CustomerBankStatement(startdate, enddate, AccountNos);
+            ViewBag.deposits = new ReportManagement().IndividualStatement(AccountNos,startdate, enddate);
             return PartialView("_CustomerStatement");
         }
 

@@ -208,6 +208,76 @@ namespace FountainContext.Data.Models
             }
 		}
 		
+		[TableName("dbo.Pure_Statement")]
+		[PrimaryKey("Id")]
+		[ExplicitColumns]
+		public partial class PureStatement : FountainDb.Record<PureStatement>  
+		{
+	        [Column] public int Id 
+			{ 
+				get { return _Id; }
+				set { _Id = value; Track("Id"); }
+			}
+			int _Id;
+			[Column("ReferenceId")] public string Referenceid 
+			{ 
+				get { return _Referenceid; }
+				set { _Referenceid = value; Track("ReferenceId"); }
+			}
+			string _Referenceid;
+			[Column("TransactionDetails")] public string Transactiondetails 
+			{ 
+				get { return _Transactiondetails; }
+				set { _Transactiondetails = value; Track("TransactionDetails"); }
+			}
+			string _Transactiondetails;
+			[Column("AccountNo")] public string Accountno 
+			{ 
+				get { return _Accountno; }
+				set { _Accountno = value; Track("AccountNo"); }
+			}
+			string _Accountno;
+	        [Column] public decimal? Deposit 
+			{ 
+				get { return _Deposit; }
+				set { _Deposit = value; Track("Deposit"); }
+			}
+			decimal? _Deposit;
+	        [Column] public decimal? Withdrawal 
+			{ 
+				get { return _Withdrawal; }
+				set { _Withdrawal = value; Track("Withdrawal"); }
+			}
+			decimal? _Withdrawal;
+			[Column("AccountBal")] public decimal? Accountbal 
+			{ 
+				get { return _Accountbal; }
+				set { _Accountbal = value; Track("AccountBal"); }
+			}
+			decimal? _Accountbal;
+			[Column("ValueDate")] public DateTime? Valuedate 
+			{ 
+				get { return _Valuedate; }
+				set { _Valuedate = value; Track("ValueDate"); }
+			}
+			DateTime? _Valuedate;
+		
+			public static IEnumerable<PureStatement> Query(Database db, string[] columns = null, int[] Id = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Statement (NOLOCK)");
+
+				if (Id != null)
+					sql.Where("Id IN (@0)", Id);
+
+                return db.Query<PureStatement>(sql);
+            }
+		}
+		
 		[TableName("dbo.Pure_Bank")]
 		[PrimaryKey("BankId")]
 		[ExplicitColumns]

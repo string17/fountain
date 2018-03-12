@@ -4,6 +4,7 @@
     BLL.ApplicationLogic.UserManagement AccountMgt = new BLL.ApplicationLogic.UserManagement();
     var item = AccountMgt.getMenuByUsername(User.Identity.Name);
     var displayName = service.getUserProfileByUsername(User.Identity.Name);
+    var currentTime = DateTime.Now;
 
 }
 
@@ -131,7 +132,8 @@
                                     <div class="tabular-cell welcome-options">
                                         <span class="welcome-text">Welcome,</span>
                                         <a href="#" class="name" style="font-size:small">@displayName.FirstName @displayName.MiddleName @displayName.LastName</a><br />
-                                        @displayName.RoleName
+                                        @displayName.RoleName <br />
+                                        @currentTime
                                     </div>
                                 </div>
                             </div>
