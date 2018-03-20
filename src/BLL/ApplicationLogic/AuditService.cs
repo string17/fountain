@@ -13,7 +13,7 @@ namespace BLL.ApplicationLogic
 {
     public class AuditService: BaseService
     {
-        private FountainDb context = FountainDb.GetInstance();
+        private readonly FountainDb context = FountainDb.GetInstance();
 
         public static string DetermineIPAddress()
         {

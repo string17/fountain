@@ -104,6 +104,19 @@ namespace BLL.ApplicationLogic
             }
         }
 
+        public bool InsertStatement(PureStatement RequestId)
+        {
+            try
+            {
+                context.Insert(RequestId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         public bool InsertRequest(PurePostRequest RequestId)
         {

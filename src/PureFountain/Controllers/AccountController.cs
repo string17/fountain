@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Reflection;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
@@ -17,6 +18,7 @@ namespace PureFountain.Controllers
 {
     public class AccountController : BaseController
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         // GET: Account
         [AllowAnonymous]
         [Route("Login/{SystemName,SystemIP}")]
@@ -43,7 +45,7 @@ namespace PureFountain.Controllers
                 if (!userManagement.DoesUsernameExists(_Username))
                 {
                     ErrorMsg = "Invalid Username";
-                    ErrorLogManager.LogWarning(MethodName, ErrorMsg);
+                    Log.InfoFormat(MethodName, ErrorMsg);
                     ViewBag.ErrorMsg = "Invalid Username";
                     return View();
                 }
@@ -52,7 +54,7 @@ namespace PureFountain.Controllers
                 if (!userManagement.DoesPasswordExists(_Username, _Password))
                 {
                     ViewBag.ErrorMsg = "Invalid Password";
-                    ErrorLogManager.LogWarning(MethodName, ErrorMsg);
+                    Log.InfoFormat(MethodName, ErrorMsg);
                     return View();
                 }
 
@@ -69,25 +71,25 @@ namespace PureFountain.Controllers
                             if (ExtLogin == null)
                             {
                                 FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
-                                ErrorLogManager.LogWarning(MethodName, "Login Successful");
                                 InsertAudit(Constants.AuditActionType.Login, "Successfully Login", _Username);
                                 InsertTracking(_Username, ipaddress, ComputerDetails);
+                                Log.InfoFormat("Successfully Login",_Username, ipaddress, ComputerDetails);
                                 return RedirectToAction("Dashboard", "Fountain");
                             }
 
                             else if (ExtLogin.Username == _Username && ExtLogin.Systemname == ComputerDetails && ExtLogin.Systemip == ipaddress)
                             {
                                 FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
-                                ErrorLogManager.LogWarning(MethodName, "Login Successful");
                                 InsertAudit(Constants.AuditActionType.Login, "Successfully Login", _Username);
                                 InsertTracking(_Username, ipaddress, ComputerDetails);
+                                Log.InfoFormat("You didn't logout properly last time", _Username, ipaddress, ComputerDetails);
                                 ViewBag.ErrorMsg = "You didn't logout properly last time";
                                 return View();
                             }
                             else
                             {
                                 ViewBag.ErrorMsg = "You didn't logout properly last time";
-                                ErrorLogManager.LogWarning(MethodName, ErrorMsg);
+                                Log.InfoFormat("You didn't logout properly last time", _Username, ipaddress, ComputerDetails);
                                 return View();
                             }
 
@@ -107,7 +109,7 @@ namespace PureFountain.Controllers
             catch (Exception ex)
             {
 
-                ErrorLogManager.LogError(MethodName, ex);
+                Log.InfoFormat(MethodName, ex);
                 ViewBag.ErrorMsg = ex.Message;
                 return View();
             }
@@ -131,9 +133,8 @@ namespace PureFountain.Controllers
             {
                 return View();
             }
-            User.Username = User.Username.ToUpper();
-            UserManagement usermgt = new UserManagement();
-            var extAccount = usermgt.getUserByUsername(User.Username);
+            string _Username = User.Username.ToUpper();
+            var extAccount = new UserManagement().getUserByUsername(_Username);
             if (extAccount != null)
             {
                 EmailFormModel emailModel = new EmailFormModel();
@@ -159,10 +160,12 @@ namespace PureFountain.Controllers
                         smtp.Credentials = NetworkCred;
                         smtp.Port = Convert.ToInt32(WebConfigurationManager.AppSettings["EmailPort"]);
                         smtp.Send(message);
+                        Log.InfoFormat("Email sent", _Username);
                         ViewBag.SuccessMsg = "Email sent.";
                     }
                     catch (Exception ex)
                     {
+                        Log.InfoFormat("Email", ex.Message);
                         ViewBag.ErrorMsg = ex.Message;
                         return View();
                     }
@@ -173,6 +176,7 @@ namespace PureFountain.Controllers
             }
             else
             {
+                Log.InfoFormat("Email", "This Email does not exist on this system");
                 ViewBag.ErrorMsg = "This Email does not exist on this system";
                 return View();
             }
@@ -221,7 +225,7 @@ namespace PureFountain.Controllers
                             bool validatePassword = userService.UpdatePassword(editUser.Userpwd, Id);
                             if (validatePassword==true)
                             {
-                                ErrorLogManager.LogWarning(MethodName, ErrorMsg);
+                                Log.InfoFormat(MethodName, ErrorMsg);
                                 InsertAudit(Constants.AuditActionType.PasswordChanged, editUser.Username + "Changed password", ExtDetails.Username);
                                 TempData["SuccessMsg"] = "Kindly login with the new password";
                             }
@@ -231,12 +235,14 @@ namespace PureFountain.Controllers
                         }
                         catch (Exception ex)
                         {
+                            Log.InfoFormat(MethodName, ex.Message);
                             ViewBag.ErrorMsg = ex.Message;
                             return View();
                         }
                     }
                     else
                     {
+                        Log.InfoFormat(MethodName, ErrorMsg);
                         ViewBag.ErrorMsg = "The new password must not match the old password";
                         return View();
                     }
@@ -244,6 +250,7 @@ namespace PureFountain.Controllers
                 }
                 else
                 {
+                    Log.InfoFormat(MethodName, "The confirm password must match the new password");
                     ViewBag.ErrorMsg = "The confirm password must match the new password";
                     return View();
                 }

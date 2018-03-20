@@ -639,6 +639,8 @@
     <Content Include="Views\Fountain\ViewProfile.cshtml" />
     <Content Include="Views\Fountain\LoanReportCustomer.cshtml" />
     <Content Include="Views\Fountain\_CustomerStatement.cshtml" />
+    <Content Include="Views\Fountain\AccountBalance.cshtml" />
+    <Content Include="Views\Fountain\_CustomerBalance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
