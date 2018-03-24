@@ -53,7 +53,7 @@ namespace PureFountain.Controllers
                 var Till = new PureTillAccount();
                 Till.Accountname = account.AccountName;
                 Till.Accountnos = AccountNos;
-                Till.Accountbal = 0;
+                Till.Accountbal = account.AccountBal;
                 Till.Currencycode = "NGN";
                 Till.Tellerid = "";
                 Till.Amountdebited = 0;
@@ -62,12 +62,13 @@ namespace PureFountain.Controllers
                 Till.Createdon = DateTime.Now;
                 Till.Creditedby = User.Identity.Name;
                 bool NewTill = new AccountManagement().CreateTill(Till);
-                if (NewTill == true)
+                if (NewTill)
                 {
                     Log.InfoFormat(MethodName, "Account Successful");
                     InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
                     ViewBag.SuccessMsg = "Account Successfully created";
                 }
+                else
                 {
                     Log.InfoFormat(MethodName, "Account Unsuccessful");
                     InsertAudit(Constants.AuditActionType.CustomerAccount, "Account not Created", User.Identity.Name);
@@ -115,49 +116,62 @@ namespace PureFountain.Controllers
             string MethodName = Constants.AuditActionType.ModifiedUser.ToString();
             ViewBag.Teller = new UserManagement().getAllTeller();
             int TillId = Id.GetValueOrDefault();
-
-            try
+            string CreatedOn = DateTime.Now.ToString("yyyy-MM-dd");
+            var existingTill = new AccountManagement().ValidateTill(Till.TellerId, CreatedOn);
+            if(existingTill == 0)
             {
-                var account = new PureTillAccount();
-                account.Accountname = Till.AccountName;
-                account.Accountbal = Till.AccountBal;
-                account.Tellerid = Till.TellerId;
-                account.Accountstatus = Till.AccountStatus;
-                account.Drcrindicator = "CR";
-                account.Amountdebited = 0;
-                account.Creditedby = User.Identity.Name;
-                account.Createdon = DateTime.Now;
-                bool EditTill = new AccountManagement().UpdateTill(account.Accountname, account.Accountbal, account.Tellerid, account.Accountstatus, account.Drcrindicator, account.Creditedby, account.Createdon, TillId);
+                try
+                {
+                    var account = new PureTillAccount();
+                    account.Accountname = Till.AccountName;
+                    account.Accountbal = Till.AccountBal;
+                    account.Tellerid = Till.TellerId;
+                    account.Accountstatus = Till.AccountStatus;
+                    account.Drcrindicator = "CR";
+                    account.Amountdebited = 0;
+                    account.Creditedby = User.Identity.Name;
+                    account.Createdon = DateTime.Now;
+                    bool EditTill = new AccountManagement().UpdateTill(account.Accountname, account.Accountbal, account.Tellerid, account.Accountstatus, account.Drcrindicator, account.Creditedby, account.Createdon, TillId);
 
-                if (EditTill == true)
-                {
-                    var NewTill = new PureTellerTill();
-                    NewTill.Accountnos = account.Accountnos;
-                    NewTill.Initialbalance = account.Accountbal;
-                    NewTill.Tellerid = account.Tellerid;
-                    NewTill.Amount = 0;
-                    NewTill.Drcrindicator = "CR";
-                    NewTill.Debiteddate = DateTime.Now;
-                    NewTill.Createdby = User.Identity.Name;
-                    bool TellerTill = new TransactionManagement().InsertTellerTill(NewTill);
-                    Log.InfoFormat(MethodName, "Till Update Successful");
-                    InsertAudit(Constants.AuditActionType.ModifyTill, "Till Update Successful", User.Identity.Name);
-                    TempData["SuccessMsg"] = "Till Update Successful";
-                    return RedirectToAction("ViewTill");
+                    if (EditTill)
+                    {
+                        var NewTill = new PureTellerTill();
+                        NewTill.Accountnos = account.Accountnos;
+                        NewTill.Initialbalance = account.Accountbal;
+                        NewTill.Tellerid = account.Tellerid;
+                        NewTill.Amount = 0;
+                        NewTill.Drcrindicator = "CR";
+                        NewTill.Debiteddate = DateTime.Now;
+                        NewTill.Createdby = User.Identity.Name;
+                        bool TellerTill = new TransactionManagement().InsertTellerTill(NewTill);
+                        Log.InfoFormat(MethodName, "Till Update Successful");
+                        InsertAudit(Constants.AuditActionType.ModifyTill, "Till Update Successful", User.Identity.Name);
+                        TempData["SuccessMsg"] = "Till Update Successful";
+                        return RedirectToAction("ViewTill");
+                    }
+                    else
+                    {
+                        Log.InfoFormat(MethodName, "Till Update Successful");
+                        InsertAudit(Constants.AuditActionType.ModifyTill, "Till Update Successful", User.Identity.Name);
+                        ViewBag.SuccessMsg = "Till Update Unsuccessful";
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Log.InfoFormat(MethodName, "Till Update Successful");
-                    InsertAudit(Constants.AuditActionType.ModifyTill, "Till Update Successful", User.Identity.Name);
+                    ErrorLogManager.LogError(MethodName, ex);
+                    InsertAudit(Constants.AuditActionType.ModifyTill, "Till Update Unsuccessful", User.Identity.Name);
                     ViewBag.SuccessMsg = "Till Update Unsuccessful";
                 }
             }
-            catch (Exception ex)
+            else
             {
-                ErrorLogManager.LogError(MethodName, ex);
-                InsertAudit(Constants.AuditActionType.ModifyTill, "Till Update Unsuccessful", User.Identity.Name);
-                ViewBag.SuccessMsg = "Till Update Unsuccessful";
+                Log.InfoFormat(MethodName, "Unable to update Till Account");
+                InsertAudit(Constants.AuditActionType.ModifyTill, "Unable to update Till Account", User.Identity.Name);
+                return View();
+             
             }
+      
+            
 
             return View();
         }
@@ -209,7 +223,7 @@ namespace PureFountain.Controllers
                         {
                             ViewBag.SuccessMsg = "User successfully created";
                             return View();
-                            
+
                         }
                         else
                         {
@@ -237,7 +251,7 @@ namespace PureFountain.Controllers
         public ActionResult ViewUser()
         {
             ViewBag.Message = "Users";
-            TempData["SuccessMsg"] = TempData["SuccessMsg"];
+            ViewBag.Success = TempData["SuccessMsg"];
             UserManagement Usermgts = new UserManagement();
             ViewBag.Users = Usermgts.getUserByCompany();
             return View();
@@ -309,7 +323,7 @@ namespace PureFountain.Controllers
                         Log.InfoFormat(MethodName, "Modified a user");
                         TempData["SuccessMsg"] = "Account successfully modified";
                         return RedirectToAction("viewuser");
-                     }
+                    }
                     else
                     {
                         ViewBag.ErrorMsg = "Account modification failed";
@@ -352,11 +366,10 @@ namespace PureFountain.Controllers
             {
                 return View();
             }
-
+            string MethodName = Constants.AuditActionType.UpdateProfile.ToString();
             UserManagement usermgt = new UserManagement();
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
-            string Username = User.Identity.Name;
             var editUser = new PureUser();
             if (account.UserPWD.Any("!@#$%^&*".Contains) && account.UserPWD.Length >= 6)
             {
@@ -375,15 +388,23 @@ namespace PureFountain.Controllers
                     editUser.Userimg = usermgt.DoFileUpload(account.UserImg, c["UserImg1"]);
                     UserManagement userManagement = new UserManagement();
                     editUser.Userpwd = usermgt.EncryptPassword(account.UserPWD);
-                    bool UpdateUser = userManagement.UpdateProfile(editUser.Firstname, editUser.Middlename, editUser.Lastname, editUser.Username, editUser.Useremail, editUser.Userpwd, editUser.Userimg, editUser.Phonenos, User.Identity.Name, DateTime.Now, User.Identity.Name);
-                    InsertAudit(Constants.AuditActionType.ProfileModified, "Modified a user " + editUser.Username, User.Identity.Name);
-                    TempData["ProfileMsg"] = "Profile updated successfully. Please Kindly login";
-                    return RedirectToAction("Logout", "Fountain");
-                    //ViewBag.SuccessMsg = "Account successfully modified";
-
+                    bool UpdateUser = false;
+                    UpdateUser = userManagement.UpdateProfile(editUser.Firstname, editUser.Middlename, editUser.Lastname, editUser.Username, editUser.Useremail, editUser.Userpwd, editUser.Userimg, editUser.Phonenos, User.Identity.Name, DateTime.Now, User.Identity.Name);
+                    if (UpdateUser == true)
+                    {
+                        InsertAudit(Constants.AuditActionType.ProfileModified, "Modified a user " + editUser.Username, User.Identity.Name);
+                        TempData["ProfileMsg"] = "Profile updated successfully. Please Kindly login";
+                        return RedirectToAction("Logout", "Fountain");
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMsg = "Unable to update";
+                        return View();
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    //Log.InfoFormat(MethodName, ComputerDetails, ex.Message);
                     ViewBag.ErrorMsg = "Unable to connect to the server";
                     return View();
                 }
@@ -475,6 +496,7 @@ namespace PureFountain.Controllers
         [Route("EditRole/{Id}")]
         public ActionResult EditRole(RoleViewModel extRole, int Id)
         {
+            string MethodName = Constants.AuditActionType.EditRole.ToString();
             int RoleId = Id;
             RoleManagement existingRole = new RoleManagement();
             var userRole = existingRole.getRoleById(RoleId);
@@ -497,8 +519,9 @@ namespace PureFountain.Controllers
                 ViewBag.SuccessMsg = "Role successfully modified";
                 return RedirectToAction("View_role", "Dolphin");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                //Log.InfoFormat(MethodName, ComputerDetails, ex.Message);
                 ViewBag.ErrorMsg = "Unable to connect to the server";
                 return View();
             }
@@ -534,7 +557,7 @@ namespace PureFountain.Controllers
             {
                 return View();
             }
-            var ipaddress = AuditService.DetermineIPAddress();
+
             string MethodName = Constants.AuditActionType.CustomerAccount.ToString();
             AccountManagement accountmgt = new AccountManagement();
             ViewBag.Country = accountmgt.GetAllCountries();
@@ -543,7 +566,6 @@ namespace PureFountain.Controllers
             ViewBag.Religion = accountmgt.GetAllReligion();
             ViewBag.Card = accountmgt.GetAllCard();
             ViewBag.Account = accountmgt.GetAccountCategory();
-            DateTime NewTime = DateTime.Now;
 
             try
             {
@@ -600,7 +622,7 @@ namespace PureFountain.Controllers
                 NewAccount = CustomerAccount.InsertAccount(Acc);
                 if (NewAccount == true)
                 {
-                    Log.InfoFormat(MethodName, "Account Successfully created");
+                    //Log.InfoFormat(MethodName, ComputerDetails, "Account", User.Identity.Name);
                     InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
                     ViewBag.SuccessMsg = "Account successfully created";
                     return View();
@@ -615,7 +637,7 @@ namespace PureFountain.Controllers
             }
             catch (Exception ex)
             {
-                ErrorLogManager.LogError(MethodName, ex);
+                //Log.InfoFormat(MethodName, ComputerDetails, ex.Message);
                 InsertAudit(Constants.AuditActionType.CustomerAccount, ex.Message, User.Identity.Name);
                 ViewBag.ErrorMsg = ex.Message;
             }
@@ -712,7 +734,7 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "View Account";
             AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            ViewBag.Customer = accountMgt.GetAllAccount();
             return View();
         }
 
@@ -740,7 +762,7 @@ namespace PureFountain.Controllers
             var TellerTill = new TransactionManagement().GetTillByUserName(UserName, ddate);
             if (TellerTill == null)
             {
-                Log.InfoFormat(MethodName, "No Till account");
+                Log.InfoFormat(MethodName, "No Till account", User.Identity.Name);
                 InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Failed", User.Identity.Name);
                 ViewBag.ErrorMsg = "There is no Till Account Assigned";
                 return View();
@@ -769,7 +791,7 @@ namespace PureFountain.Controllers
                 }
 
                 var ProcessTill = new AccountManagement().GetTellerTill(TellerId, ddate);
-               if (ProcessTill == null)
+                if (ProcessTill == null)
                 {
                     ViewBag.ErrorMsg = "No Till Account Found";
                     return View();
@@ -797,7 +819,7 @@ namespace PureFountain.Controllers
 
                 bool firstPost = false;
                 firstPost = new AccountManagement().InsertTransaction(acc);
-                if (firstPost == true)
+                if (firstPost)
                 {
                     try
                     {
@@ -843,24 +865,25 @@ namespace PureFountain.Controllers
                                 request1.Transtatus = "P";
                                 bool CrRequest = false;
                                 var request3 = new PureStatement();
+                                //decimal custBal= Convert.ToDecimal(CustomerDetails.Balance) + tran.Amount;
                                 request3.Referenceid = RequestId;
                                 request3.Transactiondetails = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
                                 request3.Accountno = CustomerDetails.AccountNos;
                                 request3.Deposit = Convert.ToDecimal(Amount);
                                 request3.Withdrawal = 0;
-                                request3.Accountbal = Convert.ToDecimal(CustomerDetails.Balance + Amount);
+                                request3.Accountbal = Convert.ToDecimal(CustomerDetails.Balance) + tran.Amount;//
                                 request3.Valuedate = DateTime.Now;
 
                                 bool CustomerStatement = false;
                                 CustomerStatement = new AccountManagement().InsertStatement(request3);
                                 CrRequest = new AccountManagement().InsertRequest(request1);
-                                if (CrRequest == true && CustomerStatement==true)
+                                if (CrRequest == true && CustomerStatement == true)
                                 {
                                     Log.InfoFormat(MethodName, "Deposit Successful");
                                     InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
                                     ViewBag.SuccessMsg = "Transaction Successful";
                                     return View();
-                                    
+
                                 }
                                 else
                                 {
@@ -881,7 +904,7 @@ namespace PureFountain.Controllers
                         }
                         catch (Exception ex)
                         {
-                            ErrorLogManager.LogError(MethodName, ex);
+                            //Log.InfoFormat(MethodName, ComputerDetails, ex.Message);
                             InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
                             ViewBag.ErrorMsg = ex.Message;
                             return View();
@@ -889,25 +912,30 @@ namespace PureFountain.Controllers
                     }
                     catch (Exception ex)
                     {
-                        ErrorLogManager.LogError(MethodName, ex);
+                        //Log.InfoFormat(MethodName, ComputerDetails, ex.Message);
                         InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
                         ViewBag.ErrorMsg = ex.Message;
                         return View();
                     }
                 }
-            
+
             }
             catch (Exception ex)
             {
-                ErrorLogManager.LogError(MethodName, ex);
+                //Log.InfoFormat(MethodName, ComputerDetails, ex.Message);
                 InsertAudit(Constants.AuditActionType.PostTransaction, ex.Message, User.Identity.Name);
                 ViewBag.ErrorMsg = ex.Message;
                 return View();
             }
             return View();
         }
-        
 
+        public ActionResult DepositHistory()
+        {
+            ViewBag.Message = "Deposit History";
+            ViewBag.Deposit = new TransactionManagement().GetDepositHistory(User.Identity.Name);
+            return View();
+        }
 
         public ActionResult TransactionHistory()
         {
@@ -927,7 +955,6 @@ namespace PureFountain.Controllers
         public ActionResult BankStatement()
         {
             ViewBag.Message = "Bank Statement";
-           //ViewBag.Customer = new ReportManagement().CustomerBankStatement();
             return View();
         }
 
@@ -951,7 +978,7 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "Account Balance";
             ViewBag.AccountBalance = new AccountManagement().GetAccountBal(AccountNos);
-            if(ViewBag.AccountBalance == null)
+            if (ViewBag.AccountBalance == null)
             {
                 return View();
             }
@@ -959,7 +986,7 @@ namespace PureFountain.Controllers
             {
                 return PartialView("_CustomerBalance");
             }
-            
+
         }
 
 
@@ -975,17 +1002,17 @@ namespace PureFountain.Controllers
         [HttpGet]
         public ActionResult GetTransHistory(string startdate, string enddate, string AccountNos)
         {
-            ViewBag.CustomerStatement = new ReportManagement().IndividualStatement(AccountNos,startdate, enddate);
+            ViewBag.CustomerStatement = new ReportManagement().IndividualStatement(AccountNos, startdate, enddate);
             if (ViewBag.CustomerStatement == null)
             {
-              
+
                 return View();
             }
             else
             {
                 return PartialView("_CustomerStatement");
             }
-            
+
         }
 
 
@@ -1013,23 +1040,30 @@ namespace PureFountain.Controllers
         }
 
 
-       
+
         public ActionResult ApproveTransaction(string RequestId)
         {
-               
+
             TransactionManagement transactionMgt = new TransactionManagement();
             string MethodName = "Approve Transaction";
             var codes = transactionMgt.GetTransactionDetails(RequestId);
             string TranStatus = "S";
             string Approver = User.Identity.Name;
-            string CustomerAccount = codes.Destinationaccount;
-          
-            bool UpdateTransaction = transactionMgt.ApproveTransaction(RequestId, Approver,TranStatus);//Transaction
-            Log.InfoFormat(MethodName, "Account Successfully created");
-            InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
+            bool UpdateTransaction = false;
+            UpdateTransaction = transactionMgt.ApproveTransaction(RequestId, Approver, TranStatus);//Transaction
+            if (UpdateTransaction == true)
+            {
+                Log.InfoFormat(MethodName, "Account Successfully created");
+                InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
+            }
+            else
+            {
+                Log.InfoFormat(MethodName, " Approval failed");
+                InsertAudit(Constants.AuditActionType.CustomerAccount, "Approval failed", User.Identity.Name);
+            }
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
-            
+
 
 
         public ActionResult RejectTransaction(string RequestId)
@@ -1038,10 +1072,15 @@ namespace PureFountain.Controllers
             var codes = transactionMgt.GetTransactionDetails(RequestId);
             string MethodName = "Cancel Transaction";
             string ApproverId = User.Identity.Name;
-            string TranStatus = "F";
-            var UpdateTransaction = transactionMgt.RejectTransaction(RequestId, ApproverId, TranStatus);//Transaction
-            Log.InfoFormat(MethodName, "Transaction Successfully cancelled");
-            InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Successfully Cancelled", User.Identity.Name);
+            string TranStatus = "X";
+            bool UpdateTransaction = false;
+            UpdateTransaction = transactionMgt.RejectTransaction(RequestId, ApproverId, TranStatus);//Transaction
+            if (UpdateTransaction)
+            {
+                Log.InfoFormat(MethodName, "Transaction Successfully cancelled");
+                InsertAudit(Constants.AuditActionType.CustomerAccount, "Transaction Successfully Cancelled", User.Identity.Name);
+            }
+
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
@@ -1050,7 +1089,7 @@ namespace PureFountain.Controllers
         {
             LoanManagement loanMgt = new LoanManagement();
             string MethodName = "Decline Loan";
-            string LoanStatus = "F";
+            string LoanStatus = "X";
             string Approver = User.Identity.Name;
             bool codes = loanMgt.ApproveLoanStatus(LoanStatus, LoanId, Approver);//Transaction
             Log.InfoFormat(MethodName, "Unable to grant loan");
@@ -1065,7 +1104,7 @@ namespace PureFountain.Controllers
             string MethodName = "Approve Loan";
             string LoanStatus = "A";
             string Approver = User.Identity.Name;
-            bool codes = loanMgt.ApproveLoanStatus(LoanStatus,LoanId, Approver);//Transaction
+            bool codes = loanMgt.ApproveLoanStatus(LoanStatus, LoanId, Approver);//Transaction
             Log.InfoFormat(MethodName, "Account Successfully created");
             InsertAudit(Constants.AuditActionType.CustomerAccount, "Loan Granted", User.Identity.Name);
             return Json(codes, JsonRequestBehavior.AllowGet);
@@ -1102,12 +1141,13 @@ namespace PureFountain.Controllers
         public ActionResult GenerateAccountNos(int CustomerId)
         {
             var AccountNos = new SequenceManager().GenerateAccountNos().ToString();
-            var acc= new PureCustomerInfo();
+            var acc = new PureCustomerInfo();
             acc.Accountnos = AccountNos;
             acc.Accountstatus = true;
             AccountManagement accountMgt = new AccountManagement();
-            //var ExistingNos = accountMgt.GetAccountNos(AccountNos);
-            bool UpdateAccount = accountMgt.ApproveAccount(CustomerId, acc.Accountnos, acc.Accountstatus);
+            bool UpdateAccount = false;
+            UpdateAccount = accountMgt.ApproveAccount(CustomerId, acc.Accountnos, acc.Accountstatus);
+
             var codes = new AccountManagement().GetAccountDetails(CustomerId);
             var accNos = new PureAccountNo();
             accNos.Accountnos = AccountNos;
@@ -1123,10 +1163,15 @@ namespace PureFountain.Controllers
             Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created");
             InsertAudit(Constants.AuditActionType.ApproveAccount, "Account Successfully Created", User.Identity.Name);
             return Json(codes, JsonRequestBehavior.AllowGet);
-                      
+
+            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed");
+            InsertAudit(Constants.AuditActionType.ApproveAccount, "Account failed", User.Identity.Name);
+
+
+
         }
 
-    
+
         public ActionResult ModifyAccount()
         {
             ViewBag.Message = "Modify Account";
@@ -1158,15 +1203,10 @@ namespace PureFountain.Controllers
                 return View();
             }
             string MethodName = "Loan Application";
-
-            //DateTime ProcessedDate = DateTime.Now;
             DateTime Processed = DateTime.Now;
-            //DateTime dt1 = DateTime.Now.ParseExact(DateTime, "yyyy-MM-dd", null);
-            //DateTime dt1 = (DateTime.Now).Sql.Types.SqlDateTime;
             LoanManagement loanMgt = new LoanManagement();
             ViewBag.Loan = loanMgt.GetLoanCategory();
-            //DateTime dt2 = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
-            decimal LoanInterest =tran.LoanAmount * Convert.ToDecimal(0.05) * Convert.ToDecimal(tran.LoanTimeline);
+            decimal LoanInterest = tran.LoanAmount * Convert.ToDecimal(0.05) * Convert.ToDecimal(tran.LoanTimeline);
             try
             {
                 var loan = new PureLoan();
@@ -1207,13 +1247,13 @@ namespace PureFountain.Controllers
                     ViewBag.ErrorMsg = "Application Unuccessful";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLogManager.LogError(MethodName, ex);
                 InsertAudit(Constants.AuditActionType.LoanApplication, "Application Unuccessful", User.Identity.Name);
                 ViewBag.ErrorMsg = "Application Unuccessful";
             }
-            
+
 
             return View();
         }
@@ -1232,7 +1272,7 @@ namespace PureFountain.Controllers
             return View();
         }
 
-       
+
         [HttpPost]
         public ActionResult Withdrawal(TransactionViewModel tran)
         {
@@ -1327,7 +1367,7 @@ namespace PureFountain.Controllers
 
                         bool CustomerStatement = false;
                         CustomerStatement = new AccountManagement().InsertStatement(request3);
-                        if (DrRequest == true && CustomerStatement==true)
+                        if (DrRequest == true && CustomerStatement == true)
                         {
                             var request1 = new PurePostRequest();
                             request1.Requestid = RequestId;

@@ -132,6 +132,14 @@ namespace BLL.ApplicationLogic
         }
 
 
+        public int ValidateTill(string tellerTill, string createdOn)
+        {
+            string sql = "select Count(*) from Pure_TillAccount where TellerId=@0 and CreatedOn=@1";
+            var actual = context.ExecuteScalar<int>(sql, tellerTill, createdOn);
+            return Convert.ToInt32(actual);
+        }
+
+
         public CreditAccount CreditAccount(float Amount, float Balance)
         {
             string sql = "SELECT CAST(SUM(@0 + @1) AS NUMERIC(18,2)) AS BALANCE";
@@ -165,6 +173,14 @@ namespace BLL.ApplicationLogic
         public List<CustomerInfoViewModel> GetPendingAccount()
         {
             string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,J.ReligionName,I.AccountTitle,A.PhoneNos1,A.PhoneNos2,A.MaidenName,A.UserSex,A.UserLGA,A.IDIssueAuth,A.AccountImg,A.HomeAddress,A.DOB,A.JobTitle,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.AccountSign,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,A.ReligionId,C.OccupationName,D.CountryName,A.Nationality,A.EmploymentDate,A.AccountType,A.OfficeAddress, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName from Pure_Customer_Info A inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.Nationality inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos inner join Pure_Account_Category I on A.AccountType=I.AccountId inner join Pure_Religion J on J.ReligionId=A.ReligionId where A.AccountStatus='false' order by CustomerId desc";
+            var actual = context.Fetch<CustomerInfoViewModel>(sql).ToList();
+            return actual;
+        }
+
+
+        public List<CustomerInfoViewModel> GetAllAccount()
+        {
+            string sql = "select A.CustomerId,A.FirstName,A.MiddleName,A.LastName,A.UserEmail,J.ReligionName,I.AccountTitle,A.PhoneNos1,A.PhoneNos2,A.MaidenName,A.UserSex,A.UserLGA,A.IDIssueAuth,A.AccountImg,A.HomeAddress,A.DOB,A.JobTitle,A.IncomeRange,A.IDIssueDate,A.IDExpiryDate,A.UserBVN,A.IDDetails,A.OtherAccountNos,A.NextOfKin,A.KNumber,A.AccountSign,A.KRelationship,A.RefName,A.ReasonForAccount,A.AccountName,A.AccountNos,A.AccountStatus,A.CreatedBy,A.CreatedOn,A.ApprovedBy,A.ApprovedOn,A.ReligionId,C.OccupationName,D.CountryName,A.Nationality,A.EmploymentDate,A.AccountType,A.OfficeAddress, E.StateName,F.BankName, H.IDName,G.FirstName,G.MiddleName,G.LastName,B.AccountBal from Pure_Customer_Info A inner join Pure_Account_Details B on B.AccountNos=A.AccountNos inner join Pure_Occupation C on C.OccupationId = A.OccupationId inner join Pure_Country D on D.CountryCode = A.Nationality inner join Pure_States E on E.StateId = A.StateOrigin inner join Pure_Bank F on F.BankId = A.OtherBankId inner join Pure_User G on G.UserName = A.RefName inner join Pure_IDCard H on H.IDNos = A.IDNos inner join Pure_Account_Category I on A.AccountType=I.AccountId inner join Pure_Religion J on J.ReligionId=A.ReligionId where A.AccountStatus='true' order by CustomerId desc";
             var actual = context.Fetch<CustomerInfoViewModel>(sql).ToList();
             return actual;
         }

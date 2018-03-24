@@ -11,7 +11,7 @@ namespace BLL.ApplicationLogic
         
         public enum AuditActionType
         {
-
+            EditRole,
             Login,
             Logout,
             LoanApplication,
@@ -33,6 +33,7 @@ namespace BLL.ApplicationLogic
             ModifiedPermission,
             DeletedUser,
             General,
+            UpdateProfile,
             ApprovedUser,
             RejectedUser,
             RoleModified,

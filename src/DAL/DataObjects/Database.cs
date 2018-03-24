@@ -5,7 +5,7 @@
 // 
 //     Connection String Name: `FountainConPoco`
 //     Provider:               `System.Data.SqlClient`
-//     Connection String:      `Data Source=.\SQLEXPRESS; User ID=sa; password=**zapped**;`
+//     Connection String:      `Data Source=mssql.purefountainempowerment.com,1500; User ID=fountain; password=**zapped**;`
 //     Schema:                 ``
 //     Include Views:          `True`
 
@@ -150,68 +150,56 @@ namespace FountainContext.Data.Models
 			}		
 		}	
 	}		
-		[TableName("dbo.Pure_Tracking")]
-		[PrimaryKey("Tid")]
+		[TableName("dbo.Pure_Account_Category")]
+		[PrimaryKey("AccountId")]
 		[ExplicitColumns]
-		public partial class PureTracking : FountainDb.Record<PureTracking>  
+		public partial class PureAccountCategory : FountainDb.Record<PureAccountCategory>  
 		{
-	        [Column] public int Tid 
+			[Column("AccountId")] public int Accountid 
 			{ 
-				get { return _Tid; }
-				set { _Tid = value; Track("Tid"); }
+				get { return _Accountid; }
+				set { _Accountid = value; Track("AccountId"); }
 			}
-			int _Tid;
-			[Column("UserName")] public string Username 
+			int _Accountid;
+			[Column("AccountTitle")] public string Accounttitle 
 			{ 
-				get { return _Username; }
-				set { _Username = value; Track("UserName"); }
+				get { return _Accounttitle; }
+				set { _Accounttitle = value; Track("AccountTitle"); }
 			}
-			string _Username;
-			[Column("SessionId")] public string Sessionid 
+			string _Accounttitle;
+			[Column("AccountDesc")] public string Accountdesc 
 			{ 
-				get { return _Sessionid; }
-				set { _Sessionid = value; Track("SessionId"); }
+				get { return _Accountdesc; }
+				set { _Accountdesc = value; Track("AccountDesc"); }
 			}
-			string _Sessionid;
-			[Column("SystemIp")] public string Systemip 
+			string _Accountdesc;
+			[Column("AccountStatus")] public int? Accountstatus 
 			{ 
-				get { return _Systemip; }
-				set { _Systemip = value; Track("SystemIp"); }
+				get { return _Accountstatus; }
+				set { _Accountstatus = value; Track("AccountStatus"); }
 			}
-			string _Systemip;
-			[Column("SystemName")] public string Systemname 
-			{ 
-				get { return _Systemname; }
-				set { _Systemname = value; Track("SystemName"); }
-			}
-			string _Systemname;
-			[Column("LoginDate")] public DateTime? Logindate 
-			{ 
-				get { return _Logindate; }
-				set { _Logindate = value; Track("LoginDate"); }
-			}
-			DateTime? _Logindate;
+			int? _Accountstatus;
 		
-			public static IEnumerable<PureTracking> Query(Database db, string[] columns = null, int[] Tid = null)
+			public static IEnumerable<PureAccountCategory> Query(Database db, string[] columns = null, int[] Accountid = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_Tracking (NOLOCK)");
+                sql.From("dbo.Pure_Account_Category (NOLOCK)");
 
-				if (Tid != null)
-					sql.Where("Tid IN (@0)", Tid);
+				if (Accountid != null)
+					sql.Where("AccountId IN (@0)", Accountid);
 
-                return db.Query<PureTracking>(sql);
+                return db.Query<PureAccountCategory>(sql);
             }
 		}
 		
-		[TableName("dbo.Pure_Statement")]
+		[TableName("dbo.Pure_Account_Details")]
 		[PrimaryKey("Id")]
 		[ExplicitColumns]
-		public partial class PureStatement : FountainDb.Record<PureStatement>  
+		public partial class PureAccountDetail : FountainDb.Record<PureAccountDetail>  
 		{
 	        [Column] public int Id 
 			{ 
@@ -219,188 +207,50 @@ namespace FountainContext.Data.Models
 				set { _Id = value; Track("Id"); }
 			}
 			int _Id;
-			[Column("ReferenceId")] public string Referenceid 
+			[Column("CustomerId")] public int? Customerid 
 			{ 
-				get { return _Referenceid; }
-				set { _Referenceid = value; Track("ReferenceId"); }
+				get { return _Customerid; }
+				set { _Customerid = value; Track("CustomerId"); }
 			}
-			string _Referenceid;
-			[Column("TransactionDetails")] public string Transactiondetails 
+			int? _Customerid;
+			[Column("AccountNos")] public string Accountnos 
 			{ 
-				get { return _Transactiondetails; }
-				set { _Transactiondetails = value; Track("TransactionDetails"); }
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
 			}
-			string _Transactiondetails;
-			[Column("AccountNo")] public string Accountno 
-			{ 
-				get { return _Accountno; }
-				set { _Accountno = value; Track("AccountNo"); }
-			}
-			string _Accountno;
-	        [Column] public decimal? Deposit 
-			{ 
-				get { return _Deposit; }
-				set { _Deposit = value; Track("Deposit"); }
-			}
-			decimal? _Deposit;
-	        [Column] public decimal? Withdrawal 
-			{ 
-				get { return _Withdrawal; }
-				set { _Withdrawal = value; Track("Withdrawal"); }
-			}
-			decimal? _Withdrawal;
+			string _Accountnos;
 			[Column("AccountBal")] public decimal? Accountbal 
 			{ 
 				get { return _Accountbal; }
 				set { _Accountbal = value; Track("AccountBal"); }
 			}
 			decimal? _Accountbal;
-			[Column("ValueDate")] public DateTime? Valuedate 
+			[Column("ModifiedBy")] public string Modifiedby 
 			{ 
-				get { return _Valuedate; }
-				set { _Valuedate = value; Track("ValueDate"); }
+				get { return _Modifiedby; }
+				set { _Modifiedby = value; Track("ModifiedBy"); }
 			}
-			DateTime? _Valuedate;
+			string _Modifiedby;
+			[Column("ModifiedOn")] public DateTime? Modifiedon 
+			{ 
+				get { return _Modifiedon; }
+				set { _Modifiedon = value; Track("ModifiedOn"); }
+			}
+			DateTime? _Modifiedon;
 		
-			public static IEnumerable<PureStatement> Query(Database db, string[] columns = null, int[] Id = null)
+			public static IEnumerable<PureAccountDetail> Query(Database db, string[] columns = null, int[] Id = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_Statement (NOLOCK)");
+                sql.From("dbo.Pure_Account_Details (NOLOCK)");
 
 				if (Id != null)
 					sql.Where("Id IN (@0)", Id);
 
-                return db.Query<PureStatement>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Bank")]
-		[PrimaryKey("BankId")]
-		[ExplicitColumns]
-		public partial class PureBank : FountainDb.Record<PureBank>  
-		{
-			[Column("BankId")] public int Bankid 
-			{ 
-				get { return _Bankid; }
-				set { _Bankid = value; Track("BankId"); }
-			}
-			int _Bankid;
-			[Column("BankName")] public string Bankname 
-			{ 
-				get { return _Bankname; }
-				set { _Bankname = value; Track("BankName"); }
-			}
-			string _Bankname;
-			[Column("BankStatus")] public bool? Bankstatus 
-			{ 
-				get { return _Bankstatus; }
-				set { _Bankstatus = value; Track("BankStatus"); }
-			}
-			bool? _Bankstatus;
-		
-			public static IEnumerable<PureBank> Query(Database db, string[] columns = null, int[] Bankid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Bank (NOLOCK)");
-
-				if (Bankid != null)
-					sql.Where("BankId IN (@0)", Bankid);
-
-                return db.Query<PureBank>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Role")]
-		[PrimaryKey("RoleId")]
-		[ExplicitColumns]
-		public partial class PureRole : FountainDb.Record<PureRole>  
-		{
-			[Column("RoleId")] public int Roleid 
-			{ 
-				get { return _Roleid; }
-				set { _Roleid = value; Track("RoleId"); }
-			}
-			int _Roleid;
-			[Column("RoleName")] public string Rolename 
-			{ 
-				get { return _Rolename; }
-				set { _Rolename = value; Track("RoleName"); }
-			}
-			string _Rolename;
-			[Column("RoleDesc")] public string Roledesc 
-			{ 
-				get { return _Roledesc; }
-				set { _Roledesc = value; Track("RoleDesc"); }
-			}
-			string _Roledesc;
-			[Column("RoleStatus")] public bool? Rolestatus 
-			{ 
-				get { return _Rolestatus; }
-				set { _Rolestatus = value; Track("RoleStatus"); }
-			}
-			bool? _Rolestatus;
-		
-			public static IEnumerable<PureRole> Query(Database db, string[] columns = null, int[] Roleid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Role (NOLOCK)");
-
-				if (Roleid != null)
-					sql.Where("RoleId IN (@0)", Roleid);
-
-                return db.Query<PureRole>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Country")]
-		[PrimaryKey("CountryId")]
-		[ExplicitColumns]
-		public partial class PureCountry : FountainDb.Record<PureCountry>  
-		{
-			[Column("CountryId")] public int Countryid 
-			{ 
-				get { return _Countryid; }
-				set { _Countryid = value; Track("CountryId"); }
-			}
-			int _Countryid;
-			[Column("CountryName")] public string Countryname 
-			{ 
-				get { return _Countryname; }
-				set { _Countryname = value; Track("CountryName"); }
-			}
-			string _Countryname;
-			[Column("CountryCode")] public string Countrycode 
-			{ 
-				get { return _Countrycode; }
-				set { _Countrycode = value; Track("CountryCode"); }
-			}
-			string _Countrycode;
-		
-			public static IEnumerable<PureCountry> Query(Database db, string[] columns = null, int[] Countryid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Country (NOLOCK)");
-
-				if (Countryid != null)
-					sql.Where("CountryId IN (@0)", Countryid);
-
-                return db.Query<PureCountry>(sql);
+                return db.Query<PureAccountDetail>(sql);
             }
 		}
 		
@@ -444,10 +294,10 @@ namespace FountainContext.Data.Models
             }
 		}
 		
-		[TableName("dbo.Pure_RoleMenu")]
+		[TableName("dbo.Pure_AuditTrail")]
 		[PrimaryKey("Id")]
 		[ExplicitColumns]
-		public partial class PureRoleMenu : FountainDb.Record<PureRoleMenu>  
+		public partial class PureAuditTrail : FountainDb.Record<PureAuditTrail>  
 		{
 	        [Column] public int Id 
 			{ 
@@ -455,110 +305,116 @@ namespace FountainContext.Data.Models
 				set { _Id = value; Track("Id"); }
 			}
 			int _Id;
-			[Column("MenuId")] public int? Menuid 
+			[Column("UserName")] public string Username 
 			{ 
-				get { return _Menuid; }
-				set { _Menuid = value; Track("MenuId"); }
+				get { return _Username; }
+				set { _Username = value; Track("UserName"); }
 			}
-			int? _Menuid;
-			[Column("RoleId")] public int? Roleid 
+			string _Username;
+			[Column("UserActivity")] public string Useractivity 
 			{ 
-				get { return _Roleid; }
-				set { _Roleid = value; Track("RoleId"); }
+				get { return _Useractivity; }
+				set { _Useractivity = value; Track("UserActivity"); }
 			}
-			int? _Roleid;
-			[Column("MenuDesc")] public string Menudesc 
+			string _Useractivity;
+	        [Column] public string Comment 
 			{ 
-				get { return _Menudesc; }
-				set { _Menudesc = value; Track("MenuDesc"); }
+				get { return _Comment; }
+				set { _Comment = value; Track("Comment"); }
 			}
-			string _Menudesc;
+			string _Comment;
+			[Column("DateLog")] public DateTime? Datelog 
+			{ 
+				get { return _Datelog; }
+				set { _Datelog = value; Track("DateLog"); }
+			}
+			DateTime? _Datelog;
+			[Column("SystemName")] public string Systemname 
+			{ 
+				get { return _Systemname; }
+				set { _Systemname = value; Track("SystemName"); }
+			}
+			string _Systemname;
+			[Column("SystemIP")] public string Systemip 
+			{ 
+				get { return _Systemip; }
+				set { _Systemip = value; Track("SystemIP"); }
+			}
+			string _Systemip;
 		
-			public static IEnumerable<PureRoleMenu> Query(Database db, string[] columns = null, int[] Id = null)
+			public static IEnumerable<PureAuditTrail> Query(Database db, string[] columns = null, int[] Id = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_RoleMenu (NOLOCK)");
+                sql.From("dbo.Pure_AuditTrail (NOLOCK)");
 
 				if (Id != null)
 					sql.Where("Id IN (@0)", Id);
 
-                return db.Query<PureRoleMenu>(sql);
+                return db.Query<PureAuditTrail>(sql);
             }
 		}
 		
-		[TableName("dbo.Pure_Remittance")]
-		[PrimaryKey("RemId")]
+		[TableName("dbo.Pure_Bank")]
+		[PrimaryKey("BankId")]
 		[ExplicitColumns]
-		public partial class PureRemittance : FountainDb.Record<PureRemittance>  
+		public partial class PureBank : FountainDb.Record<PureBank>  
 		{
-			[Column("RemId")] public int Remid 
+			[Column("BankId")] public int Bankid 
 			{ 
-				get { return _Remid; }
-				set { _Remid = value; Track("RemId"); }
+				get { return _Bankid; }
+				set { _Bankid = value; Track("BankId"); }
 			}
-			int _Remid;
-			[Column("RequestId")] public string Requestid 
+			int _Bankid;
+			[Column("BankName")] public string Bankname 
 			{ 
-				get { return _Requestid; }
-				set { _Requestid = value; Track("RequestId"); }
+				get { return _Bankname; }
+				set { _Bankname = value; Track("BankName"); }
 			}
-			string _Requestid;
-			[Column("RemAmount")] public decimal? Remamount 
+			string _Bankname;
+			[Column("BankStatus")] public bool? Bankstatus 
 			{ 
-				get { return _Remamount; }
-				set { _Remamount = value; Track("RemAmount"); }
+				get { return _Bankstatus; }
+				set { _Bankstatus = value; Track("BankStatus"); }
 			}
-			decimal? _Remamount;
-			[Column("CreditedBy")] public string Creditedby 
-			{ 
-				get { return _Creditedby; }
-				set { _Creditedby = value; Track("CreditedBy"); }
-			}
-			string _Creditedby;
-			[Column("CreditedOn")] public DateTime? Creditedon 
-			{ 
-				get { return _Creditedon; }
-				set { _Creditedon = value; Track("CreditedOn"); }
-			}
-			DateTime? _Creditedon;
+			bool? _Bankstatus;
 		
-			public static IEnumerable<PureRemittance> Query(Database db, string[] columns = null, int[] Remid = null)
+			public static IEnumerable<PureBank> Query(Database db, string[] columns = null, int[] Bankid = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_Remittance (NOLOCK)");
+                sql.From("dbo.Pure_Bank (NOLOCK)");
 
-				if (Remid != null)
-					sql.Where("RemId IN (@0)", Remid);
+				if (Bankid != null)
+					sql.Where("BankId IN (@0)", Bankid);
 
-                return db.Query<PureRemittance>(sql);
+                return db.Query<PureBank>(sql);
             }
 		}
 		
-		[TableName("dbo.Pure_States")]
-		[PrimaryKey("StateId")]
+		[TableName("dbo.Pure_Country")]
+		[PrimaryKey("CountryId")]
 		[ExplicitColumns]
-		public partial class PureState : FountainDb.Record<PureState>  
+		public partial class PureCountry : FountainDb.Record<PureCountry>  
 		{
-			[Column("StateId")] public int Stateid 
+			[Column("CountryId")] public int Countryid 
 			{ 
-				get { return _Stateid; }
-				set { _Stateid = value; Track("StateId"); }
+				get { return _Countryid; }
+				set { _Countryid = value; Track("CountryId"); }
 			}
-			int _Stateid;
-			[Column("StateName")] public string Statename 
+			int _Countryid;
+			[Column("CountryName")] public string Countryname 
 			{ 
-				get { return _Statename; }
-				set { _Statename = value; Track("StateName"); }
+				get { return _Countryname; }
+				set { _Countryname = value; Track("CountryName"); }
 			}
-			string _Statename;
+			string _Countryname;
 			[Column("CountryCode")] public string Countrycode 
 			{ 
 				get { return _Countrycode; }
@@ -566,259 +422,59 @@ namespace FountainContext.Data.Models
 			}
 			string _Countrycode;
 		
-			public static IEnumerable<PureState> Query(Database db, string[] columns = null, int[] Stateid = null)
+			public static IEnumerable<PureCountry> Query(Database db, string[] columns = null, int[] Countryid = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_States (NOLOCK)");
+                sql.From("dbo.Pure_Country (NOLOCK)");
 
-				if (Stateid != null)
-					sql.Where("StateId IN (@0)", Stateid);
+				if (Countryid != null)
+					sql.Where("CountryId IN (@0)", Countryid);
 
-                return db.Query<PureState>(sql);
+                return db.Query<PureCountry>(sql);
             }
 		}
 		
-		[TableName("dbo.Pure_Religion")]
-		[PrimaryKey("ReligionId")]
+		[TableName("dbo.Pure_Currency")]
+		[PrimaryKey("CurrencyId")]
 		[ExplicitColumns]
-		public partial class PureReligion : FountainDb.Record<PureReligion>  
+		public partial class PureCurrency : FountainDb.Record<PureCurrency>  
 		{
-			[Column("ReligionId")] public int Religionid 
+			[Column("CurrencyId")] public int Currencyid 
 			{ 
-				get { return _Religionid; }
-				set { _Religionid = value; Track("ReligionId"); }
+				get { return _Currencyid; }
+				set { _Currencyid = value; Track("CurrencyId"); }
 			}
-			int _Religionid;
-			[Column("ReligionName")] public string Religionname 
+			int _Currencyid;
+			[Column("CurrencyName")] public string Currencyname 
 			{ 
-				get { return _Religionname; }
-				set { _Religionname = value; Track("ReligionName"); }
+				get { return _Currencyname; }
+				set { _Currencyname = value; Track("CurrencyName"); }
 			}
-			string _Religionname;
+			string _Currencyname;
+			[Column("CurrencyISO")] public string Currencyiso 
+			{ 
+				get { return _Currencyiso; }
+				set { _Currencyiso = value; Track("CurrencyISO"); }
+			}
+			string _Currencyiso;
 		
-			public static IEnumerable<PureReligion> Query(Database db, string[] columns = null, int[] Religionid = null)
+			public static IEnumerable<PureCurrency> Query(Database db, string[] columns = null, int[] Currencyid = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_Religion (NOLOCK)");
+                sql.From("dbo.Pure_Currency (NOLOCK)");
 
-				if (Religionid != null)
-					sql.Where("ReligionId IN (@0)", Religionid);
+				if (Currencyid != null)
+					sql.Where("CurrencyId IN (@0)", Currencyid);
 
-                return db.Query<PureReligion>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_IDCard")]
-		[PrimaryKey("IDNos")]
-		[ExplicitColumns]
-		public partial class PureIdCard : FountainDb.Record<PureIdCard>  
-		{
-			[Column("IDNos")] public int Idnos 
-			{ 
-				get { return _Idnos; }
-				set { _Idnos = value; Track("IDNos"); }
-			}
-			int _Idnos;
-			[Column("IDName")] public string Idname 
-			{ 
-				get { return _Idname; }
-				set { _Idname = value; Track("IDName"); }
-			}
-			string _Idname;
-		
-			public static IEnumerable<PureIdCard> Query(Database db, string[] columns = null, int[] Idnos = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_IDCard (NOLOCK)");
-
-				if (Idnos != null)
-					sql.Where("IDNos IN (@0)", Idnos);
-
-                return db.Query<PureIdCard>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_TellerTill")]
-		[PrimaryKey("DebitId")]
-		[ExplicitColumns]
-		public partial class PureTellerTill : FountainDb.Record<PureTellerTill>  
-		{
-			[Column("DebitId")] public int Debitid 
-			{ 
-				get { return _Debitid; }
-				set { _Debitid = value; Track("DebitId"); }
-			}
-			int _Debitid;
-			[Column("AccountNos")] public string Accountnos 
-			{ 
-				get { return _Accountnos; }
-				set { _Accountnos = value; Track("AccountNos"); }
-			}
-			string _Accountnos;
-			[Column("TellerId")] public string Tellerid 
-			{ 
-				get { return _Tellerid; }
-				set { _Tellerid = value; Track("TellerId"); }
-			}
-			string _Tellerid;
-			[Column("InitialBalance")] public decimal? Initialbalance 
-			{ 
-				get { return _Initialbalance; }
-				set { _Initialbalance = value; Track("InitialBalance"); }
-			}
-			decimal? _Initialbalance;
-	        [Column] public decimal? Amount 
-			{ 
-				get { return _Amount; }
-				set { _Amount = value; Track("Amount"); }
-			}
-			decimal? _Amount;
-			[Column("DRCRIndicator")] public string Drcrindicator 
-			{ 
-				get { return _Drcrindicator; }
-				set { _Drcrindicator = value; Track("DRCRIndicator"); }
-			}
-			string _Drcrindicator;
-			[Column("DebitedDate")] public DateTime? Debiteddate 
-			{ 
-				get { return _Debiteddate; }
-				set { _Debiteddate = value; Track("DebitedDate"); }
-			}
-			DateTime? _Debiteddate;
-			[Column("CreatedBy")] public string Createdby 
-			{ 
-				get { return _Createdby; }
-				set { _Createdby = value; Track("CreatedBy"); }
-			}
-			string _Createdby;
-		
-			public static IEnumerable<PureTellerTill> Query(Database db, string[] columns = null, int[] Debitid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_TellerTill (NOLOCK)");
-
-				if (Debitid != null)
-					sql.Where("DebitId IN (@0)", Debitid);
-
-                return db.Query<PureTellerTill>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_UserTitle")]
-		[PrimaryKey("TitleId")]
-		[ExplicitColumns]
-		public partial class PureUserTitle : FountainDb.Record<PureUserTitle>  
-		{
-			[Column("TitleId")] public int Titleid 
-			{ 
-				get { return _Titleid; }
-				set { _Titleid = value; Track("TitleId"); }
-			}
-			int _Titleid;
-			[Column("TitleName")] public string Titlename 
-			{ 
-				get { return _Titlename; }
-				set { _Titlename = value; Track("TitleName"); }
-			}
-			string _Titlename;
-		
-			public static IEnumerable<PureUserTitle> Query(Database db, string[] columns = null, int[] Titleid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_UserTitle (NOLOCK)");
-
-				if (Titleid != null)
-					sql.Where("TitleId IN (@0)", Titleid);
-
-                return db.Query<PureUserTitle>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_UserIdentification")]
-		[PrimaryKey("IdNo")]
-		[ExplicitColumns]
-		public partial class PureUserIdentification : FountainDb.Record<PureUserIdentification>  
-		{
-			[Column("IdNo")] public int Idno 
-			{ 
-				get { return _Idno; }
-				set { _Idno = value; Track("IdNo"); }
-			}
-			int _Idno;
-			[Column("IdName")] public string Idname 
-			{ 
-				get { return _Idname; }
-				set { _Idname = value; Track("IdName"); }
-			}
-			string _Idname;
-		
-			public static IEnumerable<PureUserIdentification> Query(Database db, string[] columns = null, int[] Idno = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_UserIdentification (NOLOCK)");
-
-				if (Idno != null)
-					sql.Where("IdNo IN (@0)", Idno);
-
-                return db.Query<PureUserIdentification>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Occupation")]
-		[PrimaryKey("OccupationId")]
-		[ExplicitColumns]
-		public partial class PureOccupation : FountainDb.Record<PureOccupation>  
-		{
-			[Column("OccupationId")] public int Occupationid 
-			{ 
-				get { return _Occupationid; }
-				set { _Occupationid = value; Track("OccupationId"); }
-			}
-			int _Occupationid;
-			[Column("OccupationName")] public string Occupationname 
-			{ 
-				get { return _Occupationname; }
-				set { _Occupationname = value; Track("OccupationName"); }
-			}
-			string _Occupationname;
-		
-			public static IEnumerable<PureOccupation> Query(Database db, string[] columns = null, int[] Occupationid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Occupation (NOLOCK)");
-
-				if (Occupationid != null)
-					sql.Where("OccupationId IN (@0)", Occupationid);
-
-                return db.Query<PureOccupation>(sql);
+                return db.Query<PureCurrency>(sql);
             }
 		}
 		
@@ -1126,338 +782,6 @@ namespace FountainContext.Data.Models
             }
 		}
 		
-		[TableName("dbo.Pure_Account_Details")]
-		[PrimaryKey("Id")]
-		[ExplicitColumns]
-		public partial class PureAccountDetail : FountainDb.Record<PureAccountDetail>  
-		{
-	        [Column] public int Id 
-			{ 
-				get { return _Id; }
-				set { _Id = value; Track("Id"); }
-			}
-			int _Id;
-			[Column("CustomerId")] public int? Customerid 
-			{ 
-				get { return _Customerid; }
-				set { _Customerid = value; Track("CustomerId"); }
-			}
-			int? _Customerid;
-			[Column("AccountNos")] public string Accountnos 
-			{ 
-				get { return _Accountnos; }
-				set { _Accountnos = value; Track("AccountNos"); }
-			}
-			string _Accountnos;
-			[Column("AccountBal")] public decimal? Accountbal 
-			{ 
-				get { return _Accountbal; }
-				set { _Accountbal = value; Track("AccountBal"); }
-			}
-			decimal? _Accountbal;
-			[Column("ModifiedBy")] public string Modifiedby 
-			{ 
-				get { return _Modifiedby; }
-				set { _Modifiedby = value; Track("ModifiedBy"); }
-			}
-			string _Modifiedby;
-			[Column("ModifiedOn")] public DateTime? Modifiedon 
-			{ 
-				get { return _Modifiedon; }
-				set { _Modifiedon = value; Track("ModifiedOn"); }
-			}
-			DateTime? _Modifiedon;
-		
-			public static IEnumerable<PureAccountDetail> Query(Database db, string[] columns = null, int[] Id = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Account_Details (NOLOCK)");
-
-				if (Id != null)
-					sql.Where("Id IN (@0)", Id);
-
-                return db.Query<PureAccountDetail>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_FlexRole")]
-		[ExplicitColumns]
-		public partial class PureFlexRole : FountainDb.Record<PureFlexRole>  
-		{
-			[Column("FlexId")] public int? Flexid 
-			{ 
-				get { return _Flexid; }
-				set { _Flexid = value; Track("FlexId"); }
-			}
-			int? _Flexid;
-			[Column("FlexName")] public string Flexname 
-			{ 
-				get { return _Flexname; }
-				set { _Flexname = value; Track("FlexName"); }
-			}
-			string _Flexname;
-			[Column("FlexDesc")] public string Flexdesc 
-			{ 
-				get { return _Flexdesc; }
-				set { _Flexdesc = value; Track("FlexDesc"); }
-			}
-			string _Flexdesc;
-		}
-		
-		[TableName("dbo.Pure_Post_Request")]
-		[PrimaryKey("TranId")]
-		[ExplicitColumns]
-		public partial class PurePostRequest : FountainDb.Record<PurePostRequest>  
-		{
-			[Column("TranId")] public int Tranid 
-			{ 
-				get { return _Tranid; }
-				set { _Tranid = value; Track("TranId"); }
-			}
-			int _Tranid;
-			[Column("RequestId")] public string Requestid 
-			{ 
-				get { return _Requestid; }
-				set { _Requestid = value; Track("RequestId"); }
-			}
-			string _Requestid;
-			[Column("AccountName")] public string Accountname 
-			{ 
-				get { return _Accountname; }
-				set { _Accountname = value; Track("AccountName"); }
-			}
-			string _Accountname;
-			[Column("AccountNos")] public string Accountnos 
-			{ 
-				get { return _Accountnos; }
-				set { _Accountnos = value; Track("AccountNos"); }
-			}
-			string _Accountnos;
-			[Column("DRCRIndicator")] public string Drcrindicator 
-			{ 
-				get { return _Drcrindicator; }
-				set { _Drcrindicator = value; Track("DRCRIndicator"); }
-			}
-			string _Drcrindicator;
-			[Column("TranAmount")] public decimal? Tranamount 
-			{ 
-				get { return _Tranamount; }
-				set { _Tranamount = value; Track("TranAmount"); }
-			}
-			decimal? _Tranamount;
-			[Column("TranStatus")] public string Transtatus 
-			{ 
-				get { return _Transtatus; }
-				set { _Transtatus = value; Track("TranStatus"); }
-			}
-			string _Transtatus;
-		
-			public static IEnumerable<PurePostRequest> Query(Database db, string[] columns = null, int[] Tranid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Post_Request (NOLOCK)");
-
-				if (Tranid != null)
-					sql.Where("TranId IN (@0)", Tranid);
-
-                return db.Query<PurePostRequest>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Loan_Category")]
-		[PrimaryKey("LoanCateId")]
-		[ExplicitColumns]
-		public partial class PureLoanCategory : FountainDb.Record<PureLoanCategory>  
-		{
-			[Column("LoanCateId")] public int Loancateid 
-			{ 
-				get { return _Loancateid; }
-				set { _Loancateid = value; Track("LoanCateId"); }
-			}
-			int _Loancateid;
-			[Column("LoanName")] public string Loanname 
-			{ 
-				get { return _Loanname; }
-				set { _Loanname = value; Track("LoanName"); }
-			}
-			string _Loanname;
-			[Column("LoanDesc")] public string Loandesc 
-			{ 
-				get { return _Loandesc; }
-				set { _Loandesc = value; Track("LoanDesc"); }
-			}
-			string _Loandesc;
-			[Column("LoanStatus")] public bool? Loanstatus 
-			{ 
-				get { return _Loanstatus; }
-				set { _Loanstatus = value; Track("LoanStatus"); }
-			}
-			bool? _Loanstatus;
-		
-			public static IEnumerable<PureLoanCategory> Query(Database db, string[] columns = null, int[] Loancateid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Loan_Category (NOLOCK)");
-
-				if (Loancateid != null)
-					sql.Where("LoanCateId IN (@0)", Loancateid);
-
-                return db.Query<PureLoanCategory>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_TransactionLog")]
-		[PrimaryKey("TransId")]
-		[ExplicitColumns]
-		public partial class PureTransactionLog : FountainDb.Record<PureTransactionLog>  
-		{
-			[Column("TransId")] public int Transid 
-			{ 
-				get { return _Transid; }
-				set { _Transid = value; Track("TransId"); }
-			}
-			int _Transid;
-			[Column("RequestId")] public string Requestid 
-			{ 
-				get { return _Requestid; }
-				set { _Requestid = value; Track("RequestId"); }
-			}
-			string _Requestid;
-			[Column("SourceAccount")] public string Sourceaccount 
-			{ 
-				get { return _Sourceaccount; }
-				set { _Sourceaccount = value; Track("SourceAccount"); }
-			}
-			string _Sourceaccount;
-			[Column("DestinationAccount")] public string Destinationaccount 
-			{ 
-				get { return _Destinationaccount; }
-				set { _Destinationaccount = value; Track("DestinationAccount"); }
-			}
-			string _Destinationaccount;
-	        [Column] public string Narration 
-			{ 
-				get { return _Narration; }
-				set { _Narration = value; Track("Narration"); }
-			}
-			string _Narration;
-	        [Column] public decimal? Amount 
-			{ 
-				get { return _Amount; }
-				set { _Amount = value; Track("Amount"); }
-			}
-			decimal? _Amount;
-			[Column("TranStatus")] public string Transtatus 
-			{ 
-				get { return _Transtatus; }
-				set { _Transtatus = value; Track("TranStatus"); }
-			}
-			string _Transtatus;
-			[Column("CustomerId")] public int? Customerid 
-			{ 
-				get { return _Customerid; }
-				set { _Customerid = value; Track("CustomerId"); }
-			}
-			int? _Customerid;
-			[Column("TranCurrency")] public string Trancurrency 
-			{ 
-				get { return _Trancurrency; }
-				set { _Trancurrency = value; Track("TranCurrency"); }
-			}
-			string _Trancurrency;
-			[Column("TranInitiator")] public string Traninitiator 
-			{ 
-				get { return _Traninitiator; }
-				set { _Traninitiator = value; Track("TranInitiator"); }
-			}
-			string _Traninitiator;
-			[Column("TranApprover")] public string Tranapprover 
-			{ 
-				get { return _Tranapprover; }
-				set { _Tranapprover = value; Track("TranApprover"); }
-			}
-			string _Tranapprover;
-			[Column("TranDate")] public DateTime? Trandate 
-			{ 
-				get { return _Trandate; }
-				set { _Trandate = value; Track("TranDate"); }
-			}
-			DateTime? _Trandate;
-			[Column("ApprovedDate")] public DateTime? Approveddate 
-			{ 
-				get { return _Approveddate; }
-				set { _Approveddate = value; Track("ApprovedDate"); }
-			}
-			DateTime? _Approveddate;
-		
-			public static IEnumerable<PureTransactionLog> Query(Database db, string[] columns = null, int[] Transid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_TransactionLog (NOLOCK)");
-
-				if (Transid != null)
-					sql.Where("TransId IN (@0)", Transid);
-
-                return db.Query<PureTransactionLog>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Currency")]
-		[PrimaryKey("CurrencyId")]
-		[ExplicitColumns]
-		public partial class PureCurrency : FountainDb.Record<PureCurrency>  
-		{
-			[Column("CurrencyId")] public int Currencyid 
-			{ 
-				get { return _Currencyid; }
-				set { _Currencyid = value; Track("CurrencyId"); }
-			}
-			int _Currencyid;
-			[Column("CurrencyName")] public string Currencyname 
-			{ 
-				get { return _Currencyname; }
-				set { _Currencyname = value; Track("CurrencyName"); }
-			}
-			string _Currencyname;
-			[Column("CurrencyISO")] public string Currencyiso 
-			{ 
-				get { return _Currencyiso; }
-				set { _Currencyiso = value; Track("CurrencyISO"); }
-			}
-			string _Currencyiso;
-		
-			public static IEnumerable<PureCurrency> Query(Database db, string[] columns = null, int[] Currencyid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Currency (NOLOCK)");
-
-				if (Currencyid != null)
-					sql.Where("CurrencyId IN (@0)", Currencyid);
-
-                return db.Query<PureCurrency>(sql);
-            }
-		}
-		
 		[TableName("dbo.Pure_Deposit")]
 		[PrimaryKey("DepositId")]
 		[ExplicitColumns]
@@ -1552,237 +876,61 @@ namespace FountainContext.Data.Models
             }
 		}
 		
-		[TableName("dbo.Pure_TillAccount")]
-		[PrimaryKey("TillId")]
+		[TableName("dbo.Pure_FlexRole")]
 		[ExplicitColumns]
-		public partial class PureTillAccount : FountainDb.Record<PureTillAccount>  
+		public partial class PureFlexRole : FountainDb.Record<PureFlexRole>  
 		{
-			[Column("TillId")] public int Tillid 
+			[Column("FlexId")] public int? Flexid 
 			{ 
-				get { return _Tillid; }
-				set { _Tillid = value; Track("TillId"); }
+				get { return _Flexid; }
+				set { _Flexid = value; Track("FlexId"); }
 			}
-			int _Tillid;
-			[Column("AccountName")] public string Accountname 
+			int? _Flexid;
+			[Column("FlexName")] public string Flexname 
 			{ 
-				get { return _Accountname; }
-				set { _Accountname = value; Track("AccountName"); }
+				get { return _Flexname; }
+				set { _Flexname = value; Track("FlexName"); }
 			}
-			string _Accountname;
-			[Column("AccountNos")] public string Accountnos 
+			string _Flexname;
+			[Column("FlexDesc")] public string Flexdesc 
 			{ 
-				get { return _Accountnos; }
-				set { _Accountnos = value; Track("AccountNos"); }
+				get { return _Flexdesc; }
+				set { _Flexdesc = value; Track("FlexDesc"); }
 			}
-			string _Accountnos;
-			[Column("AccountBal")] public decimal? Accountbal 
-			{ 
-				get { return _Accountbal; }
-				set { _Accountbal = value; Track("AccountBal"); }
-			}
-			decimal? _Accountbal;
-			[Column("AmountDebited")] public decimal? Amountdebited 
-			{ 
-				get { return _Amountdebited; }
-				set { _Amountdebited = value; Track("AmountDebited"); }
-			}
-			decimal? _Amountdebited;
-			[Column("CurrencyCode")] public string Currencycode 
-			{ 
-				get { return _Currencycode; }
-				set { _Currencycode = value; Track("CurrencyCode"); }
-			}
-			string _Currencycode;
-			[Column("TellerId")] public string Tellerid 
-			{ 
-				get { return _Tellerid; }
-				set { _Tellerid = value; Track("TellerId"); }
-			}
-			string _Tellerid;
-			[Column("AccountStatus")] public bool? Accountstatus 
-			{ 
-				get { return _Accountstatus; }
-				set { _Accountstatus = value; Track("AccountStatus"); }
-			}
-			bool? _Accountstatus;
-			[Column("DRCRIndicator")] public string Drcrindicator 
-			{ 
-				get { return _Drcrindicator; }
-				set { _Drcrindicator = value; Track("DRCRIndicator"); }
-			}
-			string _Drcrindicator;
-			[Column("CreatedOn")] public DateTime? Createdon 
-			{ 
-				get { return _Createdon; }
-				set { _Createdon = value; Track("CreatedOn"); }
-			}
-			DateTime? _Createdon;
-			[Column("CreditedBy")] public string Creditedby 
-			{ 
-				get { return _Creditedby; }
-				set { _Creditedby = value; Track("CreditedBy"); }
-			}
-			string _Creditedby;
-		
-			public static IEnumerable<PureTillAccount> Query(Database db, string[] columns = null, int[] Tillid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_TillAccount (NOLOCK)");
-
-				if (Tillid != null)
-					sql.Where("TillId IN (@0)", Tillid);
-
-                return db.Query<PureTillAccount>(sql);
-            }
+			string _Flexdesc;
 		}
 		
-		[TableName("dbo.Pure_Withdrawal")]
-		[PrimaryKey("WithdrawalId")]
+		[TableName("dbo.Pure_IDCard")]
+		[PrimaryKey("IDNos")]
 		[ExplicitColumns]
-		public partial class PureWithdrawal : FountainDb.Record<PureWithdrawal>  
+		public partial class PureIdCard : FountainDb.Record<PureIdCard>  
 		{
-			[Column("WithdrawalId")] public int Withdrawalid 
+			[Column("IDNos")] public int Idnos 
 			{ 
-				get { return _Withdrawalid; }
-				set { _Withdrawalid = value; Track("WithdrawalId"); }
+				get { return _Idnos; }
+				set { _Idnos = value; Track("IDNos"); }
 			}
-			int _Withdrawalid;
-			[Column("RequestId")] public string Requestid 
+			int _Idnos;
+			[Column("IDName")] public string Idname 
 			{ 
-				get { return _Requestid; }
-				set { _Requestid = value; Track("RequestId"); }
+				get { return _Idname; }
+				set { _Idname = value; Track("IDName"); }
 			}
-			string _Requestid;
-			[Column("AccountNos")] public string Accountnos 
-			{ 
-				get { return _Accountnos; }
-				set { _Accountnos = value; Track("AccountNos"); }
-			}
-			string _Accountnos;
-	        [Column] public decimal? Amount 
-			{ 
-				get { return _Amount; }
-				set { _Amount = value; Track("Amount"); }
-			}
-			decimal? _Amount;
-			[Column("CurrencyISO")] public string Currencyiso 
-			{ 
-				get { return _Currencyiso; }
-				set { _Currencyiso = value; Track("CurrencyISO"); }
-			}
-			string _Currencyiso;
-			[Column("TranStatus")] public string Transtatus 
-			{ 
-				get { return _Transtatus; }
-				set { _Transtatus = value; Track("TranStatus"); }
-			}
-			string _Transtatus;
-	        [Column] public string Processor 
-			{ 
-				get { return _Processor; }
-				set { _Processor = value; Track("Processor"); }
-			}
-			string _Processor;
-			[Column("WithdrawalDate")] public DateTime? Withdrawaldate 
-			{ 
-				get { return _Withdrawaldate; }
-				set { _Withdrawaldate = value; Track("WithdrawalDate"); }
-			}
-			DateTime? _Withdrawaldate;
+			string _Idname;
 		
-			public static IEnumerable<PureWithdrawal> Query(Database db, string[] columns = null, int[] Withdrawalid = null)
+			public static IEnumerable<PureIdCard> Query(Database db, string[] columns = null, int[] Idnos = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_Withdrawal (NOLOCK)");
+                sql.From("dbo.Pure_IDCard (NOLOCK)");
 
-				if (Withdrawalid != null)
-					sql.Where("WithdrawalId IN (@0)", Withdrawalid);
+				if (Idnos != null)
+					sql.Where("IDNos IN (@0)", Idnos);
 
-                return db.Query<PureWithdrawal>(sql);
-            }
-		}
-		
-		[TableName("dbo.Pure_Repayment")]
-		[PrimaryKey("RepayId")]
-		[ExplicitColumns]
-		public partial class PureRepayment : FountainDb.Record<PureRepayment>  
-		{
-			[Column("RepayId")] public int Repayid 
-			{ 
-				get { return _Repayid; }
-				set { _Repayid = value; Track("RepayId"); }
-			}
-			int _Repayid;
-			[Column("CustomerId")] public string Customerid 
-			{ 
-				get { return _Customerid; }
-				set { _Customerid = value; Track("CustomerId"); }
-			}
-			string _Customerid;
-			[Column("AccountNos")] public string Accountnos 
-			{ 
-				get { return _Accountnos; }
-				set { _Accountnos = value; Track("AccountNos"); }
-			}
-			string _Accountnos;
-			[Column("LoanAmt")] public decimal? Loanamt 
-			{ 
-				get { return _Loanamt; }
-				set { _Loanamt = value; Track("LoanAmt"); }
-			}
-			decimal? _Loanamt;
-			[Column("AmountToBePaid")] public decimal? Amounttobepaid 
-			{ 
-				get { return _Amounttobepaid; }
-				set { _Amounttobepaid = value; Track("AmountToBePaid"); }
-			}
-			decimal? _Amounttobepaid;
-			[Column("AmountCredit")] public decimal? Amountcredit 
-			{ 
-				get { return _Amountcredit; }
-				set { _Amountcredit = value; Track("AmountCredit"); }
-			}
-			decimal? _Amountcredit;
-			[Column("TransRef")] public string Transref 
-			{ 
-				get { return _Transref; }
-				set { _Transref = value; Track("TransRef"); }
-			}
-			string _Transref;
-			[Column("ReceiptNos")] public string Receiptnos 
-			{ 
-				get { return _Receiptnos; }
-				set { _Receiptnos = value; Track("ReceiptNos"); }
-			}
-			string _Receiptnos;
-			[Column("CreditedOn")] public DateTime? Creditedon 
-			{ 
-				get { return _Creditedon; }
-				set { _Creditedon = value; Track("CreditedOn"); }
-			}
-			DateTime? _Creditedon;
-		
-			public static IEnumerable<PureRepayment> Query(Database db, string[] columns = null, int[] Repayid = null)
-            {
-                var sql = new Sql();
-
-                if (columns != null)
-                    sql.Select(columns);
-
-                sql.From("dbo.Pure_Repayment (NOLOCK)");
-
-				if (Repayid != null)
-					sql.Where("RepayId IN (@0)", Repayid);
-
-                return db.Query<PureRepayment>(sql);
+                return db.Query<PureIdCard>(sql);
             }
 		}
 		
@@ -1952,6 +1100,52 @@ namespace FountainContext.Data.Models
             }
 		}
 		
+		[TableName("dbo.Pure_Loan_Category")]
+		[PrimaryKey("LoanCateId")]
+		[ExplicitColumns]
+		public partial class PureLoanCategory : FountainDb.Record<PureLoanCategory>  
+		{
+			[Column("LoanCateId")] public int Loancateid 
+			{ 
+				get { return _Loancateid; }
+				set { _Loancateid = value; Track("LoanCateId"); }
+			}
+			int _Loancateid;
+			[Column("LoanName")] public string Loanname 
+			{ 
+				get { return _Loanname; }
+				set { _Loanname = value; Track("LoanName"); }
+			}
+			string _Loanname;
+			[Column("LoanDesc")] public string Loandesc 
+			{ 
+				get { return _Loandesc; }
+				set { _Loandesc = value; Track("LoanDesc"); }
+			}
+			string _Loandesc;
+			[Column("LoanStatus")] public bool? Loanstatus 
+			{ 
+				get { return _Loanstatus; }
+				set { _Loanstatus = value; Track("LoanStatus"); }
+			}
+			bool? _Loanstatus;
+		
+			public static IEnumerable<PureLoanCategory> Query(Database db, string[] columns = null, int[] Loancateid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Loan_Category (NOLOCK)");
+
+				if (Loancateid != null)
+					sql.Where("LoanCateId IN (@0)", Loancateid);
+
+                return db.Query<PureLoanCategory>(sql);
+            }
+		}
+		
 		[TableName("dbo.Pure_Menu")]
 		[ExplicitColumns]
 		public partial class PureMenu : FountainDb.Record<PureMenu>  
@@ -2018,56 +1212,270 @@ namespace FountainContext.Data.Models
 			int? _Rankid;
 		}
 		
-		[TableName("dbo.Pure_Account_Category")]
-		[PrimaryKey("AccountId")]
+		[TableName("dbo.Pure_Occupation")]
+		[PrimaryKey("OccupationId")]
 		[ExplicitColumns]
-		public partial class PureAccountCategory : FountainDb.Record<PureAccountCategory>  
+		public partial class PureOccupation : FountainDb.Record<PureOccupation>  
 		{
-			[Column("AccountId")] public int Accountid 
+			[Column("OccupationId")] public int Occupationid 
 			{ 
-				get { return _Accountid; }
-				set { _Accountid = value; Track("AccountId"); }
+				get { return _Occupationid; }
+				set { _Occupationid = value; Track("OccupationId"); }
 			}
-			int _Accountid;
-			[Column("AccountTitle")] public string Accounttitle 
+			int _Occupationid;
+			[Column("OccupationName")] public string Occupationname 
 			{ 
-				get { return _Accounttitle; }
-				set { _Accounttitle = value; Track("AccountTitle"); }
+				get { return _Occupationname; }
+				set { _Occupationname = value; Track("OccupationName"); }
 			}
-			string _Accounttitle;
-			[Column("AccountDesc")] public string Accountdesc 
-			{ 
-				get { return _Accountdesc; }
-				set { _Accountdesc = value; Track("AccountDesc"); }
-			}
-			string _Accountdesc;
-			[Column("AccountStatus")] public int? Accountstatus 
-			{ 
-				get { return _Accountstatus; }
-				set { _Accountstatus = value; Track("AccountStatus"); }
-			}
-			int? _Accountstatus;
+			string _Occupationname;
 		
-			public static IEnumerable<PureAccountCategory> Query(Database db, string[] columns = null, int[] Accountid = null)
+			public static IEnumerable<PureOccupation> Query(Database db, string[] columns = null, int[] Occupationid = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_Account_Category (NOLOCK)");
+                sql.From("dbo.Pure_Occupation (NOLOCK)");
 
-				if (Accountid != null)
-					sql.Where("AccountId IN (@0)", Accountid);
+				if (Occupationid != null)
+					sql.Where("OccupationId IN (@0)", Occupationid);
 
-                return db.Query<PureAccountCategory>(sql);
+                return db.Query<PureOccupation>(sql);
             }
 		}
 		
-		[TableName("dbo.Pure_AuditTrail")]
+		[TableName("dbo.Pure_Post_Request")]
+		[PrimaryKey("TranId")]
+		[ExplicitColumns]
+		public partial class PurePostRequest : FountainDb.Record<PurePostRequest>  
+		{
+			[Column("TranId")] public int Tranid 
+			{ 
+				get { return _Tranid; }
+				set { _Tranid = value; Track("TranId"); }
+			}
+			int _Tranid;
+			[Column("RequestId")] public string Requestid 
+			{ 
+				get { return _Requestid; }
+				set { _Requestid = value; Track("RequestId"); }
+			}
+			string _Requestid;
+			[Column("AccountName")] public string Accountname 
+			{ 
+				get { return _Accountname; }
+				set { _Accountname = value; Track("AccountName"); }
+			}
+			string _Accountname;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("DRCRIndicator")] public string Drcrindicator 
+			{ 
+				get { return _Drcrindicator; }
+				set { _Drcrindicator = value; Track("DRCRIndicator"); }
+			}
+			string _Drcrindicator;
+			[Column("TranAmount")] public decimal? Tranamount 
+			{ 
+				get { return _Tranamount; }
+				set { _Tranamount = value; Track("TranAmount"); }
+			}
+			decimal? _Tranamount;
+			[Column("TranStatus")] public string Transtatus 
+			{ 
+				get { return _Transtatus; }
+				set { _Transtatus = value; Track("TranStatus"); }
+			}
+			string _Transtatus;
+		
+			public static IEnumerable<PurePostRequest> Query(Database db, string[] columns = null, int[] Tranid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Post_Request (NOLOCK)");
+
+				if (Tranid != null)
+					sql.Where("TranId IN (@0)", Tranid);
+
+                return db.Query<PurePostRequest>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Religion")]
+		[PrimaryKey("ReligionId")]
+		[ExplicitColumns]
+		public partial class PureReligion : FountainDb.Record<PureReligion>  
+		{
+			[Column("ReligionId")] public int Religionid 
+			{ 
+				get { return _Religionid; }
+				set { _Religionid = value; Track("ReligionId"); }
+			}
+			int _Religionid;
+			[Column("ReligionName")] public string Religionname 
+			{ 
+				get { return _Religionname; }
+				set { _Religionname = value; Track("ReligionName"); }
+			}
+			string _Religionname;
+		
+			public static IEnumerable<PureReligion> Query(Database db, string[] columns = null, int[] Religionid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Religion (NOLOCK)");
+
+				if (Religionid != null)
+					sql.Where("ReligionId IN (@0)", Religionid);
+
+                return db.Query<PureReligion>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Remittance")]
+		[PrimaryKey("RemId")]
+		[ExplicitColumns]
+		public partial class PureRemittance : FountainDb.Record<PureRemittance>  
+		{
+			[Column("RemId")] public int Remid 
+			{ 
+				get { return _Remid; }
+				set { _Remid = value; Track("RemId"); }
+			}
+			int _Remid;
+			[Column("RequestId")] public string Requestid 
+			{ 
+				get { return _Requestid; }
+				set { _Requestid = value; Track("RequestId"); }
+			}
+			string _Requestid;
+			[Column("RemAmount")] public decimal? Remamount 
+			{ 
+				get { return _Remamount; }
+				set { _Remamount = value; Track("RemAmount"); }
+			}
+			decimal? _Remamount;
+			[Column("CreditedBy")] public string Creditedby 
+			{ 
+				get { return _Creditedby; }
+				set { _Creditedby = value; Track("CreditedBy"); }
+			}
+			string _Creditedby;
+			[Column("CreditedOn")] public DateTime? Creditedon 
+			{ 
+				get { return _Creditedon; }
+				set { _Creditedon = value; Track("CreditedOn"); }
+			}
+			DateTime? _Creditedon;
+		
+			public static IEnumerable<PureRemittance> Query(Database db, string[] columns = null, int[] Remid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Remittance (NOLOCK)");
+
+				if (Remid != null)
+					sql.Where("RemId IN (@0)", Remid);
+
+                return db.Query<PureRemittance>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Repayment")]
+		[PrimaryKey("RepayId")]
+		[ExplicitColumns]
+		public partial class PureRepayment : FountainDb.Record<PureRepayment>  
+		{
+			[Column("RepayId")] public int Repayid 
+			{ 
+				get { return _Repayid; }
+				set { _Repayid = value; Track("RepayId"); }
+			}
+			int _Repayid;
+			[Column("CustomerId")] public string Customerid 
+			{ 
+				get { return _Customerid; }
+				set { _Customerid = value; Track("CustomerId"); }
+			}
+			string _Customerid;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("LoanAmt")] public decimal? Loanamt 
+			{ 
+				get { return _Loanamt; }
+				set { _Loanamt = value; Track("LoanAmt"); }
+			}
+			decimal? _Loanamt;
+			[Column("AmountToBePaid")] public decimal? Amounttobepaid 
+			{ 
+				get { return _Amounttobepaid; }
+				set { _Amounttobepaid = value; Track("AmountToBePaid"); }
+			}
+			decimal? _Amounttobepaid;
+			[Column("AmountCredit")] public decimal? Amountcredit 
+			{ 
+				get { return _Amountcredit; }
+				set { _Amountcredit = value; Track("AmountCredit"); }
+			}
+			decimal? _Amountcredit;
+			[Column("TransRef")] public string Transref 
+			{ 
+				get { return _Transref; }
+				set { _Transref = value; Track("TransRef"); }
+			}
+			string _Transref;
+			[Column("ReceiptNos")] public string Receiptnos 
+			{ 
+				get { return _Receiptnos; }
+				set { _Receiptnos = value; Track("ReceiptNos"); }
+			}
+			string _Receiptnos;
+			[Column("CreditedOn")] public DateTime? Creditedon 
+			{ 
+				get { return _Creditedon; }
+				set { _Creditedon = value; Track("CreditedOn"); }
+			}
+			DateTime? _Creditedon;
+		
+			public static IEnumerable<PureRepayment> Query(Database db, string[] columns = null, int[] Repayid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Repayment (NOLOCK)");
+
+				if (Repayid != null)
+					sql.Where("RepayId IN (@0)", Repayid);
+
+                return db.Query<PureRepayment>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_RoleMenu")]
 		[PrimaryKey("Id")]
 		[ExplicitColumns]
-		public partial class PureAuditTrail : FountainDb.Record<PureAuditTrail>  
+		public partial class PureRoleMenu : FountainDb.Record<PureRoleMenu>  
 		{
 	        [Column] public int Id 
 			{ 
@@ -2075,56 +1483,464 @@ namespace FountainContext.Data.Models
 				set { _Id = value; Track("Id"); }
 			}
 			int _Id;
-			[Column("UserName")] public string Username 
+			[Column("MenuId")] public int? Menuid 
 			{ 
-				get { return _Username; }
-				set { _Username = value; Track("UserName"); }
+				get { return _Menuid; }
+				set { _Menuid = value; Track("MenuId"); }
 			}
-			string _Username;
-			[Column("UserActivity")] public string Useractivity 
+			int? _Menuid;
+			[Column("RoleId")] public int? Roleid 
 			{ 
-				get { return _Useractivity; }
-				set { _Useractivity = value; Track("UserActivity"); }
+				get { return _Roleid; }
+				set { _Roleid = value; Track("RoleId"); }
 			}
-			string _Useractivity;
-	        [Column] public string Comment 
+			int? _Roleid;
+			[Column("MenuDesc")] public string Menudesc 
 			{ 
-				get { return _Comment; }
-				set { _Comment = value; Track("Comment"); }
+				get { return _Menudesc; }
+				set { _Menudesc = value; Track("MenuDesc"); }
 			}
-			string _Comment;
-			[Column("DateLog")] public DateTime? Datelog 
-			{ 
-				get { return _Datelog; }
-				set { _Datelog = value; Track("DateLog"); }
-			}
-			DateTime? _Datelog;
-			[Column("SystemName")] public string Systemname 
-			{ 
-				get { return _Systemname; }
-				set { _Systemname = value; Track("SystemName"); }
-			}
-			string _Systemname;
-			[Column("SystemIP")] public string Systemip 
-			{ 
-				get { return _Systemip; }
-				set { _Systemip = value; Track("SystemIP"); }
-			}
-			string _Systemip;
+			string _Menudesc;
 		
-			public static IEnumerable<PureAuditTrail> Query(Database db, string[] columns = null, int[] Id = null)
+			public static IEnumerable<PureRoleMenu> Query(Database db, string[] columns = null, int[] Id = null)
             {
                 var sql = new Sql();
 
                 if (columns != null)
                     sql.Select(columns);
 
-                sql.From("dbo.Pure_AuditTrail (NOLOCK)");
+                sql.From("dbo.Pure_RoleMenu (NOLOCK)");
 
 				if (Id != null)
 					sql.Where("Id IN (@0)", Id);
 
-                return db.Query<PureAuditTrail>(sql);
+                return db.Query<PureRoleMenu>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Statement")]
+		[PrimaryKey("Id")]
+		[ExplicitColumns]
+		public partial class PureStatement : FountainDb.Record<PureStatement>  
+		{
+	        [Column] public int Id 
+			{ 
+				get { return _Id; }
+				set { _Id = value; Track("Id"); }
+			}
+			int _Id;
+			[Column("ReferenceId")] public string Referenceid 
+			{ 
+				get { return _Referenceid; }
+				set { _Referenceid = value; Track("ReferenceId"); }
+			}
+			string _Referenceid;
+			[Column("TransactionDetails")] public string Transactiondetails 
+			{ 
+				get { return _Transactiondetails; }
+				set { _Transactiondetails = value; Track("TransactionDetails"); }
+			}
+			string _Transactiondetails;
+			[Column("AccountNo")] public string Accountno 
+			{ 
+				get { return _Accountno; }
+				set { _Accountno = value; Track("AccountNo"); }
+			}
+			string _Accountno;
+	        [Column] public decimal? Deposit 
+			{ 
+				get { return _Deposit; }
+				set { _Deposit = value; Track("Deposit"); }
+			}
+			decimal? _Deposit;
+	        [Column] public decimal? Withdrawal 
+			{ 
+				get { return _Withdrawal; }
+				set { _Withdrawal = value; Track("Withdrawal"); }
+			}
+			decimal? _Withdrawal;
+			[Column("AccountBal")] public decimal? Accountbal 
+			{ 
+				get { return _Accountbal; }
+				set { _Accountbal = value; Track("AccountBal"); }
+			}
+			decimal? _Accountbal;
+			[Column("ValueDate")] public DateTime? Valuedate 
+			{ 
+				get { return _Valuedate; }
+				set { _Valuedate = value; Track("ValueDate"); }
+			}
+			DateTime? _Valuedate;
+		
+			public static IEnumerable<PureStatement> Query(Database db, string[] columns = null, int[] Id = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Statement (NOLOCK)");
+
+				if (Id != null)
+					sql.Where("Id IN (@0)", Id);
+
+                return db.Query<PureStatement>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_States")]
+		[PrimaryKey("StateId")]
+		[ExplicitColumns]
+		public partial class PureState : FountainDb.Record<PureState>  
+		{
+			[Column("StateId")] public int Stateid 
+			{ 
+				get { return _Stateid; }
+				set { _Stateid = value; Track("StateId"); }
+			}
+			int _Stateid;
+			[Column("StateName")] public string Statename 
+			{ 
+				get { return _Statename; }
+				set { _Statename = value; Track("StateName"); }
+			}
+			string _Statename;
+			[Column("CountryCode")] public string Countrycode 
+			{ 
+				get { return _Countrycode; }
+				set { _Countrycode = value; Track("CountryCode"); }
+			}
+			string _Countrycode;
+		
+			public static IEnumerable<PureState> Query(Database db, string[] columns = null, int[] Stateid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_States (NOLOCK)");
+
+				if (Stateid != null)
+					sql.Where("StateId IN (@0)", Stateid);
+
+                return db.Query<PureState>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_TellerTill")]
+		[PrimaryKey("DebitId")]
+		[ExplicitColumns]
+		public partial class PureTellerTill : FountainDb.Record<PureTellerTill>  
+		{
+			[Column("DebitId")] public int Debitid 
+			{ 
+				get { return _Debitid; }
+				set { _Debitid = value; Track("DebitId"); }
+			}
+			int _Debitid;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("TellerId")] public string Tellerid 
+			{ 
+				get { return _Tellerid; }
+				set { _Tellerid = value; Track("TellerId"); }
+			}
+			string _Tellerid;
+			[Column("InitialBalance")] public decimal? Initialbalance 
+			{ 
+				get { return _Initialbalance; }
+				set { _Initialbalance = value; Track("InitialBalance"); }
+			}
+			decimal? _Initialbalance;
+	        [Column] public decimal? Amount 
+			{ 
+				get { return _Amount; }
+				set { _Amount = value; Track("Amount"); }
+			}
+			decimal? _Amount;
+			[Column("DRCRIndicator")] public string Drcrindicator 
+			{ 
+				get { return _Drcrindicator; }
+				set { _Drcrindicator = value; Track("DRCRIndicator"); }
+			}
+			string _Drcrindicator;
+			[Column("DebitedDate")] public DateTime? Debiteddate 
+			{ 
+				get { return _Debiteddate; }
+				set { _Debiteddate = value; Track("DebitedDate"); }
+			}
+			DateTime? _Debiteddate;
+			[Column("CreatedBy")] public string Createdby 
+			{ 
+				get { return _Createdby; }
+				set { _Createdby = value; Track("CreatedBy"); }
+			}
+			string _Createdby;
+		
+			public static IEnumerable<PureTellerTill> Query(Database db, string[] columns = null, int[] Debitid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_TellerTill (NOLOCK)");
+
+				if (Debitid != null)
+					sql.Where("DebitId IN (@0)", Debitid);
+
+                return db.Query<PureTellerTill>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_TillAccount")]
+		[PrimaryKey("TillId")]
+		[ExplicitColumns]
+		public partial class PureTillAccount : FountainDb.Record<PureTillAccount>  
+		{
+			[Column("TillId")] public int Tillid 
+			{ 
+				get { return _Tillid; }
+				set { _Tillid = value; Track("TillId"); }
+			}
+			int _Tillid;
+			[Column("AccountName")] public string Accountname 
+			{ 
+				get { return _Accountname; }
+				set { _Accountname = value; Track("AccountName"); }
+			}
+			string _Accountname;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+			[Column("AccountBal")] public decimal? Accountbal 
+			{ 
+				get { return _Accountbal; }
+				set { _Accountbal = value; Track("AccountBal"); }
+			}
+			decimal? _Accountbal;
+			[Column("AmountDebited")] public decimal? Amountdebited 
+			{ 
+				get { return _Amountdebited; }
+				set { _Amountdebited = value; Track("AmountDebited"); }
+			}
+			decimal? _Amountdebited;
+			[Column("CurrencyCode")] public string Currencycode 
+			{ 
+				get { return _Currencycode; }
+				set { _Currencycode = value; Track("CurrencyCode"); }
+			}
+			string _Currencycode;
+			[Column("TellerId")] public string Tellerid 
+			{ 
+				get { return _Tellerid; }
+				set { _Tellerid = value; Track("TellerId"); }
+			}
+			string _Tellerid;
+			[Column("AccountStatus")] public bool? Accountstatus 
+			{ 
+				get { return _Accountstatus; }
+				set { _Accountstatus = value; Track("AccountStatus"); }
+			}
+			bool? _Accountstatus;
+			[Column("DRCRIndicator")] public string Drcrindicator 
+			{ 
+				get { return _Drcrindicator; }
+				set { _Drcrindicator = value; Track("DRCRIndicator"); }
+			}
+			string _Drcrindicator;
+			[Column("CreatedOn")] public DateTime? Createdon 
+			{ 
+				get { return _Createdon; }
+				set { _Createdon = value; Track("CreatedOn"); }
+			}
+			DateTime? _Createdon;
+			[Column("CreditedBy")] public string Creditedby 
+			{ 
+				get { return _Creditedby; }
+				set { _Creditedby = value; Track("CreditedBy"); }
+			}
+			string _Creditedby;
+		
+			public static IEnumerable<PureTillAccount> Query(Database db, string[] columns = null, int[] Tillid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_TillAccount (NOLOCK)");
+
+				if (Tillid != null)
+					sql.Where("TillId IN (@0)", Tillid);
+
+                return db.Query<PureTillAccount>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Tracking")]
+		[PrimaryKey("Tid")]
+		[ExplicitColumns]
+		public partial class PureTracking : FountainDb.Record<PureTracking>  
+		{
+	        [Column] public int Tid 
+			{ 
+				get { return _Tid; }
+				set { _Tid = value; Track("Tid"); }
+			}
+			int _Tid;
+			[Column("UserName")] public string Username 
+			{ 
+				get { return _Username; }
+				set { _Username = value; Track("UserName"); }
+			}
+			string _Username;
+			[Column("SessionId")] public string Sessionid 
+			{ 
+				get { return _Sessionid; }
+				set { _Sessionid = value; Track("SessionId"); }
+			}
+			string _Sessionid;
+			[Column("SystemIp")] public string Systemip 
+			{ 
+				get { return _Systemip; }
+				set { _Systemip = value; Track("SystemIp"); }
+			}
+			string _Systemip;
+			[Column("SystemName")] public string Systemname 
+			{ 
+				get { return _Systemname; }
+				set { _Systemname = value; Track("SystemName"); }
+			}
+			string _Systemname;
+			[Column("LoginDate")] public DateTime? Logindate 
+			{ 
+				get { return _Logindate; }
+				set { _Logindate = value; Track("LoginDate"); }
+			}
+			DateTime? _Logindate;
+		
+			public static IEnumerable<PureTracking> Query(Database db, string[] columns = null, int[] Tid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Tracking (NOLOCK)");
+
+				if (Tid != null)
+					sql.Where("Tid IN (@0)", Tid);
+
+                return db.Query<PureTracking>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_TransactionLog")]
+		[PrimaryKey("TransId")]
+		[ExplicitColumns]
+		public partial class PureTransactionLog : FountainDb.Record<PureTransactionLog>  
+		{
+			[Column("TransId")] public int Transid 
+			{ 
+				get { return _Transid; }
+				set { _Transid = value; Track("TransId"); }
+			}
+			int _Transid;
+			[Column("RequestId")] public string Requestid 
+			{ 
+				get { return _Requestid; }
+				set { _Requestid = value; Track("RequestId"); }
+			}
+			string _Requestid;
+			[Column("SourceAccount")] public string Sourceaccount 
+			{ 
+				get { return _Sourceaccount; }
+				set { _Sourceaccount = value; Track("SourceAccount"); }
+			}
+			string _Sourceaccount;
+			[Column("DestinationAccount")] public string Destinationaccount 
+			{ 
+				get { return _Destinationaccount; }
+				set { _Destinationaccount = value; Track("DestinationAccount"); }
+			}
+			string _Destinationaccount;
+	        [Column] public string Narration 
+			{ 
+				get { return _Narration; }
+				set { _Narration = value; Track("Narration"); }
+			}
+			string _Narration;
+	        [Column] public decimal? Amount 
+			{ 
+				get { return _Amount; }
+				set { _Amount = value; Track("Amount"); }
+			}
+			decimal? _Amount;
+			[Column("TranStatus")] public string Transtatus 
+			{ 
+				get { return _Transtatus; }
+				set { _Transtatus = value; Track("TranStatus"); }
+			}
+			string _Transtatus;
+			[Column("CustomerId")] public int? Customerid 
+			{ 
+				get { return _Customerid; }
+				set { _Customerid = value; Track("CustomerId"); }
+			}
+			int? _Customerid;
+			[Column("TranCurrency")] public string Trancurrency 
+			{ 
+				get { return _Trancurrency; }
+				set { _Trancurrency = value; Track("TranCurrency"); }
+			}
+			string _Trancurrency;
+			[Column("TranInitiator")] public string Traninitiator 
+			{ 
+				get { return _Traninitiator; }
+				set { _Traninitiator = value; Track("TranInitiator"); }
+			}
+			string _Traninitiator;
+			[Column("TranApprover")] public string Tranapprover 
+			{ 
+				get { return _Tranapprover; }
+				set { _Tranapprover = value; Track("TranApprover"); }
+			}
+			string _Tranapprover;
+			[Column("TranDate")] public DateTime? Trandate 
+			{ 
+				get { return _Trandate; }
+				set { _Trandate = value; Track("TranDate"); }
+			}
+			DateTime? _Trandate;
+			[Column("ApprovedDate")] public DateTime? Approveddate 
+			{ 
+				get { return _Approveddate; }
+				set { _Approveddate = value; Track("ApprovedDate"); }
+			}
+			DateTime? _Approveddate;
+		
+			public static IEnumerable<PureTransactionLog> Query(Database db, string[] columns = null, int[] Transid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_TransactionLog (NOLOCK)");
+
+				if (Transid != null)
+					sql.Where("TransId IN (@0)", Transid);
+
+                return db.Query<PureTransactionLog>(sql);
             }
 		}
 		
@@ -2237,6 +2053,190 @@ namespace FountainContext.Data.Models
 					sql.Where("UserId IN (@0)", Userid);
 
                 return db.Query<PureUser>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_UserIdentification")]
+		[PrimaryKey("IdNo")]
+		[ExplicitColumns]
+		public partial class PureUserIdentification : FountainDb.Record<PureUserIdentification>  
+		{
+			[Column("IdNo")] public int Idno 
+			{ 
+				get { return _Idno; }
+				set { _Idno = value; Track("IdNo"); }
+			}
+			int _Idno;
+			[Column("IdName")] public string Idname 
+			{ 
+				get { return _Idname; }
+				set { _Idname = value; Track("IdName"); }
+			}
+			string _Idname;
+		
+			public static IEnumerable<PureUserIdentification> Query(Database db, string[] columns = null, int[] Idno = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_UserIdentification (NOLOCK)");
+
+				if (Idno != null)
+					sql.Where("IdNo IN (@0)", Idno);
+
+                return db.Query<PureUserIdentification>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_UserTitle")]
+		[PrimaryKey("TitleId")]
+		[ExplicitColumns]
+		public partial class PureUserTitle : FountainDb.Record<PureUserTitle>  
+		{
+			[Column("TitleId")] public int Titleid 
+			{ 
+				get { return _Titleid; }
+				set { _Titleid = value; Track("TitleId"); }
+			}
+			int _Titleid;
+			[Column("TitleName")] public string Titlename 
+			{ 
+				get { return _Titlename; }
+				set { _Titlename = value; Track("TitleName"); }
+			}
+			string _Titlename;
+		
+			public static IEnumerable<PureUserTitle> Query(Database db, string[] columns = null, int[] Titleid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_UserTitle (NOLOCK)");
+
+				if (Titleid != null)
+					sql.Where("TitleId IN (@0)", Titleid);
+
+                return db.Query<PureUserTitle>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Withdrawal")]
+		[PrimaryKey("WithdrawalId")]
+		[ExplicitColumns]
+		public partial class PureWithdrawal : FountainDb.Record<PureWithdrawal>  
+		{
+			[Column("WithdrawalId")] public int Withdrawalid 
+			{ 
+				get { return _Withdrawalid; }
+				set { _Withdrawalid = value; Track("WithdrawalId"); }
+			}
+			int _Withdrawalid;
+			[Column("RequestId")] public string Requestid 
+			{ 
+				get { return _Requestid; }
+				set { _Requestid = value; Track("RequestId"); }
+			}
+			string _Requestid;
+			[Column("AccountNos")] public string Accountnos 
+			{ 
+				get { return _Accountnos; }
+				set { _Accountnos = value; Track("AccountNos"); }
+			}
+			string _Accountnos;
+	        [Column] public decimal? Amount 
+			{ 
+				get { return _Amount; }
+				set { _Amount = value; Track("Amount"); }
+			}
+			decimal? _Amount;
+			[Column("CurrencyISO")] public string Currencyiso 
+			{ 
+				get { return _Currencyiso; }
+				set { _Currencyiso = value; Track("CurrencyISO"); }
+			}
+			string _Currencyiso;
+			[Column("TranStatus")] public string Transtatus 
+			{ 
+				get { return _Transtatus; }
+				set { _Transtatus = value; Track("TranStatus"); }
+			}
+			string _Transtatus;
+	        [Column] public string Processor 
+			{ 
+				get { return _Processor; }
+				set { _Processor = value; Track("Processor"); }
+			}
+			string _Processor;
+			[Column("WithdrawalDate")] public DateTime? Withdrawaldate 
+			{ 
+				get { return _Withdrawaldate; }
+				set { _Withdrawaldate = value; Track("WithdrawalDate"); }
+			}
+			DateTime? _Withdrawaldate;
+		
+			public static IEnumerable<PureWithdrawal> Query(Database db, string[] columns = null, int[] Withdrawalid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Withdrawal (NOLOCK)");
+
+				if (Withdrawalid != null)
+					sql.Where("WithdrawalId IN (@0)", Withdrawalid);
+
+                return db.Query<PureWithdrawal>(sql);
+            }
+		}
+		
+		[TableName("dbo.Pure_Role")]
+		[PrimaryKey("RoleId")]
+		[ExplicitColumns]
+		public partial class PureRole : FountainDb.Record<PureRole>  
+		{
+			[Column("RoleId")] public int Roleid 
+			{ 
+				get { return _Roleid; }
+				set { _Roleid = value; Track("RoleId"); }
+			}
+			int _Roleid;
+			[Column("RoleName")] public string Rolename 
+			{ 
+				get { return _Rolename; }
+				set { _Rolename = value; Track("RoleName"); }
+			}
+			string _Rolename;
+			[Column("RoleDesc")] public string Roledesc 
+			{ 
+				get { return _Roledesc; }
+				set { _Roledesc = value; Track("RoleDesc"); }
+			}
+			string _Roledesc;
+			[Column("RoleStatus")] public bool? Rolestatus 
+			{ 
+				get { return _Rolestatus; }
+				set { _Rolestatus = value; Track("RoleStatus"); }
+			}
+			bool? _Rolestatus;
+		
+			public static IEnumerable<PureRole> Query(Database db, string[] columns = null, int[] Roleid = null)
+            {
+                var sql = new Sql();
+
+                if (columns != null)
+                    sql.Select(columns);
+
+                sql.From("dbo.Pure_Role (NOLOCK)");
+
+				if (Roleid != null)
+					sql.Where("RoleId IN (@0)", Roleid);
+
+                return db.Query<PureRole>(sql);
             }
 		}
 }

@@ -54,6 +54,7 @@
     <Compile Include="CustomObjects\CustomerAccountView.cs" />
     <Compile Include="CustomObjects\CustomerInfoViewModel.cs" />
     <Compile Include="CustomObjects\CustomerStatement.cs" />
+    <Compile Include="CustomObjects\DepositViewModel.cs" />
     <Compile Include="CustomObjects\EmailFormModel.cs" />
     <Compile Include="CustomObjects\LoanStatement.cs" />
     <Compile Include="CustomObjects\LoanViewModel.cs" />
@@ -75,7 +76,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="DataObjects\Database.Core.ttinclude" />
     <None Include="DataObjects\Database.Generator.ttinclude" />
     <None Include="packages.config" />

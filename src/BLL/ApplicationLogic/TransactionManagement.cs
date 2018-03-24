@@ -352,5 +352,12 @@ namespace BLL.ApplicationLogic
             }
         }
 
+        public List<DepositViewModel> GetDepositHistory(string userName)
+        {
+            string sql = "select * from Pure_Deposit where Processor=@0 order by DepositId Desc";
+            var actual = context.Fetch<DepositViewModel>(sql, userName).ToList();
+            return actual;
+        }
+
     }
 }
