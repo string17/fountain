@@ -48,6 +48,7 @@ namespace PureFountain.Controllers
             }
             string MethodName = Constants.AuditActionType.CreateAccount.ToString();
             string AccountNos = new SequenceManager().GenerateAccountNos();
+            var _userDetails = new UserManagement().getUserProfileByUsername(User.Identity.Name);
             try
             {
                 var Till = new PureTillAccount();
@@ -89,7 +90,6 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "Till Account";
             ViewBag.SuccessMsg = TempData["SuccessMsg"];
-            AccountManagement rolemgt = new AccountManagement();
             ViewBag.Account = new AccountManagement().GetTillAccount();
             return View();
         }
@@ -620,7 +620,7 @@ namespace PureFountain.Controllers
                 Acc.Accountsign = new UserManagement().DoFileUpload(customer.AccountSign);
                 bool NewAccount = false;
                 NewAccount = CustomerAccount.InsertAccount(Acc);
-                if (NewAccount == true)
+                if (NewAccount)
                 {
                     //Log.InfoFormat(MethodName, ComputerDetails, "Account", User.Identity.Name);
                     InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Successfully Created", User.Identity.Name);
@@ -1140,35 +1140,72 @@ namespace PureFountain.Controllers
 
         public ActionResult GenerateAccountNos(int CustomerId)
         {
-            var AccountNos = new SequenceManager().GenerateAccountNos().ToString();
-            var acc = new PureCustomerInfo();
-            acc.Accountnos = AccountNos;
-            acc.Accountstatus = true;
-            AccountManagement accountMgt = new AccountManagement();
-            bool UpdateAccount = false;
-            UpdateAccount = accountMgt.ApproveAccount(CustomerId, acc.Accountnos, acc.Accountstatus);
+            try
+            {
+                var AccountNos = new SequenceManager().GenerateAccountNos().ToString();
+                var acc = new PureCustomerInfo();
+                acc.Accountnos = AccountNos;
+                acc.Accountstatus = true;
+                AccountManagement accountMgt = new AccountManagement();
+                bool UpdateAccount = accountMgt.ApproveAccount(CustomerId, acc.Accountnos, acc.Accountstatus);
+                if (UpdateAccount)
+                {
+                    var codes = new AccountManagement().GetAccountDetails(CustomerId);
+                    var accNos = new PureAccountNo();
+                    accNos.Accountnos = AccountNos;
+                    accNos.Accountclass = "Customer";
+                    accNos.Userbvn = codes.UserBVN;
+                    bool InsertAccount = accountMgt.NewAccountNos(accNos);
+                    if (InsertAccount)
+                    {
+                        var Bal = new PureAccountDetail();
+                        Bal.Accountbal = Convert.ToDecimal(0.00);
+                        Bal.Accountnos = AccountNos;
+                        Bal.Customerid = CustomerId;
+                        Bal.Modifiedby = User.Identity.Name;
+                        Bal.Modifiedon = DateTime.Now;
+                        bool InsertBal = accountMgt.FreshAccount(Bal);
+                        if (InsertBal)
+                        {
+                            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created ", AccountNos);
+                            InsertAudit(Constants.AuditActionType.ApproveAccount, "Account Successfully Created", User.Identity.Name);
+                            return Json(new { success = true });
+                            //return Json(codes, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed", AccountNos);
+                            InsertAudit(Constants.AuditActionType.ApproveAccount, "Account failed", User.Identity.Name);
+                            //return View();
+                            return Json(new { success = false });
+                        }
 
-            var codes = new AccountManagement().GetAccountDetails(CustomerId);
-            var accNos = new PureAccountNo();
-            accNos.Accountnos = AccountNos;
-            accNos.Customerid = CustomerId;
-            bool InsertAccount = accountMgt.NewAccountNos(accNos);
-            var Bal = new PureAccountDetail();
-            Bal.Accountbal = Convert.ToDecimal(0.00);
-            Bal.Accountnos = AccountNos;
-            Bal.Customerid = CustomerId;
-            Bal.Modifiedby = User.Identity.Name;
-            Bal.Modifiedon = DateTime.Now;
-            bool InsertBal = accountMgt.FreshAccount(Bal);
-            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created");
-            InsertAudit(Constants.AuditActionType.ApproveAccount, "Account Successfully Created", User.Identity.Name);
-            return Json(codes, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed", AccountNos);
+                        InsertAudit(Constants.AuditActionType.ApproveAccount, "Account failed", User.Identity.Name);
+                        //return View();
+                        return Json(new { success = false });
+                    }
 
-            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed");
-            InsertAudit(Constants.AuditActionType.ApproveAccount, "Account failed", User.Identity.Name);
+                }
+                else
+                {
+                    Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed");
+                    InsertAudit(Constants.AuditActionType.ApproveAccount, "Account failed", User.Identity.Name);
+                    //return View();
+                    return Json(new { success = false });
 
-
-
+                }
+            }
+            catch(Exception ex)
+            {
+                Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), ex.Message);
+                InsertAudit(Constants.AuditActionType.ApproveAccount, "Account failed", User.Identity.Name);
+                //return View();
+                return Json(new { success = false });
+            }
         }
 
 

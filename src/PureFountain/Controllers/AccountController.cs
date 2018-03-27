@@ -140,12 +140,14 @@ namespace PureFountain.Controllers
                 EmailFormModel emailModel = new EmailFormModel();
                 long Id = extAccount.Userid;
                 string txtRecipient = extAccount.Username.ToLower();
+                string _domainUsername = WebConfigurationManager.AppSettings["UserName"];
+                string _domainPWD = WebConfigurationManager.AppSettings["PWD"];
                 string PasswordUrl = WebConfigurationManager.AppSettings["BaseURL"];
                 var body = "Kindly click on this link  to reset your password. </br>" + PasswordUrl + "Account/Reset_password?Id=" + Id;
                 var message = new MailMessage();
                 message.To.Add(new MailAddress(txtRecipient));  // replace with valid value 
-                message.From = new MailAddress(WebConfigurationManager.AppSettings["SenderEmailAddress"]);  // replace with valid value
-                message.Subject = "Update your Password";
+                message.From = new MailAddress(WebConfigurationManager.AppSettings["SupportAddress"]);  // replace with valid value
+                message.Subject = "Password Update";
                 message.Body = string.Format(body, emailModel.FromEmail, emailModel.Message);
                 message.IsBodyHtml = true;
 
@@ -155,13 +157,13 @@ namespace PureFountain.Controllers
                     {
                         smtp.Host = WebConfigurationManager.AppSettings["EmailHost"];
                         smtp.EnableSsl = true;
-                        NetworkCredential NetworkCred = new NetworkCredential();
+                        NetworkCredential NetworkCred = new NetworkCredential(_domainUsername,_domainPWD);
                         smtp.UseDefaultCredentials = true;
                         smtp.Credentials = NetworkCred;
                         smtp.Port = Convert.ToInt32(WebConfigurationManager.AppSettings["EmailPort"]);
                         smtp.Send(message);
                         Log.InfoFormat("Email sent", _Username);
-                        ViewBag.SuccessMsg = "Email sent.";
+                        ViewBag.SuccessMsg = "The link has been sent to your Email";
                     }
                     catch (Exception ex)
                     {
@@ -176,7 +178,7 @@ namespace PureFountain.Controllers
             }
             else
             {
-                Log.InfoFormat("Email", "This Email does not exist on this system");
+                Log.InfoFormat("Email", "This Email does not exist on this system", extAccount.Useremail);
                 ViewBag.ErrorMsg = "This Email does not exist on this system";
                 return View();
             }
