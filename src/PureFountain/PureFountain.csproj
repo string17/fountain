@@ -679,6 +679,8 @@
     <Content Include="Views\Fountain\AccountBalance.cshtml" />
     <Content Include="Views\Fountain\_CustomerBalance.cshtml" />
     <Content Include="Views\Fountain\DepositHistory.cshtml" />
+    <Content Include="Views\Fountain\TillHistory.cshtml" />
+    <Content Include="Views\Fountain\ApproveWithdrawal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

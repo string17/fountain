@@ -14,11 +14,11 @@ namespace BLL.ApplicationLogic
 {
     public class UserManagement
     {
-        private readonly FountainDb context = FountainDb.GetInstance();
+        private readonly FountainDb _db = FountainDb.GetInstance();
         public PureUser getUserByUsername(string Username)
         {
             string SQL = "Select * from Pure_User where UserName =@0";
-            var actual = context.FirstOrDefault<PureUser>(SQL, Username);
+            var actual = _db.FirstOrDefault<PureUser>(SQL, Username);
             return actual;
         }
 
@@ -26,20 +26,20 @@ namespace BLL.ApplicationLogic
         public List<PureUser> getAllTeller()
         {
             string sql = "select * from Pure_User where RoleId=3";
-            var actual = context.Fetch<PureUser>(sql).ToList();
+            var actual = _db.Fetch<PureUser>(sql).ToList();
             return actual;
         }
         public PureUser getUserByUsernames(string Username, int? RoleId)
         {
             string SQL = "Select * from Pure_User where UserName =@0 AND RoleId=@1";
-            var actual = context.FirstOrDefault<PureUser>(SQL, Username, RoleId);
+            var actual = _db.FirstOrDefault<PureUser>(SQL, Username, RoleId);
             return actual;
         }
 
         public List<UserView> getUserByCompany()
         {
             string sql = "select A.*, B.* from Pure_User A inner join Pure_Role B on  A.RoleId=B.RoleId";
-            var actual = context.Fetch<UserView>(sql);
+            var actual = _db.Fetch<UserView>(sql);
             return actual;
           
         }
@@ -48,9 +48,9 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                var users = context.SingleOrDefault<PureUser>("where UserId =@0", Id);
+                var users = _db.SingleOrDefault<PureUser>("where UserId =@0", Id);
                 users.Userpwd = Password;
-                context.Update(users);
+                _db.Update(users);
                 return true;
             }
             catch (Exception)
@@ -63,15 +63,15 @@ namespace BLL.ApplicationLogic
         public PureUser modifyPassword(int Id)
         {
             string sql = "Select * from Pure_User where UserId =@0";
-            var actual = context.FirstOrDefault<PureUser>(sql, Id);
+            var actual = _db.FirstOrDefault<PureUser>(sql, Id);
             return actual;
 
         }
 
         public UserProfileView getUserProfileByUsername(string Username)
         {
-            var actual = context.SingleOrDefault<PureUser>("where UserName=@0", Username);
-            var userrRole = context.SingleOrDefault<PureRole>("where RoleId=@0", actual.Roleid);
+            var actual = _db.SingleOrDefault<PureUser>("where UserName=@0", Username);
+            var userrRole = _db.SingleOrDefault<PureRole>("where RoleId=@0", actual.Roleid);
             UserProfileView userView = new UserProfileView()
             {
                 FirstName = actual.Firstname,
@@ -96,20 +96,20 @@ namespace BLL.ApplicationLogic
         public List<UserView> getUserByIds(int UserId)
         {
             string sql = "select A.*, B.* from Pure_User A inner join Pure_Role B on  A.RoleId=B.RoleId where A.UserId=@0";
-            var actual = context.Fetch<UserView>(sql, UserId);
+            var actual = _db.Fetch<UserView>(sql, UserId);
             return actual;
         }
 
      
         public List<PureUser> getAllUsers()
         {
-            var actual = context.Fetch<PureUser>();
+            var actual = _db.Fetch<PureUser>();
             return actual;
         }
 
         public List<PureUser> getUserById()
         {
-            var actual = context.Fetch<PureUser>().ToList();
+            var actual = _db.Fetch<PureUser>().ToList();
             return actual;
         }
 
@@ -118,7 +118,7 @@ namespace BLL.ApplicationLogic
             try
             {
                 string SQL = "select A.* from Pure_Menu A inner join Pure_RoleMenu B on A.MenuId = B.MenuId inner join Pure_User c on c.RoleId = B.RoleId where c.UserName =@0 order by A.RankId ASC";
-                var actual = context.Fetch<PureMenu>(SQL, Username).ToList();
+                var actual = _db.Fetch<PureMenu>(SQL, Username).ToList();
                 return actual;
             }
             catch (Exception ex)
@@ -128,7 +128,7 @@ namespace BLL.ApplicationLogic
         }
         public bool DoesUsernameExists(string Username)
         {
-            var rslt = context.Fetch<PureUser>().Where(a => a.Username == Username).FirstOrDefault();
+            var rslt = _db.Fetch<PureUser>().Where(a => a.Username == Username).FirstOrDefault();
             if (rslt == null)
             {
                 return false;
@@ -144,7 +144,7 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                context.Insert(Username);
+                _db.Insert(Username);
                 return true;
             }
             catch (Exception ex)
@@ -156,20 +156,20 @@ namespace BLL.ApplicationLogic
         public int DeleteTracking(string Username)
         {
             string sql = "delete from Pure_Tracking where UserName =@0";
-            int actual= context.Delete<PureTracking>(sql, Username);
+            int actual= _db.Delete<PureTracking>(sql, Username);
             return actual;
         }
 
         public PureTracking TrackLogin(string username)
         {
             string sql = "select * from Pure_Tracking where UserName =@0";
-            var actual = context.FirstOrDefault<PureTracking>(sql,username);
+            var actual = _db.FirstOrDefault<PureTracking>(sql,username);
             return actual;
         }
 
         public bool DoesPasswordExists(string Username, string Password)
         {
-            var rslt = context.Fetch<PureUser>().Where(a => a.Username == Username).FirstOrDefault();
+            var rslt = _db.Fetch<PureUser>().Where(a => a.Username == Username).FirstOrDefault();
             if (rslt.Userpwd == Password)
             {
                 return true;
@@ -183,13 +183,13 @@ namespace BLL.ApplicationLogic
         public int getFreshUser(string Username)
         {
             string sql = "Select COUNT(*) from Pure_AuditTrail where UserName = @0";
-            var actual = context.ExecuteScalar<int>(sql, Username);
+            var actual = _db.ExecuteScalar<int>(sql, Username);
             return Convert.ToInt32(actual);
         }
 
         public PureUser getUserById(decimal UserId)
         {
-            var actual = context.SingleById<PureUser>(UserId);
+            var actual = _db.SingleById<PureUser>(UserId);
             return actual;
         }
 
@@ -199,7 +199,7 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                var users = context.SingleOrDefault<PureUser>("WHERE UserId=@0", UserId);
+                var users = _db.SingleOrDefault<PureUser>("WHERE UserId=@0", UserId);
                 users.Firstname = FirstName;
                 users.Middlename = MiddleName;
                 users.Lastname = LastName;
@@ -212,7 +212,7 @@ namespace BLL.ApplicationLogic
                 users.Userstatus = UserStatus;
                 users.Modifiedby = ModifiedBy;
                 users.Modifiedon = ModifiedOn;
-                context.Update(users);
+                _db.Update(users);
                 return true;
             }
             catch (Exception ex)
@@ -226,7 +226,7 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                var users = context.SingleOrDefault<PureUser>("WHERE UserName=@0", Username);
+                var users = _db.SingleOrDefault<PureUser>("WHERE UserName=@0", Username);
                 users.Firstname = FirstName;
                 users.Middlename = MiddleName;
                 users.Lastname = LastName;
@@ -239,7 +239,7 @@ namespace BLL.ApplicationLogic
                 //users.UserStatus = UserStatus;
                 users.Modifiedby = ModifiedBy;
                 users.Modifiedon = ModifiedOn;
-                context.Update(users);
+                _db.Update(users);
                 return true;
             }
             catch (Exception ex)

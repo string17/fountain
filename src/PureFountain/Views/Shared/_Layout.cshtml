@@ -1,10 +1,23 @@
 ﻿@{
+    //if (User.Identity.Name == null)
+    //{
+
+    //}
+    //try
+    //{
     var service = new BLL.ApplicationLogic.UserManagement();
     var user = service.getMenuByUsername(User.Identity.Name);
     BLL.ApplicationLogic.UserManagement AccountMgt = new BLL.ApplicationLogic.UserManagement();
     var item = AccountMgt.getMenuByUsername(User.Identity.Name);
     var displayName = service.getUserProfileByUsername(User.Identity.Name);
+
     var currentTime = DateTime.Now;
+    //}
+    //catch(Exception ex)
+    //{
+    //    Response.Redirect("~/Account/Login");
+    //}
+
 
 }
 
@@ -70,7 +83,6 @@
 
     <style>
         .w3-modal {
-         
             z-index: 1000;
             display: none;
             padding-top: 100px;
@@ -82,21 +94,20 @@
             overflow: auto;
             background-color: rgb(0,0,0);
             background-color: rgba(0,0,0,0.4);
-           
         }
     </style>
 </head>
-<body class="infobar-offcanvas" >
+<body class="infobar-offcanvas">
 
     <div id="headerbar">
-      
+
     </div>
     <header id="topnav" class="navbar navbar-midnightblue navbar-fixed-top clearfix" role="banner">
         <span id="trigger-sidebar" class="toolbar-trigger toolbar-icon-bg">
             <a data-toggle="tooltips" data-placement="right" title="Toggle Sidebar"><span class="icon-bg"><i class="fa fa-fw fa-bars"></i></span></a>
         </span>
         <img src="~/assets/img/FountainBanner.jpeg" style="height:40px;width:80px; margin-top:5px;">
-       
+
 
         <ul class="nav navbar-nav toolbar pull-right" style="margin-right:10px;">
             <li class="dropdown toolbar-icon-bg">
@@ -163,7 +174,7 @@
                                                         <ul class="acc-menu">
                                                             @foreach (var children in childmenu)
                                                             {
-                                                                <li><a href="@children.Externalurl"  onclick="pageLoader()">@children.Menuname</a></li>
+                                                                <li><a href="@children.Externalurl" onclick="pageLoader()">@children.Menuname</a></li>
                                                             }
                                                         </ul>
                                                     </li>
@@ -171,7 +182,7 @@
                                                 else
                                                 {
                                                     @:
-                                                    <li><a href="@parentMenu.Menuurl"  onclick="pageLoader()"><i class="@parentMenu.Linkicon"></i><span>@parentMenu.Menuname</span><span class="badge badge-success"></span></a></li>
+                                                    <li><a href="@parentMenu.Menuurl" onclick="pageLoader()"><i class="@parentMenu.Linkicon"></i><span>@parentMenu.Menuname</span><span class="badge badge-success"></span></a></li>
                                                 }
                                             }
 
@@ -338,8 +349,6 @@
     <script src="~/assets/plugins/jquery-mousewheel/jquery.mousewheel.min.js"></script> <!-- MouseWheel Support -->
     <script src="~/assets/demo/demo-formcomponents.js"></script>
     <script src="~/assets/plugins/wijets/wijets.js"></script>     							<!-- Wijet -->
-
-    
     <!-- End loading page level scripts-->
 
 
@@ -375,15 +384,15 @@
 
 
     <script>
- 
+
 
         function pageLoader() {
             //alert("good");
             progressIndicator("PROCESSING");
             closeProgressIndicator();
             //progressIndicator();
-            
-            
+
+
         }
 
         function SubmitLoader() {

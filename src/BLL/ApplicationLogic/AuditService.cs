@@ -13,7 +13,7 @@ namespace BLL.ApplicationLogic
 {
     public class AuditService: BaseService
     {
-        private readonly FountainDb context = FountainDb.GetInstance();
+        private readonly FountainDb _db = FountainDb.GetInstance();
 
         public static string DetermineIPAddress()
         {
@@ -64,13 +64,13 @@ namespace BLL.ApplicationLogic
 
         public void insertAudit(PureAuditTrail newuser)
         {
-            context.Insert<PureAuditTrail>(newuser);
+            _db.Insert<PureAuditTrail>(newuser);
         }
 
         public List<PureAuditTrail> getAuditById()
         {
             string sql = "select * from Pure_AuditTrail order by Id desc";
-            var actual = context.Fetch<PureAuditTrail>(sql).ToList();
+            var actual = _db.Fetch<PureAuditTrail>(sql).ToList();
             return actual;
         }
 
@@ -78,7 +78,7 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                context.Insert(UserName);
+                _db.Insert(UserName);
                 return true;
             }
             catch (Exception ex)

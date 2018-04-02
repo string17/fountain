@@ -12,12 +12,12 @@ namespace BLL.ApplicationLogic
 {
     public class LoanManagement
     {
-        private readonly FountainDb context = FountainDb.GetInstance();
+        private readonly FountainDb _db = FountainDb.GetInstance();
 
         public List<PureLoanCategory> GetLoanCategory()
         {
             string sql = "select * from Pure_Loan_Category";
-            var actual = context.Fetch<PureLoanCategory>(sql);
+            var actual = _db.Fetch<PureLoanCategory>(sql);
             return actual;
         }
 
@@ -38,7 +38,7 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                context.Insert(Loan);
+                _db.Insert(Loan);
                 return true;
             }
             catch (Exception ex)
@@ -51,14 +51,14 @@ namespace BLL.ApplicationLogic
         public List<LoanStatement> GetLoanByUsername(string UserName)
         {
             string sql = "SELECT A.*,B.LoanName,C.AccountBal,D.AccountImg,D.AccountName,D.AccountStatus,D.DOB,D.HomeAddress,D.IncomeRange,D.RefName FROM Pure_Loan A INNER JOIN Pure_Loan_Category B ON B.LoanCateId=A.LoanCateId INNER JOIN Pure_Account_Details C ON C.AccountNos=A.AccountNos INNER JOIN Pure_Customer_Info D ON D.AccountNos=A.AccountNos WHERE A.Processor=@0";
-            var actual = context.Fetch<LoanStatement>(sql, UserName).ToList();
+            var actual = _db.Fetch<LoanStatement>(sql, UserName).ToList();
             return actual;
         }
 
         public LoanStatement GetLoanDetails(int LoanId)
         {
             string sql = "SELECT A.*,B.LoanName,C.AccountBal,D.AccountImg,D.AccountName,D.AccountStatus,D.DOB,D.HomeAddress,D.IncomeRange,D.RefName FROM Pure_Loan A INNER JOIN Pure_Loan_Category B ON B.LoanCateId=A.LoanCateId INNER JOIN Pure_Account_Details C ON C.AccountNos=A.AccountNos INNER JOIN Pure_Customer_Info D ON D.AccountNos=A.AccountNos WHERE A.LoanId=@0 AND A.LoanStatus='P'";
-            var actual = context.SingleOrDefault<LoanStatement>(sql, LoanId);
+            var actual = _db.SingleOrDefault<LoanStatement>(sql, LoanId);
             return actual;
         }
 
@@ -66,7 +66,7 @@ namespace BLL.ApplicationLogic
         public List<LoanStatement> GetPendingLoan()
         {
             string sql = "SELECT A.*,B.LoanName,C.AccountBal,D.AccountImg,D.AccountName,D.AccountStatus,D.DOB,D.HomeAddress,D.IncomeRange,D.RefName FROM Pure_Loan A INNER JOIN Pure_Loan_Category B ON B.LoanCateId=A.LoanCateId INNER JOIN Pure_Account_Details C ON C.AccountNos=A.AccountNos INNER JOIN Pure_Customer_Info D ON D.AccountNos=A.AccountNos WHERE A.LoanStatus='P'";
-            var actual = context.Fetch<LoanStatement>(sql).ToList();
+            var actual = _db.Fetch<LoanStatement>(sql).ToList();
             return actual;
         }
 
@@ -74,11 +74,11 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                var Loan = context.SingleOrDefault<PureLoan>("where LoanId =@0", LoanId);
+                var Loan = _db.SingleOrDefault<PureLoan>("where LoanId =@0", LoanId);
                 Loan.Loanstatus = LoanStatus;
                 Loan.Approver = Approver;
                 Loan.Approveddate = DateTime.Now;
-                context.Update(Loan);
+                _db.Update(Loan);
                 return true;
             }
             catch (Exception)

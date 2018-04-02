@@ -9,34 +9,34 @@ namespace BLL.ApplicationLogic
 {
     public class RoleManagement
     {
-        private FountainDb context = FountainDb.GetInstance();
+        private FountainDb _db = FountainDb.GetInstance();
         public List<PureRole> getAllRoles()
         {
-            var actual = context.Fetch<PureRole>();
+            var actual = _db.Fetch<PureRole>();
             return actual;
         }
 
         public PureRole getRoleById(decimal Id)
         {
-            var actual = context.SingleById<PureRole>(Id);
+            var actual = _db.SingleById<PureRole>(Id);
             return actual;
         }
 
         public PureRole getRoleByRoleName(string RoleName)
         {
             string SQL = "Select * from Pure_Role where RoleName =@0";
-            var actual = context.FirstOrDefault<PureRole>(SQL, RoleName);
+            var actual = _db.FirstOrDefault<PureRole>(SQL, RoleName);
             return actual;
         }
         public List<PureRole> getRoleByRoleId()
         {
-            var actual = context.Fetch<PureRole>().ToList();
+            var actual = _db.Fetch<PureRole>().ToList();
             return actual;
         }
 
         public List<PureRoleMenu> getRoleMenuByRoleId(decimal Id)
         {
-            var actual = context.Fetch<PureRoleMenu>("Where ID = " + Id);
+            var actual = _db.Fetch<PureRoleMenu>("Where ID = " + Id);
             return actual;
         }
 
@@ -44,7 +44,7 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                context.Insert(RoleName);
+                _db.Insert(RoleName);
                 return true;
             }
             catch (Exception ex)
@@ -57,11 +57,11 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                var roles = context.SingleOrDefault<PureRole>("WHERE RoleId=@0", RoleId);
+                var roles = _db.SingleOrDefault<PureRole>("WHERE RoleId=@0", RoleId);
                 roles.Rolename = RoleName;
                 roles.Roledesc = RoleDesc;
                 roles.Rolestatus = RoleStatus;
-                context.Update(roles);
+                _db.Update(roles);
                 return true;
 
             }

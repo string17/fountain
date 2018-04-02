@@ -10,14 +10,14 @@ namespace BLL.ApplicationLogic
 {
     public class TransactionManagement
     {
-        private FountainDb context = FountainDb.GetInstance();
+        private readonly FountainDb _db = FountainDb.GetInstance();
 
 
         public bool CreditRemAccount(PureRemittance account)
         {
             try
             {
-                context.Insert(account);
+                _db.Insert(account);
                 return true;
             }
             catch (Exception ex)
@@ -30,7 +30,7 @@ namespace BLL.ApplicationLogic
         {
             try
             {
-                context.Insert(account);
+                _db.Insert(account);
                 return true;
             }
             catch (Exception ex)
@@ -39,20 +39,65 @@ namespace BLL.ApplicationLogic
             }
         }
 
-        //Calculate interest Rate
-        //public decimal ConvertToWords(decimal LoanAmt)
-        //{
-        //    decimal rate = Convert.ToDecimal(0.05);
-        //    decimal LoanTm = Convert.ToDecimal(LoanTime);
-        //    decimal LoanInterest = rate * LoanAmt * LoanTm;
-        //    return LoanInterest;
-        //}
+
+        public bool InsertTillHistory(PureTillHistory Till)
+        {
+            try
+            {
+                _db.Insert(Till);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool UpdateDailyTill(decimal AmtDebited, decimal AmtCredited, string userName, bool Status, DateTime TranDate,string AccountNo)
+        {
+
+            try
+            {
+                var Account = _db.SingleOrDefault<PureTillHistory>("Where AccountNo=@0",AccountNo);
+                Account.Amtdebited = AmtDebited;
+                Account.Amtcredited = AmtCredited;
+                Account.Tellerid = userName;
+                Account.Trandate = DateTime.Now;
+                Account.Tillstatus = Status;
+                _db.Update(Account);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
+        public bool AllocateTill( bool Status, string UserName,string AccountNo)
+        {
+
+            try
+            {
+                var Account = _db.SingleOrDefault<PureTillHistory>("Where AccountNo=@0", AccountNo);
+                Account.Tillstatus = Status;
+                Account.Tellerid = UserName;
+                Account.Createddate = DateTime.Now;
+                _db.Update(Account);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         //get the customer details
         public AccountBalance GetAccount(string AccountNos)
         {
             string sql = "select * from Pure_Account_Details where AccountNos=@0";
-            var actual = context.FirstOrDefault<AccountBalance>(sql, AccountNos);
+            var actual = _db.FirstOrDefault<AccountBalance>(sql, AccountNos);
             return actual;
         }
 
@@ -60,7 +105,7 @@ namespace BLL.ApplicationLogic
         public List<PureWithdrawal> GetWithdrawalByUsername(string UserName)
         {
             string sql = "select * from Pure_Withdrawal where Processor=@0 order by WithdrawalId desc;";
-            var actual = context.Fetch<PureWithdrawal>(sql, UserName).ToList();
+            var actual = _db.Fetch<PureWithdrawal>(sql, UserName).ToList();
             return actual;
         }
 
@@ -68,7 +113,7 @@ namespace BLL.ApplicationLogic
         public PureTillAccount GetTillAccount(string UserName, string TillDay)
         {
             string sql = "select top 1 TillId,AccountName,AccountNos,AccountBal,TellerId from Pure_TillAccount where TellerId=@0 and CreatedOn=@1 order by TillId desc;";
-            var actual = context.FirstOrDefault<PureTillAccount>(sql, UserName,TillDay);
+            var actual = _db.FirstOrDefault<PureTillAccount>(sql, UserName,TillDay);
             return actual;
         }
 
@@ -77,7 +122,7 @@ namespace BLL.ApplicationLogic
         public PureTellerTill GetTillByUserName(string UserName, string TillDay)
         {
             string sql = "select top 1 DebitId,TellerId,InitialBalance from Pure_TellerTill where TellerId=@0 and DebitedDate=@1 order by DebitId desc";
-            var actual = context.FirstOrDefault<PureTellerTill>(sql, UserName, TillDay);
+            var actual = _db.FirstOrDefault<PureTellerTill>(sql, UserName, TillDay);
             return actual;
         }
 
@@ -101,7 +146,7 @@ namespace BLL.ApplicationLogic
             account.Creditedby = UserName;
            try
             {
-                context.Insert(account);
+                _db.Insert(account);
                 return true;
             }
             catch (Exception ex)
@@ -122,7 +167,7 @@ namespace BLL.ApplicationLogic
             account.Debiteddate = DateTime.Now;
             try
             {
-                context.Insert(account);
+                _db.Insert(account);
                 return true;
             }
             catch (Exception ex)
@@ -138,7 +183,7 @@ namespace BLL.ApplicationLogic
             //var TillBal = new TransactionManagement().GetTillAccount(TellerId);
             try
             {
-                context.Insert(UserName);
+                _db.Insert(UserName);
                 return true;
             }
             catch (Exception ex)
@@ -156,10 +201,10 @@ namespace BLL.ApplicationLogic
             decimal CurrentBal = CustomerDetails.AccountBal - Amount;
           try
             {
-                var Account = context.SingleOrDefault<PureAccountDetail>("Where AccountNos=@0", AccountNos);
+                var Account = _db.SingleOrDefault<PureAccountDetail>("Where AccountNos=@0", AccountNos);
                 Account.Accountbal = CurrentBal;
                 Account.Modifiedon = DateTime.Now;
-                context.Update(Account);
+                _db.Update(Account);
                 return true;
             }
             catch (Exception ex)
@@ -173,11 +218,10 @@ namespace BLL.ApplicationLogic
 
             try
             {
-                var Account = context.SingleOrDefault<PureAccountDetail>("Where AccountNos=@0", AccountNos);
+                var Account = _db.SingleOrDefault<PureAccountDetail>("Where AccountNos=@0", AccountNos);
                 Account.Accountbal = CurrentBal;
                 Account.Modifiedon = DateTime.Now;
-                //Account.Modifiedby = User.Identity.Name;
-                context.Update(Account);
+                _db.Update(Account);
                 return true;
             }
             catch (Exception ex)
@@ -189,7 +233,7 @@ namespace BLL.ApplicationLogic
         // Debit till account
         public bool ConfirmTransaction(string RequestId,string AccountNos, decimal Amount, string UserName)
         {
-            //string MethodName="Debit Till";
+       
             bool PostingStatus = false;
             DateTime PostdDate = DateTime.Now;
             string ddate= PostdDate.ToString("yyyy-MM-dd");
@@ -198,7 +242,7 @@ namespace BLL.ApplicationLogic
             var CustomerAcc = GetAccount(AccountNos);
             decimal? customerBal = CustomerAcc.AccountBal;
             string Indicator = "DR";
-            //string CRIndicator = "CR";
+           
             try
             {
               
@@ -220,7 +264,7 @@ namespace BLL.ApplicationLogic
 
         public bool PostWithdrawal(string RequestId, string AccountNos, decimal Amount, string UserName)
         {
-            //string MethodName="Debit Till";
+          
             bool PostingStatus = false;
             DateTime PostdDate = DateTime.Now;
             string ddate = PostdDate.ToString("yyyy-MM-dd");
@@ -229,7 +273,7 @@ namespace BLL.ApplicationLogic
             var CustomerAcc = GetAccount(AccountNos);
             decimal? customerBal = CustomerAcc.AccountBal;
             string Indicator = "CR";
-            //string CRIndicator = "CR";
+         
             try
             {
 
@@ -276,7 +320,7 @@ namespace BLL.ApplicationLogic
         public PureTransactionLog GetTransactionDetails(string RequesId)
         {
             string sql = "select * from Pure_TransactionLog where RequestId=@0";
-            var actual = context.FirstOrDefault<PureTransactionLog>(sql, RequesId);
+            var actual = _db.FirstOrDefault<PureTransactionLog>(sql, RequesId);
             return actual;
         }
 
@@ -306,9 +350,9 @@ namespace BLL.ApplicationLogic
 
             try
             {
-                var Account = context.SingleOrDefault<PureDeposit>("Where RequestId=@0", RequestId);
+                var Account = _db.SingleOrDefault<PureDeposit>("Where RequestId=@0", RequestId);
                 Account.Status = TranStatus;
-                context.Update(Account);
+                _db.Update(Account);
                 return true;
             }
             catch (Exception ex)
@@ -322,12 +366,12 @@ namespace BLL.ApplicationLogic
 
             try
             {
-                var Account = context.SingleOrDefault<PureTransactionLog>("Where RequestId=@0", RequestId);
+                var Account = _db.SingleOrDefault<PureTransactionLog>("Where RequestId=@0", RequestId);
                 Account.Transtatus = TranStatus;
                 Account.Tranapprover = UserName;
                 Account.Approveddate = DateTime.Now;
                 //Account.Modifiedby = User.Identity.Name;
-                context.Update(Account);
+                _db.Update(Account);
                 return true;
             }
             catch (Exception ex)
@@ -341,9 +385,9 @@ namespace BLL.ApplicationLogic
 
             try
             {
-                var Account = context.SingleOrDefault<PurePostRequest>("Where RequestId=@0 and DRCRIndicator=@1", RequestId,DRCRIndicator);
+                var Account = _db.SingleOrDefault<PurePostRequest>("Where RequestId=@0 and DRCRIndicator=@1", RequestId,DRCRIndicator);
                 Account.Transtatus = TranStatus;
-                context.Update(Account);
+                _db.Update(Account);
                 return true;
             }
             catch (Exception ex)
@@ -355,7 +399,7 @@ namespace BLL.ApplicationLogic
         public List<DepositViewModel> GetDepositHistory(string userName)
         {
             string sql = "select * from Pure_Deposit where Processor=@0 order by DepositId Desc";
-            var actual = context.Fetch<DepositViewModel>(sql, userName).ToList();
+            var actual = _db.Fetch<DepositViewModel>(sql, userName).ToList();
             return actual;
         }
 
