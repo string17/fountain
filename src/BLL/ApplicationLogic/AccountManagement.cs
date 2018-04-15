@@ -343,12 +343,12 @@ namespace BLL.ApplicationLogic
             return actual;
         }
 
-        public bool ApproveAccount(int CustomerId, string AccountNos, bool? AccountStatus)
+        public bool ApproveAccount(int CustomerId, string AccountNo, bool? AccountStatus)
         {
             try
             {
                 var Account = _db.SingleOrDefault<PureCustomerInfo>("Where CustomerId=@0", CustomerId);
-                Account.Accountnos = AccountNos;
+                Account.Accountno = AccountNo;
                 Account.Accountstatus = AccountStatus;
                 _db.Update(Account);
                 return true;

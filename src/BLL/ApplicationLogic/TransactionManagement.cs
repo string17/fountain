@@ -94,10 +94,10 @@ namespace BLL.ApplicationLogic
 
 
         //get the customer details
-        public AccountBalance GetAccount(string AccountNos)
+        public AccountBalance GetAccount(string AccountNo)
         {
-            string sql = "select * from Pure_Account_Details where AccountNos=@0";
-            var actual = _db.FirstOrDefault<AccountBalance>(sql, AccountNos);
+            string sql = "select * from Pure_Account_Details where AccountNo=@0";
+            var actual = _db.FirstOrDefault<AccountBalance>(sql, AccountNo);
             return actual;
         }
 
@@ -112,7 +112,7 @@ namespace BLL.ApplicationLogic
         //Get the till Account
         public PureTillAccount GetTillAccount(string UserName, string TillDay)
         {
-            string sql = "select top 1 TillId,AccountName,AccountNos,AccountBal,TellerId from Pure_TillAccount where TellerId=@0 and CreatedOn=@1 order by TillId desc;";
+            string sql = "select top 1 TillId,AccountName,AccountNo,AccountBal,TellerId from Pure_TillAccount where TellerId=@0 and CreatedOn=@1 order by TillId desc;";
             var actual = _db.FirstOrDefault<PureTillAccount>(sql, UserName,TillDay);
             return actual;
         }
@@ -135,7 +135,7 @@ namespace BLL.ApplicationLogic
             var TillDetails=GetTillAccount(UserName, ddate);
             var account = new PureTillAccount();
             account.Accountname = TillDetails.Accountname;
-            account.Accountnos = TillDetails.Accountnos;
+            account.Accountno = TillDetails.Accountno;
             account.Accountbal = TillDetails.Accountbal- TillAmt;
             account.Amountdebited = TillAmt;
             account.Currencycode = "NGN";
@@ -195,13 +195,13 @@ namespace BLL.ApplicationLogic
 
 
 
-        public bool DebitCustomer(decimal Amount, string AccountNos)
+        public bool DebitCustomer(decimal Amount, string AccountNo)
         {
-            var CustomerDetails = GetAccount(AccountNos);
+            var CustomerDetails = GetAccount(AccountNo);
             decimal CurrentBal = CustomerDetails.AccountBal - Amount;
           try
             {
-                var Account = _db.SingleOrDefault<PureAccountDetail>("Where AccountNos=@0", AccountNos);
+                var Account = _db.SingleOrDefault<PureAccountDetail>("Where AccountNo=@0", AccountNo);
                 Account.Accountbal = CurrentBal;
                 Account.Modifiedon = DateTime.Now;
                 _db.Update(Account);
@@ -213,12 +213,12 @@ namespace BLL.ApplicationLogic
             }
         }
 
-        public bool UpdateCustomerBal(decimal CurrentBal, string AccountNos)
+        public bool UpdateCustomerBal(decimal CurrentBal, string AccountNo)
         {
 
             try
             {
-                var Account = _db.SingleOrDefault<PureAccountDetail>("Where AccountNos=@0", AccountNos);
+                var Account = _db.SingleOrDefault<PureAccountDetail>("Where AccountNo=@0", AccountNo);
                 Account.Accountbal = CurrentBal;
                 Account.Modifiedon = DateTime.Now;
                 _db.Update(Account);
@@ -231,7 +231,7 @@ namespace BLL.ApplicationLogic
         }
 
         // Debit till account
-        public bool ConfirmTransaction(string RequestId,string AccountNos, decimal Amount, string UserName)
+        public bool ConfirmTransaction(string RequestId,string AccountNo, decimal Amount, string UserName)
         {
        
             bool PostingStatus = false;
@@ -239,7 +239,7 @@ namespace BLL.ApplicationLogic
             string ddate= PostdDate.ToString("yyyy-MM-dd");
             var TillDetails = GetTillByUserName(UserName, ddate);
             decimal TillBal = Convert.ToDecimal(TillDetails.Initialbalance);
-            var CustomerAcc = GetAccount(AccountNos);
+            var CustomerAcc = GetAccount(AccountNo);
             decimal? customerBal = CustomerAcc.AccountBal;
             string Indicator = "DR";
            
@@ -248,7 +248,7 @@ namespace BLL.ApplicationLogic
               
                     TillBal = TillBal - Amount;
                     decimal CurrentBal = Convert.ToDecimal(customerBal + Amount);
-                    bool UpdateCustomer = UpdateCustomerBal(CurrentBal, AccountNos);//Credit the customer
+                    bool UpdateCustomer = UpdateCustomerBal(CurrentBal, AccountNo);//Credit the customer
                     bool PostTransaction = InsertDebit(TillBal,Amount, UserName, Indicator);
                     PostingStatus = true;
    
@@ -262,7 +262,7 @@ namespace BLL.ApplicationLogic
         }
 
 
-        public bool PostWithdrawal(string RequestId, string AccountNos, decimal Amount, string UserName)
+        public bool PostWithdrawal(string RequestId, string AccountNo, decimal Amount, string UserName)
         {
           
             bool PostingStatus = false;
@@ -270,7 +270,7 @@ namespace BLL.ApplicationLogic
             string ddate = PostdDate.ToString("yyyy-MM-dd");
             var TillDetails = GetTillByUserName(UserName, ddate);
             decimal TillBal = Convert.ToDecimal(TillDetails.Initialbalance);
-            var CustomerAcc = GetAccount(AccountNos);
+            var CustomerAcc = GetAccount(AccountNo);
             decimal? customerBal = CustomerAcc.AccountBal;
             string Indicator = "CR";
          
@@ -280,7 +280,7 @@ namespace BLL.ApplicationLogic
                 TillBal = TillBal + Amount;
                 decimal CurrentBal = Convert.ToDecimal(customerBal - Amount);
                         
-                bool UpdateCustomer = UpdateCustomerBal(CurrentBal, AccountNos);//Credit the customer
+                bool UpdateCustomer = UpdateCustomerBal(CurrentBal, AccountNo);//Credit the customer
                 bool PostTransaction = InsertDebit(TillBal, Amount, UserName, Indicator);
                 PostingStatus = true;
 
@@ -308,10 +308,10 @@ namespace BLL.ApplicationLogic
 
         }
 
-        public decimal CreditTill(string AccountNos, decimal Amount,string UserName)
+        public decimal CreditTill(string AccountNo, decimal Amount,string UserName)
         {
             decimal CurrentBal = 0;
-            var CustomerAcc = GetAccount(AccountNos);
+            var CustomerAcc = GetAccount(AccountNo);
             CurrentBal = Convert.ToDecimal(CustomerAcc.AccountBal - Amount);
             return CurrentBal;
         }

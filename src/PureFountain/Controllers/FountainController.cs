@@ -18,6 +18,21 @@ namespace PureFountain.Controllers
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private string ipaddress = AuditService.DetermineIPAddress();
+        private readonly UserManagement _userMgt;
+        private readonly AccountManagement _account;
+        private readonly TransactionManagement _trans;
+        private readonly SequenceManager _sequence;
+        private readonly ReportManagement _report;
+
+        public FountainController()
+        {
+            _userMgt = new UserManagement();
+            _account =new AccountManagement();
+            _trans = new TransactionManagement();
+            _sequence = new SequenceManager();
+            _report = new ReportManagement();
+        }
+
         //private string ComputerDetails = AuditService.DetermineCompName(ipaddress);
         // GET: Fountain
         public ActionResult Dashboard()
@@ -48,19 +63,19 @@ namespace PureFountain.Controllers
                 return View();
             }
             string MethodName = Constants.AuditActionType.CreateAccount.ToString();
-            string AccountNos = new SequenceManager().GenerateAccountNos();
+            string AccountNo = _sequence.GenerateAccountNos();
            try
             {
                 var accNos = new PureAccountNo();
-                accNos.Accountnos = AccountNos;
+                accNos.Accountno = AccountNo;
                 accNos.Accountclass = "BranchTill";
                 accNos.Userbvn = WebConfigurationManager.AppSettings["UniversalToken"];
-                bool _success = new AccountManagement().NewAccountNos(accNos);
+                bool _success = _account.NewAccountNos(accNos);
                 if (_success)
                 {
                     var Till = new PureTillAccount();
                     Till.Accountname = account.AccountName;
-                    Till.Accountnos = AccountNos;
+                    Till.Accountno = AccountNo;
                     Till.Accountbal = account.AccountBal;
                     Till.Currencycode = "NGN";
                     Till.Tellerid = "";
@@ -70,7 +85,7 @@ namespace PureFountain.Controllers
                     Till.Createdon = DateTime.Now;
                     Till.Creditedby = User.Identity.Name;
 
-                    bool NewTill = new AccountManagement().CreateTill(Till);
+                    bool NewTill = _account.CreateTill(Till);
                     if (NewTill)
                     {
                         Log.InfoFormat(MethodName, "Account Successful");
@@ -107,7 +122,7 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "Till Account";
             ViewBag.SuccessMsg = TempData["SuccessMsg"];
-            ViewBag.Account = new AccountManagement().GetTillAccount();
+            ViewBag.Account = _account.GetTillAccount();
             return View();
         }
 
@@ -115,7 +130,7 @@ namespace PureFountain.Controllers
         public ActionResult TillHistory()
         {
             ViewBag.Message = "Till Account";
-            ViewBag.Account = new AccountManagement().GetTillHistory();
+            ViewBag.Account = _account.GetTillHistory();
             return View();
         }
 
@@ -126,8 +141,8 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "Till Account";
             int TillId = Id.GetValueOrDefault();
-            ViewBag.Till = new AccountManagement().GetTillAccountDetails(TillId);
-            ViewBag.Teller = new UserManagement().getAllTeller();
+            ViewBag.Till = _account.GetTillAccountDetails(TillId);
+            ViewBag.Teller = _userMgt.getAllTeller();
             return View();
         }
 
@@ -142,14 +157,14 @@ namespace PureFountain.Controllers
             }
             ViewBag.Message = "Till Account";
             int TillId = Id.GetValueOrDefault();
-            ViewBag.Till = new AccountManagement().GetTillAccountDetails(TillId);
+            ViewBag.Till = _account.GetTillAccountDetails(TillId);
             string MethodName = Constants.AuditActionType.ModifiedUser.ToString();
-            ViewBag.Teller = new UserManagement().getAllTeller();
+            ViewBag.Teller = _userMgt.getAllTeller();
             try
             {
-            var _tillDetails = new AccountManagement().GetTillDetails(TillId);
+            var _tillDetails =_account.GetTillDetails(TillId);
             string CreatedOn = DateTime.Now.ToString("yyyy-MM-dd");
-            var existingTill = new AccountManagement().ValidateTill(Till.TellerId, CreatedOn);
+            var existingTill =_account.ValidateTill(Till.TellerId, CreatedOn);
             
             if(existingTill == 0)
             {
@@ -163,12 +178,12 @@ namespace PureFountain.Controllers
                     account.Amountdebited = 0;
                     account.Creditedby = User.Identity.Name;
                     account.Createdon = DateTime.Now;
-                    bool EditTill = new AccountManagement().UpdateTill(account.Accountname, account.Accountbal, account.Tellerid, account.Accountstatus, account.Drcrindicator, account.Creditedby, account.Createdon, TillId);
+                    bool EditTill =_account.UpdateTill(account.Accountname, account.Accountbal, account.Tellerid, account.Accountstatus, account.Drcrindicator, account.Creditedby, account.Createdon, TillId);
 
                     if (EditTill)
                     {
                         var NewTill = new PureTellerTill();
-                        NewTill.Accountnos = _tillDetails.AccountNos;
+                        NewTill.Accountno = _tillDetails.AccountNo;
                         NewTill.Initialbalance = account.Accountbal;
                         NewTill.Tellerid = account.Tellerid;
                         NewTill.Amount = 0;
@@ -181,7 +196,7 @@ namespace PureFountain.Controllers
                         {
                             var _till = new PureTillHistory();
                             _till.Accountname = Till.AccountName;
-                            _till.Accountnos = _tillDetails.AccountNos;
+                            _till.Accountno = _tillDetails.AccountNo;
                             _till.Amtcredited = Till.AccountBal;
                             _till.Amtdebited = 0;
                             _till.Closedbal = 0;
@@ -605,13 +620,12 @@ namespace PureFountain.Controllers
         public ActionResult CreateAccount()
         {
             ViewBag.Message = "Account";
-            AccountManagement accountmgt = new AccountManagement();
-            ViewBag.Country = accountmgt.GetAllCountries();
-            ViewBag.Referral = accountmgt.GetReferral();
-            ViewBag.Banks = accountmgt.GetAllBank();
-            ViewBag.Religion = accountmgt.GetAllReligion();
-            ViewBag.Card = accountmgt.GetAllCard();
-            ViewBag.Account = accountmgt.GetAccountCategory();
+            ViewBag.Country = _account.GetAllCountries();
+            ViewBag.Referral = _account.GetReferral();
+            ViewBag.Banks = _account.GetAllBank();
+            ViewBag.Religion = _account.GetAllReligion();
+            ViewBag.Card = _account.GetAllCard();
+            ViewBag.Account = _account.GetAccountCategory();
             return View();
         }
 
@@ -625,13 +639,12 @@ namespace PureFountain.Controllers
             }
 
             string MethodName = Constants.AuditActionType.CustomerAccount.ToString();
-            AccountManagement accountmgt = new AccountManagement();
-            ViewBag.Country = accountmgt.GetAllCountries();
-            ViewBag.Referral = accountmgt.GetReferral();
-            ViewBag.Banks = accountmgt.GetAllBank();
-            ViewBag.Religion = accountmgt.GetAllReligion();
-            ViewBag.Card = accountmgt.GetAllCard();
-            ViewBag.Account = accountmgt.GetAccountCategory();
+            ViewBag.Country = _account.GetAllCountries();
+            ViewBag.Referral = _account.GetReferral();
+            ViewBag.Banks = _account.GetAllBank();
+            ViewBag.Religion = _account.GetAllReligion();
+            ViewBag.Card = _account.GetAllCard();
+            ViewBag.Account = _account.GetAccountCategory();
 
             try
             {
@@ -640,8 +653,8 @@ namespace PureFountain.Controllers
                 Acc.Middlename = customer.MiddleName;
                 Acc.Lastname = customer.LastName;
                 Acc.Useremail = customer.UserEmail;
-                Acc.Phonenos1 = customer.PhoneNos1;
-                Acc.Phonenos2 = customer.PhoneNos2;
+                Acc.Phoneno1 = customer.PhoneNos1;
+                Acc.Phoneno2 = customer.PhoneNos2;
                 Acc.Usersex = customer.UserSex;
                 Acc.Homeaddress = customer.UserAddress;
                 Acc.Officeaddress = customer.OfficeAddress;
@@ -673,7 +686,7 @@ namespace PureFountain.Controllers
                 Acc.Accounttype = customer.AccountType; ;
                 Acc.Reasonforaccount = customer.ReasonForAccount;
                 Acc.Accountname = customer.AccountName;
-                Acc.Accountnos = "";
+                Acc.Accountno = "";
                 Acc.Accountstatus = false;
                 Acc.Createdby = User.Identity.Name;
                 Acc.Createdon = DateTime.Now;
@@ -681,11 +694,10 @@ namespace PureFountain.Controllers
                 Acc.Modifiedon = DateTime.Now;
                 Acc.Approvedby = "";
                 Acc.Approvedon = null;
-                AccountManagement CustomerAccount = new AccountManagement();
-                Acc.Accountimg = new UserManagement().DoFileUpload(customer.AccountImg);
-                Acc.Accountsign = new UserManagement().DoFileUpload(customer.AccountSign);
+                Acc.Accountimg = _userMgt.DoFileUpload(customer.AccountImg);
+                Acc.Accountsign = _userMgt.DoFileUpload(customer.AccountSign);
                 bool NewAccount = false;
-                NewAccount = CustomerAccount.InsertAccount(Acc);
+                NewAccount = _account.InsertAccount(Acc);
                 if (NewAccount)
                 {
                     //Log.InfoFormat(MethodName, ComputerDetails, "Account", User.Identity.Name);
@@ -713,7 +725,7 @@ namespace PureFountain.Controllers
 
         public ActionResult GetStates(string code)
         {
-            var codes = new AccountManagement().GetStatesById(code);
+            var codes = _account.GetStatesById(code);
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
@@ -733,27 +745,27 @@ namespace PureFountain.Controllers
         //get Till details
         public ActionResult GetTillDetails(int TillId)
         {
-            var codes = new AccountManagement().GetTillAccountDetails(TillId);
+            var codes = _account.GetTillAccountDetails(TillId);
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult FetchTillDetails(int TillId)
         {
-            var codes = new AccountManagement().GetTillDetails(TillId);
+            var codes = _account.GetTillDetails(TillId);
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
 
         public ActionResult GetPendingAccount(int CustomerId)
         {
-            var codes = new AccountManagement().GetAccountDetails(CustomerId);
+            var codes = _account.GetAccountDetails(CustomerId);
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
 
         public ActionResult GetAccountDetails(int CustomerId)
         {
-            var Customercodes = new AccountManagement().GetAccountDetails(CustomerId);
+            var Customercodes =_account.GetAccountDetails(CustomerId);
             return Json(Customercodes, JsonRequestBehavior.AllowGet);
         }
 
@@ -761,15 +773,14 @@ namespace PureFountain.Controllers
         //Get customer Account Balance
         public ActionResult GetCustomerBalance(string AccountNos)
         {
-            var codes = new AccountManagement().GetAccountBal(AccountNos);
+            var codes =_account.GetAccountBal(AccountNos);
             return Json(codes, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ViewAccount()
         {
             ViewBag.Message = "Customers";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetCustomerInfo();
+            ViewBag.Customer = _account.GetCustomerInfo();
             return View();
         }
 
@@ -779,35 +790,31 @@ namespace PureFountain.Controllers
         public ActionResult EditAccount(int Id)
         {
             ViewBag.Message = "Customers";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetAccountDetails(Id);
-            ViewBag.Country = accountMgt.GetAllCountries();
-            ViewBag.Referral = accountMgt.GetReferral();
-            ViewBag.Banks = accountMgt.GetAllBank();
+            ViewBag.Customer = _account.GetAccountDetails(Id);
+            ViewBag.Country = _account.GetAllCountries();
+            ViewBag.Referral = _account.GetReferral();
+            ViewBag.Banks = _account.GetAllBank();
             return View();
         }
 
         public ActionResult ViewCustomer()
         {
             ViewBag.Message = "Customers";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.NewAccount();
+            ViewBag.Customer = _account.NewAccount();
             return View();
         }
 
         public ActionResult ApproveAccount()
         {
             ViewBag.Message = "Approve Account";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            ViewBag.Customer = _account.GetPendingAccount();
             return View();
         }
 
         public ActionResult ListAccount()
         {
             ViewBag.Message = "View Account";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetAllAccount();
+            ViewBag.Customer = _account.GetAllAccount();
             return View();
         }
 
@@ -828,7 +835,7 @@ namespace PureFountain.Controllers
             string RequestId = new SequenceManager().ReturnPostingSequence();
             string Amount = tran.Amount.ToString("#,##.00");
             decimal DepositAmount = Convert.ToDecimal(Amount);
-            var CustomerDetails = new AccountManagement().GetAccountBal(tran.AccountNos.ToString());
+            var CustomerDetails =_account.GetAccountBal(tran.AccountNo.ToString());
             DateTime PostdDate = DateTime.Now;
             string ddate = PostdDate.ToString("yyyy-MM-dd");
             string UserName = User.Identity.Name;
@@ -863,7 +870,7 @@ namespace PureFountain.Controllers
                     return View();
                 }
 
-                var ProcessTill = new AccountManagement().GetTellerTill(TellerId, ddate);
+                var ProcessTill =_account.GetTellerTill(TellerId, ddate);
                 if (ProcessTill == null)
                 {
                     ViewBag.ErrorMsg = "No Till Account Found";
@@ -877,9 +884,9 @@ namespace PureFountain.Controllers
                 }
 
                 var acc = new PureTransactionLog();
-                acc.Sourceaccount = ProcessTill.AccountNos;
+                acc.Sourceaccount = ProcessTill.AccountNo;
                 acc.Destinationaccount = CustomerDetails.AccountNos;
-                acc.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
+                acc.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNo;
                 acc.Amount = tran.Amount;
                 acc.Transtatus = "P";
                 acc.Trantype = "D";
@@ -892,7 +899,7 @@ namespace PureFountain.Controllers
                 acc.Requestid = RequestId;
 
                 bool firstPost = false;
-                firstPost = new AccountManagement().InsertTransaction(acc);
+                firstPost =_account.InsertTransaction(acc);
                 if (firstPost)
                 {
                     try
@@ -901,17 +908,17 @@ namespace PureFountain.Controllers
                         var deposit = new PureDeposit();
                         deposit.Requestid = RequestId;
                         deposit.Accounttitle = CustomerDetails.AccountName;
-                        deposit.Accountnos = tran.AccountNos;
+                        deposit.Accountnos = tran.AccountNo;
                         deposit.Depositorname = tran.DepositorName;
-                        deposit.Depositornos = tran.DepositorNos;
-                        deposit.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
+                        deposit.Depositorno = tran.DepositorNo;
+                        deposit.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNo;
                         deposit.Amount = tran.Amount;
                         deposit.Processor = User.Identity.Name;
                         deposit.Status = "P";
                         deposit.Currencyiso = "NGN";
                         deposit.Depositeddate = DateTime.Now;
                         bool newDeposit = false;
-                        newDeposit = new AccountManagement().InsertDeposit(deposit);
+                        newDeposit = _account.InsertDeposit(deposit);
                         if (newDeposit == false)
                         {
                             ViewBag.ErrorMsg = "Unable to Post the Transaction";
@@ -922,18 +929,18 @@ namespace PureFountain.Controllers
                             var request = new PurePostRequest();
                             request.Requestid = RequestId;
                             request.Accountname = CustomerDetails.AccountName;
-                            request.Accountnos = CustomerDetails.AccountNos;
+                            request.Accountno = CustomerDetails.AccountNos;
                             request.Drcrindicator = "CR";
                             request.Tranamount = tran.Amount;
                             request.Transtatus = "P";
                             bool DrRequest = false;
-                            DrRequest = new AccountManagement().InsertRequest(request);
+                            DrRequest =_account.InsertRequest(request);
                             if (DrRequest == true)
                             {
                                 var request1 = new PurePostRequest();
                                 request1.Requestid = RequestId;
                                 request1.Accountname = ProcessTill.AccountName;
-                                request1.Accountnos = ProcessTill.AccountNos;
+                                request1.Accountno = ProcessTill.AccountNo;
                                 request1.Drcrindicator = "DR";
                                 request1.Tranamount = tran.Amount;
                                 request1.Transtatus = "P";
@@ -941,7 +948,7 @@ namespace PureFountain.Controllers
                                 var request3 = new PureStatement();
                                 //decimal custBal= Convert.ToDecimal(CustomerDetails.Balance) + tran.Amount;
                                 request3.Referenceid = RequestId;
-                                request3.Transactiondetails = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNos;
+                                request3.Transactiondetails = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNo;
                                 request3.Accountno = CustomerDetails.AccountNos;
                                 request3.Deposit = Convert.ToDecimal(Amount);
                                 request3.Withdrawal = 0;
@@ -949,9 +956,9 @@ namespace PureFountain.Controllers
                                 request3.Valuedate = DateTime.Now;
 
                                 bool CustomerStatement = false;
-                                CustomerStatement = new AccountManagement().InsertStatement(request3);
-                                CrRequest = new AccountManagement().InsertRequest(request1);
-                                if (CrRequest == true && CustomerStatement == true)
+                                CustomerStatement =_account.InsertStatement(request3);
+                                CrRequest = _account.InsertRequest(request1);
+                                if (CrRequest && CustomerStatement)
                                 {
                                     Log.InfoFormat(MethodName, "Deposit Successful");
                                     InsertAudit(Constants.AuditActionType.CustomerAccount, "Account Created", User.Identity.Name);
@@ -1014,7 +1021,7 @@ namespace PureFountain.Controllers
         public ActionResult TransactionHistory()
         {
             ViewBag.Message = "Transaction History";
-            ViewBag.Deposit = new AccountManagement().GetDepositByUserName(User.Identity.Name);
+            ViewBag.Deposit = _account.GetDepositByUserName(User.Identity.Name);
             return View();
         }
 
@@ -1051,7 +1058,7 @@ namespace PureFountain.Controllers
         public ActionResult CheckAccountBalance(string AccountNos)
         {
             ViewBag.Message = "Account Balance";
-            ViewBag.AccountBalance = new AccountManagement().GetAccountBal(AccountNos);
+            ViewBag.AccountBalance =_account.GetAccountBal(AccountNos);
             if (ViewBag.AccountBalance == null)
             {
                 return View();
@@ -1067,8 +1074,7 @@ namespace PureFountain.Controllers
         public ActionResult LoanReport()
         {
             ViewBag.Message = "Loan Report";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetOverallCustomerLoan();
+            ViewBag.Customer = _account.GetOverallCustomerLoan();
             return View();
         }
 
@@ -1093,16 +1099,14 @@ namespace PureFountain.Controllers
         public ActionResult TransactionReport()
         {
             ViewBag.Message = "Transaction Report";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            ViewBag.Customer = _account.GetPendingAccount();
             return View();
         }
 
         public ActionResult RepostTransaction()
         {
             ViewBag.Message = "Repost Transaction";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.GetPendingAccount();
+            ViewBag.Customer = _account.GetPendingAccount();
             return View();
         }
 
@@ -1110,7 +1114,7 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "Approve Deposit";
             string TranType = "D";
-            ViewBag.Transaction = new AccountManagement().GetPendingTransaction(TranType);
+            ViewBag.Transaction = _account.GetPendingTransaction(TranType);
             return View();
         }
 
@@ -1118,7 +1122,7 @@ namespace PureFountain.Controllers
         {
             ViewBag.Message = "Approve Withdrawal";
             string TranType = "W";
-            ViewBag.Transaction = new AccountManagement().GetPendingTransaction(TranType);
+            ViewBag.Transaction = _account.GetPendingTransaction(TranType);
             return View();
         }
 
@@ -1226,7 +1230,7 @@ namespace PureFountain.Controllers
         public ActionResult AccountTracker()
         {
             ViewBag.Message = "Account Tracking";
-            ViewBag.Customer = new AccountManagement().GetCustomerByReferral(User.Identity.Name);
+            ViewBag.Customer = _account.GetCustomerByReferral(User.Identity.Name);
             return View();
         }
 
@@ -1234,39 +1238,38 @@ namespace PureFountain.Controllers
         {
             try
             {
-                var AccountNos = new SequenceManager().GenerateAccountNos().ToString();
+                var AccountNo = new SequenceManager().GenerateAccountNos().ToString();
                 var acc = new PureCustomerInfo();
-                acc.Accountnos = AccountNos;
+                acc.Accountno = AccountNo;
                 acc.Accountstatus = true;
-                AccountManagement accountMgt = new AccountManagement();
-                bool UpdateAccount = accountMgt.ApproveAccount(CustomerId, acc.Accountnos, acc.Accountstatus);
+                bool UpdateAccount = _account.ApproveAccount(CustomerId, acc.Accountno, acc.Accountstatus);
                 if (UpdateAccount)
                 {
-                    var codes = new AccountManagement().GetAccountDetails(CustomerId);
+                    var codes = _account.GetAccountDetails(CustomerId);
                     var accNos = new PureAccountNo();
-                    accNos.Accountnos = AccountNos;
+                    accNos.Accountno = AccountNo;
                     accNos.Accountclass = "Customer";
                     accNos.Userbvn = codes.UserBVN;
-                    bool InsertAccount = accountMgt.NewAccountNos(accNos);
+                    bool InsertAccount = _account.NewAccountNos(accNos);
                     if (InsertAccount)
                     {
                         var Bal = new PureAccountDetail();
                         Bal.Accountbal = Convert.ToDecimal(0.00);
-                        Bal.Accountnos = AccountNos;
+                        Bal.Accountno = AccountNo;
                         Bal.Customerid = CustomerId;
                         Bal.Modifiedby = User.Identity.Name;
                         Bal.Modifiedon = DateTime.Now;
-                        bool InsertBal = accountMgt.FreshAccount(Bal);
+                        bool InsertBal = _account.FreshAccount(Bal);
                         if (InsertBal)
                         {
-                            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created ", AccountNos);
+                            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account Successfully created ", AccountNo);
                             InsertAudit(Constants.AuditActionType.ApproveAccount, "Account Successfully Created", User.Identity.Name);
                             return Json(new { success = true });
                             //return Json(codes, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
-                            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed", AccountNos);
+                            Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed", AccountNo);
                             InsertAudit(Constants.AuditActionType.ApproveAccount, "Account failed", User.Identity.Name);
                             //return View();
                             return Json(new { success = false });
@@ -1275,7 +1278,7 @@ namespace PureFountain.Controllers
                     }
                     else
                     {
-                        Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed", AccountNos);
+                        Log.InfoFormat(Constants.AuditActionType.ApproveAccount.ToString(), "Account failed", AccountNo);
                         InsertAudit(Constants.AuditActionType.ApproveAccount, "Account failed", User.Identity.Name);
                         //return View();
                         return Json(new { success = false });
@@ -1304,8 +1307,7 @@ namespace PureFountain.Controllers
         public ActionResult ModifyAccount()
         {
             ViewBag.Message = "Modify Account";
-            AccountManagement accountMgt = new AccountManagement();
-            ViewBag.Customer = accountMgt.NewAccount();
+            ViewBag.Customer = _account.NewAccount();
             return View();
         }
 
@@ -1346,7 +1348,7 @@ namespace PureFountain.Controllers
                 loan.Accountnos = tran.AccountNos;
                 loan.Loanamount = tran.LoanAmount;
                 loan.Guarantor1name = tran.Guarantor1Name;
-                loan.Guarantor1phonenos = tran.Guarantor1Phone;
+                loan.Guarantor1phoneno = tran.Guarantor1Phone;
                 loan.Guarantor2name = tran.Guarantor2Name;
                 loan.Guarantor2phonenos = tran.Guarantor2Phone;
                 loan.Processor = User.Identity.Name;
@@ -1402,7 +1404,7 @@ namespace PureFountain.Controllers
             string RequestId = new SequenceManager().ReturnPostingSequence();
             string Amount = tran.Amount.ToString("#,##.00");
             decimal WithdrawalAmount = Convert.ToDecimal(Amount);
-            var CustomerDetails = new AccountManagement().GetAccountBal(tran.AccountNos.ToString());
+            var CustomerDetails =_account.GetAccountBal(tran.AccountNo.ToString());
             DateTime PostdDate = DateTime.Now;
             string ddate = PostdDate.ToString("yyyy-MM-dd");
             var TellerTill = new TransactionManagement().GetTillByUserName(TellerId, ddate);
@@ -1428,7 +1430,7 @@ namespace PureFountain.Controllers
                 {
                     var withdrawal = new PureWithdrawal();
                     withdrawal.Requestid = RequestId;
-                    withdrawal.Accountnos = tran.AccountNos;
+                    withdrawal.Accountno = tran.AccountNo;
                     withdrawal.Amount = tran.Amount;
                     withdrawal.Currencyiso = "NGN";
                     withdrawal.Transtatus = tran.TranStatus;
@@ -1441,7 +1443,7 @@ namespace PureFountain.Controllers
                         return View();
                     }
 
-                    var ProcessTill = new AccountManagement().GetTellerTill(TellerId, ddate);
+                    var ProcessTill =_account.GetTellerTill(TellerId, ddate);
                     bool DebitTill = new TransactionManagement().PostWithdrawal(RequestId, CustomerDetails.AccountNos, WithdrawalAmount, TellerId);
                     if (DebitTill == false)
                     {
@@ -1450,7 +1452,7 @@ namespace PureFountain.Controllers
                     }
                     var acc = new PureTransactionLog();
                     acc.Sourceaccount = CustomerDetails.AccountNos;
-                    acc.Destinationaccount = ProcessTill.AccountNos;
+                    acc.Destinationaccount = ProcessTill.AccountNo;
                     acc.Narration = RequestId;
                     acc.Amount = tran.Amount;
                     acc.Transtatus = "P";
@@ -1462,7 +1464,7 @@ namespace PureFountain.Controllers
                     acc.Trandate = DateTime.Now;
                     acc.Approveddate = null;
                     acc.Requestid = RequestId;
-                    bool firstPost = new AccountManagement().InsertTransaction(acc);
+                    bool firstPost =_account.InsertTransaction(acc);
                     if (firstPost)
                     {
                         try
@@ -1470,12 +1472,12 @@ namespace PureFountain.Controllers
                             var request = new PurePostRequest();
                             request.Requestid = RequestId;
                             request.Accountname = CustomerDetails.AccountName;
-                            request.Accountnos = CustomerDetails.AccountNos;
+                            request.Accountno = CustomerDetails.AccountNos;
                             request.Drcrindicator = "DR";
                             request.Tranamount = tran.Amount;
                             request.Transtatus = "P";
                             bool DrRequest = false;
-                            DrRequest = new AccountManagement().InsertRequest(request);
+                            DrRequest =_account.InsertRequest(request);
 
                             var request3 = new PureStatement();
                             request3.Referenceid = RequestId;
@@ -1486,17 +1488,17 @@ namespace PureFountain.Controllers
                             request3.Accountbal = Convert.ToDecimal(CustomerDetails.Balance) + tran.Amount;
                             request3.Valuedate = DateTime.Now;
 
-                            bool CustomerStatement = new AccountManagement().InsertStatement(request3);
+                            bool CustomerStatement = _account.InsertStatement(request3);
                             if (DrRequest && CustomerStatement)
                             {
                                 var request1 = new PurePostRequest();
                                 request1.Requestid = RequestId;
                                 request1.Accountname = ProcessTill.AccountName;
-                                request1.Accountnos = ProcessTill.AccountNos;
+                                request1.Accountno = ProcessTill.AccountNo;
                                 request1.Drcrindicator = "CR";
                                 request1.Tranamount = tran.Amount;
                                 request1.Transtatus = "P";
-                                bool CrRequest = new AccountManagement().InsertRequest(request1);
+                                bool CrRequest = _account.InsertRequest(request1);
                                 if (CrRequest )
                                 {
                                     Log.InfoFormat(MethodName, "Login Successful");

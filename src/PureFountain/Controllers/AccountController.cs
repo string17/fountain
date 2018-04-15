@@ -19,6 +19,12 @@ namespace PureFountain.Controllers
     public class AccountController : BaseController
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly UserManagement _userMgt;
+
+        public AccountController()
+        {
+            _userMgt = new UserManagement();
+        }
         // GET: Account
         [AllowAnonymous]
         [Route("Login/{SystemName,SystemIP}")]
@@ -41,33 +47,32 @@ namespace PureFountain.Controllers
             {
                 string _Username = _user.Username;
                 string _Password = _user.Password;
-                UserManagement userManagement = new UserManagement();
-                if (!userManagement.DoesUsernameExists(_Username))
+             if (!_userMgt.DoesUsernameExists(_Username))
                 {
                     ErrorMsg = "Invalid Username";
                     Log.InfoFormat(MethodName, ErrorMsg);
                     ViewBag.ErrorMsg = "Invalid Username";
                     return View();
                 }
-                _Password = userManagement.EncryptPassword(_Password);// Encode password
+                _Password = _userMgt.EncryptPassword(_Password);// Encode password
 
-                if (!userManagement.DoesPasswordExists(_Username, _Password))
+                if (!_userMgt.DoesPasswordExists(_Username, _Password))
                 {
                     ViewBag.ErrorMsg = "Invalid Password";
                     Log.InfoFormat(MethodName, ErrorMsg);
                     return View();
                 }
 
-                var ActiveUser = userManagement.getUserByUsername(_Username);
+                var ActiveUser = _userMgt.getUserByUsername(_Username);
                 if (ActiveUser != null)
                 {
                     var AccountStatus = ActiveUser.Userstatus;
                     if (AccountStatus == true)
                     {
-                        var newUser = userManagement.getFreshUser(_Username);
+                        var newUser = _userMgt.getFreshUser(_Username);
                         if (newUser != 0)
                         {
-                            var ExtLogin = userManagement.TrackLogin(_Username);
+                            var ExtLogin = _userMgt.TrackLogin(_Username);
                             if (ExtLogin == null)
                             {
                                 FormsAuthentication.SetAuthCookie(ActiveUser.Username, false);
@@ -134,7 +139,7 @@ namespace PureFountain.Controllers
                 return View();
             }
             string _Username = User.Username.ToUpper();
-            var extAccount = new UserManagement().getUserByUsername(_Username);
+            var extAccount = _userMgt.getUserByUsername(_Username);
             if (extAccount != null)
             {
                 EmailFormModel emailModel = new EmailFormModel();
@@ -193,8 +198,7 @@ namespace PureFountain.Controllers
             ViewBag.Message = "Reset Password";
             ViewBag.SuccessMsg = TempData["ChangePassword"];
             int UserId = Id;
-            UserManagement existingUser = new UserManagement();
-            var userDetails = existingUser.modifyPassword(UserId);
+            var userDetails = _userMgt.modifyPassword(UserId);
             ViewBag.User = userDetails;
             return View();
         }
@@ -216,15 +220,14 @@ namespace PureFountain.Controllers
             {
                 if (User.Password == User.ConfirmPassword)
                 {
-                    UserManagement userService = new UserManagement();
-                    var ExtDetails = userService.getUserById(editUser.Userid);
-                    editUser.Userpwd = userService.EncryptPassword(editUser.Userpwd);
+                    var ExtDetails = _userMgt.getUserById(editUser.Userid);
+                    editUser.Userpwd = _userMgt.EncryptPassword(editUser.Userpwd);
                     if (ExtDetails.Userpwd != editUser.Userpwd)
                     {
                         try
                         {
                             editUser.Userid = Convert.ToInt32(Id);
-                            bool validatePassword = userService.UpdatePassword(editUser.Userpwd, Id);
+                            bool validatePassword = _userMgt.UpdatePassword(editUser.Userpwd, Id);
                             if (validatePassword==true)
                             {
                                 Log.InfoFormat(MethodName, ErrorMsg);

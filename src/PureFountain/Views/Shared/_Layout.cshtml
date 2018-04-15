@@ -1,10 +1,5 @@
 ﻿@{
-    //if (User.Identity.Name == null)
-    //{
 
-    //}
-    //try
-    //{
     var service = new BLL.ApplicationLogic.UserManagement();
     var user = service.getMenuByUsername(User.Identity.Name);
     BLL.ApplicationLogic.UserManagement AccountMgt = new BLL.ApplicationLogic.UserManagement();
@@ -12,11 +7,7 @@
     var displayName = service.getUserProfileByUsername(User.Identity.Name);
 
     var currentTime = DateTime.Now;
-    //}
-    //catch(Exception ex)
-    //{
-    //    Response.Redirect("~/Account/Login");
-    //}
+
 
 
 }
