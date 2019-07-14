@@ -66,7 +66,7 @@ namespace PureFountain.Controllers
                 var ActiveUser = _userMgt.getUserByUsername(_Username);
                 if (ActiveUser != null)
                 {
-                    var AccountStatus = ActiveUser.Userstatus;
+                    var AccountStatus = ActiveUser.Isuseractive;
                     if (AccountStatus == true)
                     {
                         var newUser = _userMgt.getFreshUser(_Username);
@@ -183,7 +183,7 @@ namespace PureFountain.Controllers
             }
             else
             {
-                Log.InfoFormat("Email", "This Email does not exist on this system", extAccount.Useremail);
+                Log.InfoFormat("Email", "This Email does not exist on this system", extAccount.Email);
                 ViewBag.ErrorMsg = "This Email does not exist on this system";
                 return View();
             }
@@ -214,20 +214,20 @@ namespace PureFountain.Controllers
             string MethodName = Constants.AuditActionType.PasswordChanged.ToString();
             var editUser = new PureUser();
             editUser.Userid = Id.GetValueOrDefault();
-            editUser.Userpwd = User.Password;
+            editUser.Password = User.Password;
 
             if (User.Password.Any("!@#$%^&*".Contains) && User.Password.Length >= 6)
             {
                 if (User.Password == User.ConfirmPassword)
                 {
                     var ExtDetails = _userMgt.getUserById(editUser.Userid);
-                    editUser.Userpwd = _userMgt.EncryptPassword(editUser.Userpwd);
-                    if (ExtDetails.Userpwd != editUser.Userpwd)
+                    editUser.Password = _userMgt.EncryptPassword(editUser.Password);
+                    if (ExtDetails.Password != editUser.Password)
                     {
                         try
                         {
                             editUser.Userid = Convert.ToInt32(Id);
-                            bool validatePassword = _userMgt.UpdatePassword(editUser.Userpwd, Id);
+                            bool validatePassword = _userMgt.UpdatePassword(editUser.Password, Id);
                             if (validatePassword==true)
                             {
                                 Log.InfoFormat(MethodName, ErrorMsg);

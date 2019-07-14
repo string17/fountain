@@ -69,7 +69,7 @@ namespace PureFountain.Controllers
                 var accNos = new PureAccountNo();
                 accNos.Accountno = AccountNo;
                 accNos.Accountclass = "BranchTill";
-                accNos.Userbvn = WebConfigurationManager.AppSettings["UniversalToken"];
+                accNos.Bvn = WebConfigurationManager.AppSettings["UniversalToken"];
                 bool _success = _account.NewAccountNos(accNos);
                 if (_success)
                 {
@@ -197,14 +197,14 @@ namespace PureFountain.Controllers
                             var _till = new PureTillHistory();
                             _till.Accountname = Till.AccountName;
                             _till.Accountno = _tillDetails.AccountNo;
-                            _till.Amtcredited = Till.AccountBal;
+                            _till.Openingbal = Till.AccountBal;
                             _till.Amtdebited = 0;
-                            _till.Closedbal = 0;
+                            _till.Closingbalance = 0;
                             _till.Createdby = User.Identity.Name;
                             _till.Createddate = DateTime.Now;
                             _till.Currencycode = "NGN";
                             _till.Tellerid =Till.TellerId;
-                            _till.Trandate = DateTime.Now;
+                            _till.Transactiondate = DateTime.Now;
                             bool _tillHistory = new TransactionManagement().InsertTillHistory(_till);
                             if (_tillHistory)
                             {
@@ -269,7 +269,7 @@ namespace PureFountain.Controllers
             ViewBag.Message = "New User";
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
-            if (Account.UserPWD.Any("!@#$%^&*".Contains) && Account.UserPWD.Length >= 6)
+            if (Account.Password.Any("!@#$%^&*".Contains) && Account.Password.Length >= 6)
             {
 
                 try
@@ -279,16 +279,16 @@ namespace PureFountain.Controllers
                     Acc.Middlename = Account.MiddleName;
                     Acc.Lastname = Account.LastName;
                     Acc.Username = Account.UserName;
-                    Acc.Useremail = Account.UserEmail;
-                    Acc.Userpwd = Account.UserPWD;
-                    Acc.Phonenos = Account.PhoneNos;
+                    Acc.Email = Account.UserEmail;
+                    Acc.Password = Account.Password;
+                    Acc.Phoneno = Account.PhoneNo;
                     Acc.Roleid = Account.RoleId;
-                    Acc.Userstatus = Account.UserStatus;
+                    Acc.Isuseractive = Account.UserStatus;
                     Acc.Createdby = User.Identity.Name;
                     Acc.Createdon = DateTime.Now;
 
                     UserManagement usermgt = new UserManagement();
-                    Acc.Userpwd = usermgt.EncryptPassword(Account.UserPWD);
+                    Acc.Password = usermgt.EncryptPassword(Account.Password);
                     Acc.Userimg = usermgt.DoFileUpload(Account.UserImg);
                     var validUser = usermgt.getUserByUsername(Account.UserName);
                     if (validUser != null && validUser.Username == Account.UserName)
@@ -377,7 +377,7 @@ namespace PureFountain.Controllers
             int UserId = Id.GetValueOrDefault();
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
-            if (Account.UserPWD.Any("!@#$%^&*".Contains) && Account.UserPWD.Length >= 6)
+            if (Account.Password.Any("!@#$%^&*".Contains) && Account.Password.Length >= 6)
             {
 
                 try
@@ -387,17 +387,17 @@ namespace PureFountain.Controllers
                     Acc.Middlename = Account.MiddleName;
                     Acc.Lastname = Account.LastName;
                     Acc.Username = Account.UserName;
-                    Acc.Useremail = Account.UserEmail;
-                    Acc.Userpwd = Account.UserPWD;
-                    Acc.Phonenos = Account.PhoneNos;
+                    Acc.Email = Account.UserEmail;
+                    Acc.Password = Account.Password;
+                    Acc.Phoneno = Account.PhoneNo;
                     Acc.Roleid = Account.RoleId;
-                    Acc.Userstatus = Account.UserStatus;
+                    Acc.Isuseractive = Account.UserStatus;
                     Acc.Modifiedby = User.Identity.Name;
                     Acc.Modifiedon = DateTime.Now;
                     UserManagement usermgt = new UserManagement();
-                    Acc.Userpwd = usermgt.EncryptPassword(Account.UserPWD);
+                    Acc.Password = usermgt.EncryptPassword(Account.Password);
                     Acc.Userimg = usermgt.DoFileUpload(Account.UserImg, c["UserImg1"]);
-                    var updateUser = usermgt.UpdateUser(Acc.Firstname, Acc.Middlename, Acc.Lastname, Acc.Username, Acc.Useremail, Acc.Userpwd, Acc.Userimg, Acc.Phonenos, Acc.Roleid, Acc.Userstatus, User.Identity.Name, DateTime.Now, UserId);
+                    var updateUser = usermgt.UpdateUser(Acc.Firstname, Acc.Middlename, Acc.Lastname, Acc.Username, Acc.Email, Acc.Password, Acc.Userimg, Acc.Phoneno, Acc.Roleid, Acc.Isuseractive, User.Identity.Name, DateTime.Now, UserId);
                     if (updateUser == true)
                     {
                         InsertAudit(Constants.AuditActionType.Login, "Successfully Login", User.Identity.Name);
@@ -452,7 +452,7 @@ namespace PureFountain.Controllers
             RoleManagement rolemgt = new RoleManagement();
             ViewBag.Roles = rolemgt.getRoleByRoleId();
             var editUser = new PureUser();
-            if (account.UserPWD.Any("!@#$%^&*".Contains) && account.UserPWD.Length >= 6)
+            if (account.Password.Any("!@#$%^&*".Contains) && account.Password.Length >= 6)
             {
                 try
                 {
@@ -461,16 +461,16 @@ namespace PureFountain.Controllers
                     editUser.Middlename = account.MiddleName;
                     editUser.Lastname = account.LastName;
                     editUser.Username = account.UserName;
-                    editUser.Useremail = account.UserEmail;
-                    editUser.Userpwd = account.UserPWD;
-                    editUser.Phonenos = account.PhoneNos;
+                    editUser.Email = account.UserEmail;
+                    editUser.Password = account.Password;
+                    editUser.Phoneno = account.PhoneNo;
                     editUser.Modifiedby = User.Identity.Name;
                     editUser.Modifiedon = DateTime.Now;
                     editUser.Userimg = usermgt.DoFileUpload(account.UserImg, c["UserImg1"]);
                     UserManagement userManagement = new UserManagement();
-                    editUser.Userpwd = usermgt.EncryptPassword(account.UserPWD);
+                    editUser.Password = usermgt.EncryptPassword(account.Password);
                     bool UpdateUser = false;
-                    UpdateUser = userManagement.UpdateProfile(editUser.Firstname, editUser.Middlename, editUser.Lastname, editUser.Username, editUser.Useremail, editUser.Userpwd, editUser.Userimg, editUser.Phonenos, User.Identity.Name, DateTime.Now, User.Identity.Name);
+                    UpdateUser = userManagement.UpdateProfile(editUser.Firstname, editUser.Middlename, editUser.Lastname, editUser.Username, editUser.Email, editUser.Password, editUser.Userimg, editUser.Phoneno, User.Identity.Name, DateTime.Now, User.Identity.Name);
                     if (UpdateUser == true)
                     {
                         InsertAudit(Constants.AuditActionType.ProfileModified, "Modified a user " + editUser.Username, User.Identity.Name);
@@ -520,15 +520,15 @@ namespace PureFountain.Controllers
                 Account.Rolename = Account.Rolename.ToUpper();
                 Account.Roledesc = Account.Roledesc;
 
-                if (Account.Rolestatus != null)
+                if (Account.Isroleactive != null)
                 {
-                    Account.Rolestatus = true;
+                    Account.Isroleactive = true;
                 }
                 else
                 {
-                    Account.Rolestatus = false;
+                    Account.Isroleactive = false;
                 }
-                Account.Rolestatus = Account.Rolestatus;
+                Account.Isroleactive = Account.Isroleactive;
 
                 RoleManagement roleManagement = new RoleManagement();
                 var validRole = roleManagement.getRoleByRoleName(Account.Rolename);
@@ -593,7 +593,7 @@ namespace PureFountain.Controllers
                 editRole.Roleid = Convert.ToInt32(Id);
                 editRole.Rolename = extRole.RoleName;
                 editRole.Roledesc = extRole.RoleDesc;
-                editRole.Rolestatus = extRole.RoleStatus;
+                editRole.Isroleactive = extRole.RoleStatus;
                 RoleManagement roleManagement = new RoleManagement();
                 bool UpdateRole = false;
                 UpdateRole = roleManagement.UpdateRole(extRole.RoleName, extRole.RoleDesc, extRole.RoleStatus, editRole.Roleid);
@@ -652,32 +652,32 @@ namespace PureFountain.Controllers
                 Acc.Firstname = customer.FirstName;
                 Acc.Middlename = customer.MiddleName;
                 Acc.Lastname = customer.LastName;
-                Acc.Useremail = customer.UserEmail;
-                Acc.Phoneno1 = customer.PhoneNos1;
-                Acc.Phoneno2 = customer.PhoneNos2;
-                Acc.Usersex = customer.UserSex;
+                Acc.Email = customer.UserEmail;
+                Acc.Phoneno1 = customer.PhoneNo1;
+                Acc.Phoneno2 = customer.PhoneNo2;
+                Acc.Sex = customer.UserSex;
                 Acc.Homeaddress = customer.UserAddress;
                 Acc.Officeaddress = customer.OfficeAddress;
                 Acc.Stateorigin = customer.StateId;
                 Acc.Dob = customer.DOB;
                 Acc.Homeaddress = customer.UserAddress;
-                Acc.Userlga = customer.UserLGA;
+                Acc.Lga = customer.UserLGA;
                 Acc.Maritalstatus = customer.MaritalStatus;
                 Acc.Occupationid = customer.OccupationalId;
                 Acc.Jobtitle = customer.JobTitle;
                 Acc.Incomerange = customer.IncomeRange;
                 Acc.Nationality = customer.CountryCode;
-                Acc.Idnos = customer.IdNos;
+                Acc.Idno = customer.IdNos;
                 Acc.Idissuedate = customer.IdIssueDate;
                 Acc.Idexpirydate = customer.IdExpiryDate;
-                Acc.Userbvn = customer.UserBVN;
+                Acc.Bvn = customer.UserBVN;
                 Acc.Idissueauth = customer.IDIssueAuth;
                 Acc.Employmentdate = customer.EmploymentDate;
                 Acc.Iddetails = customer.IdDetails;
                 Acc.Otherbankid = customer.OtherBankId;
-                Acc.Otheraccountnos = customer.OtherAccountNos;
+                Acc.Otheraccountno = customer.OtherAccountNo;
                 Acc.Nextofkin = customer.KFName + " " + customer.KMName;
-                Acc.Religionid = customer.ReligionNos;
+                Acc.Religionid = customer.ReligionNo;
                 Acc.Maidenname = customer.MaidenName;
                 Acc.Knumber = customer.KNumber;
                 Acc.Krelationship = customer.KRelationship;
@@ -687,7 +687,7 @@ namespace PureFountain.Controllers
                 Acc.Reasonforaccount = customer.ReasonForAccount;
                 Acc.Accountname = customer.AccountName;
                 Acc.Accountno = "";
-                Acc.Accountstatus = false;
+                Acc.Isaccountactive = false;
                 Acc.Createdby = User.Identity.Name;
                 Acc.Createdon = DateTime.Now;
                 Acc.Modifiedby = "";
@@ -858,17 +858,17 @@ namespace PureFountain.Controllers
             }
             try
             {
-                var CreditRem = new PureRemittance();
-                CreditRem.Requestid = RequestId;
-                CreditRem.Creditedby = TellerId;
-                CreditRem.Remamount = tran.Amount;
-                CreditRem.Creditedon = DateTime.Now;
-                bool UpdateRem = new TransactionManagement().CreditRemAccount(CreditRem);
-                if (UpdateRem == false)
-                {
-                    ViewBag.ErrorMsg = "Unable to Remit the till";
-                    return View();
-                }
+                //var CreditRem = new PureRemittance();
+                //CreditRem.Requestid = RequestId;
+                //CreditRem.Creditedby = TellerId;
+                //CreditRem.Remamount = tran.Amount;
+                //CreditRem.Creditedon = DateTime.Now;
+                //bool UpdateRem = new TransactionManagement().CreditRemAccount(CreditRem);
+                //if (UpdateRem == false)
+                //{
+                //    ViewBag.ErrorMsg = "Unable to Remit the till";
+                //    return View();
+                //}
 
                 var ProcessTill =_account.GetTellerTill(TellerId, ddate);
                 if (ProcessTill == null)
@@ -876,7 +876,7 @@ namespace PureFountain.Controllers
                     ViewBag.ErrorMsg = "No Till Account Found";
                     return View();
                 }
-                bool DebitTill = new TransactionManagement().ConfirmTransaction(RequestId, CustomerDetails.AccountNos, DepositAmount, TellerId);
+                bool DebitTill = new TransactionManagement().ConfirmTransaction(RequestId, CustomerDetails.AccountNo, DepositAmount, TellerId);
                 if (DebitTill == false)
                 {
                     ViewBag.ErrorMsg = "Unable to Post the Transaction";
@@ -885,7 +885,7 @@ namespace PureFountain.Controllers
 
                 var acc = new PureTransactionLog();
                 acc.Sourceaccount = ProcessTill.AccountNo;
-                acc.Destinationaccount = CustomerDetails.AccountNos;
+                acc.Destinationaccount = CustomerDetails.AccountNo;
                 acc.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNo;
                 acc.Amount = tran.Amount;
                 acc.Transtatus = "P";
@@ -908,7 +908,7 @@ namespace PureFountain.Controllers
                         var deposit = new PureDeposit();
                         deposit.Requestid = RequestId;
                         deposit.Accounttitle = CustomerDetails.AccountName;
-                        deposit.Accountnos = tran.AccountNo;
+                        deposit.Accountno = tran.AccountNo;
                         deposit.Depositorname = tran.DepositorName;
                         deposit.Depositorno = tran.DepositorNo;
                         deposit.Narration = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNo;
@@ -929,7 +929,7 @@ namespace PureFountain.Controllers
                             var request = new PurePostRequest();
                             request.Requestid = RequestId;
                             request.Accountname = CustomerDetails.AccountName;
-                            request.Accountno = CustomerDetails.AccountNos;
+                            request.Accountno = CustomerDetails.AccountNo;
                             request.Drcrindicator = "CR";
                             request.Tranamount = tran.Amount;
                             request.Transtatus = "P";
@@ -949,7 +949,7 @@ namespace PureFountain.Controllers
                                 //decimal custBal= Convert.ToDecimal(CustomerDetails.Balance) + tran.Amount;
                                 request3.Referenceid = RequestId;
                                 request3.Transactiondetails = RequestId + " | " + tran.DepositorName + " | " + tran.DepositorNo;
-                                request3.Accountno = CustomerDetails.AccountNos;
+                                request3.Accountno = CustomerDetails.AccountNo;
                                 request3.Deposit = Convert.ToDecimal(Amount);
                                 request3.Withdrawal = 0;
                                 request3.Accountbal = Convert.ToDecimal(CustomerDetails.Balance) + tran.Amount;//
@@ -1191,7 +1191,7 @@ namespace PureFountain.Controllers
             string MethodName = "Approve Loan";
             string LoanStatus = "A";
             string Approver = User.Identity.Name;
-            string loanRef = new SequenceManager().GenerateLoanReference();
+            string loanRef = new SequenceManager().ReturnPostingSequence();
             bool codes = loanMgt.ApproveLoanStatus(LoanStatus, LoanId, Approver);//Transaction
             if (codes)
             {
@@ -1241,15 +1241,15 @@ namespace PureFountain.Controllers
                 var AccountNo = new SequenceManager().GenerateAccountNos().ToString();
                 var acc = new PureCustomerInfo();
                 acc.Accountno = AccountNo;
-                acc.Accountstatus = true;
-                bool UpdateAccount = _account.ApproveAccount(CustomerId, acc.Accountno, acc.Accountstatus);
+                acc.Isaccountactive = true;
+                bool UpdateAccount = _account.ApproveAccount(CustomerId, acc.Accountno, acc.Isaccountactive);
                 if (UpdateAccount)
                 {
                     var codes = _account.GetAccountDetails(CustomerId);
                     var accNos = new PureAccountNo();
                     accNos.Accountno = AccountNo;
                     accNos.Accountclass = "Customer";
-                    accNos.Userbvn = codes.UserBVN;
+                    accNos.Bvn = codes.UserBVN;
                     bool InsertAccount = _account.NewAccountNos(accNos);
                     if (InsertAccount)
                     {
@@ -1341,16 +1341,16 @@ namespace PureFountain.Controllers
             {
                 var loan = new PureLoan();
                 loan.Loanduration = tran.LoanTimeline;
-                loan.Loaninterestweek = LoanInterest;
+                loan.Loaninterest = LoanInterest;
                 loan.Loaninterest = LoanInterest; //* Convert.ToDecimal(tran.LoanTimeline);
                 loan.Loanstatus = "P";
                 loan.Loancateid = tran.LoanCateId;
-                loan.Accountnos = tran.AccountNos;
+                loan.Accountno = tran.AccountNo;
                 loan.Loanamount = tran.LoanAmount;
                 loan.Guarantor1name = tran.Guarantor1Name;
                 loan.Guarantor1phoneno = tran.Guarantor1Phone;
                 loan.Guarantor2name = tran.Guarantor2Name;
-                loan.Guarantor2phonenos = tran.Guarantor2Phone;
+                loan.Guarantor2phoneno = tran.Guarantor2Phone;
                 loan.Processor = User.Identity.Name;
                 loan.Approver = null;
                 loan.Repaymentstatus = "Pending";
@@ -1444,14 +1444,14 @@ namespace PureFountain.Controllers
                     }
 
                     var ProcessTill =_account.GetTellerTill(TellerId, ddate);
-                    bool DebitTill = new TransactionManagement().PostWithdrawal(RequestId, CustomerDetails.AccountNos, WithdrawalAmount, TellerId);
+                    bool DebitTill = new TransactionManagement().PostWithdrawal(RequestId, CustomerDetails.AccountNo, WithdrawalAmount, TellerId);
                     if (DebitTill == false)
                     {
                         ViewBag.ErrorMsg = "Unable to Post the Transaction";
                         return View();
                     }
                     var acc = new PureTransactionLog();
-                    acc.Sourceaccount = CustomerDetails.AccountNos;
+                    acc.Sourceaccount = CustomerDetails.AccountNo;
                     acc.Destinationaccount = ProcessTill.AccountNo;
                     acc.Narration = RequestId;
                     acc.Amount = tran.Amount;
@@ -1472,7 +1472,7 @@ namespace PureFountain.Controllers
                             var request = new PurePostRequest();
                             request.Requestid = RequestId;
                             request.Accountname = CustomerDetails.AccountName;
-                            request.Accountno = CustomerDetails.AccountNos;
+                            request.Accountno = CustomerDetails.AccountNo;
                             request.Drcrindicator = "DR";
                             request.Tranamount = tran.Amount;
                             request.Transtatus = "P";
@@ -1482,7 +1482,7 @@ namespace PureFountain.Controllers
                             var request3 = new PureStatement();
                             request3.Referenceid = RequestId;
                             request3.Transactiondetails = RequestId + " | " + CustomerDetails.AccountName;
-                            request3.Accountno = CustomerDetails.AccountNos;
+                            request3.Accountno = CustomerDetails.AccountNo;
                             request3.Deposit = 0;
                             request3.Withdrawal = Convert.ToDecimal(Amount);
                             request3.Accountbal = Convert.ToDecimal(CustomerDetails.Balance) + tran.Amount;

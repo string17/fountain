@@ -28,6 +28,7 @@
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -570,6 +571,24 @@
     <Content Include="assets\plugins\wijets\wijets.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Dependencies\Antlr3.Runtime.dll" />
+    <Content Include="Dependencies\BLL.dll" />
+    <Content Include="Dependencies\DAL.dll" />
+    <Content Include="Dependencies\log4net.dll" />
+    <Content Include="Dependencies\Newtonsoft.Json.dll" />
+    <Content Include="Dependencies\NPoco.dll" />
+    <Content Include="Dependencies\PureFountain.dll" />
+    <Content Include="Dependencies\System.Net.Http.Formatting.dll" />
+    <Content Include="Dependencies\System.Web.Helpers.dll" />
+    <Content Include="Dependencies\System.Web.Http.dll" />
+    <Content Include="Dependencies\System.Web.Http.WebHost.dll" />
+    <Content Include="Dependencies\System.Web.Mvc.dll" />
+    <Content Include="Dependencies\System.Web.Optimization.dll" />
+    <Content Include="Dependencies\System.Web.Razor.dll" />
+    <Content Include="Dependencies\System.Web.WebPages.Deployment.dll" />
+    <Content Include="Dependencies\System.Web.WebPages.dll" />
+    <Content Include="Dependencies\System.Web.WebPages.Razor.dll" />
+    <Content Include="Dependencies\WebGrease.dll" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -586,6 +605,7 @@
     <Content Include="assets\fonts\font-awesome\fonts\fontawesome-webfont-v=4.2.0.woff" />
     <Content Include="log4net.config" />
     <None Include="Properties\PublishProfiles\Falade Gbenga.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\Gbenga Falade.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
